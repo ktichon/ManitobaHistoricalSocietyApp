@@ -1,4 +1,4 @@
-package com.example.manitobahistoricalsocietyapp.database.siteSource
+package com.example.manitobahistoricalsocietyapp.database.SiteSource
 
 import androidx.room.ColumnInfo
 import androidx.room.Entity

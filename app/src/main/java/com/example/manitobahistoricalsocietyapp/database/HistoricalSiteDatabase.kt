@@ -1,26 +1,29 @@
 package com.example.manitobahistoricalsocietyapp.database
 
 import android.content.Context
+import androidx.room.AutoMigration
 import androidx.room.Database
 import androidx.room.Room
 import androidx.room.RoomDatabase
-import com.example.manitobahistoricalsocietyapp.database.historicalSite.HistoricalSite
-import com.example.manitobahistoricalsocietyapp.database.historicalSite.HistoricalSiteDao
-import com.example.manitobahistoricalsocietyapp.database.sitePhotos.SitePhotos
-import com.example.manitobahistoricalsocietyapp.database.sitePhotos.SitePhotosDao
-import com.example.manitobahistoricalsocietyapp.database.siteSource.SiteSource
-import com.example.manitobahistoricalsocietyapp.database.siteSource.SiteSourceDao
-import com.example.manitobahistoricalsocietyapp.database.siteTypes.SiteType
-import com.example.manitobahistoricalsocietyapp.database.siteTypes.SiteTypeDao
-import com.example.manitobahistoricalsocietyapp.database.siteTypes.SiteWithType
-import com.example.manitobahistoricalsocietyapp.database.siteTypes.SiteWithTypeDao
+import com.example.manitobahistoricalsocietyapp.database.HistoricalSite.HistoricalSite
+import com.example.manitobahistoricalsocietyapp.database.HistoricalSite.HistoricalSiteDao
+import com.example.manitobahistoricalsocietyapp.database.SitePhotos.SitePhotos
+import com.example.manitobahistoricalsocietyapp.database.SitePhotos.SitePhotosDao
+import com.example.manitobahistoricalsocietyapp.database.SiteSource.SiteSource
+import com.example.manitobahistoricalsocietyapp.database.SiteSource.SiteSourceDao
+import com.example.manitobahistoricalsocietyapp.database.SiteTypes.SiteType
+import com.example.manitobahistoricalsocietyapp.database.SiteTypes.SiteTypeDao
+import com.example.manitobahistoricalsocietyapp.database.SiteTypes.SiteWithType
+import com.example.manitobahistoricalsocietyapp.database.SiteTypes.SiteWithTypeDao
 import kotlin.concurrent.Volatile
 
 
 @Database(
     entities = [HistoricalSite::class, SitePhotos::class, SiteSource::class, SiteType::class, SiteWithType::class],
     version = 1,
-    exportSchema = false
+    exportSchema = false,
+
+
 )
 abstract class HistoricalSiteDatabase : RoomDatabase() {
     abstract fun manitobaHistoricalSiteDao(): HistoricalSiteDao

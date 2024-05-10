@@ -1,4 +1,4 @@
-package com.example.manitobahistoricalsocietyapp.database.historicalSite
+package com.example.manitobahistoricalsocietyapp.database.HistoricalSite
 
 import androidx.room.ColumnInfo
 import androidx.room.Entity
@@ -30,9 +30,6 @@ data class HistoricalSite (
     @ColumnInfo(name = "import_date")
     val importDate: String,
 )
-{
-    val fullAddress: String = (if (address.isNullOrBlank()) "" else "$address, ") + municipality
-}
 
 
 

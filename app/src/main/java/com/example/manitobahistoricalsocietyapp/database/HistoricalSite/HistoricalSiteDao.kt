@@ -1,4 +1,4 @@
-package com.example.manitobahistoricalsocietyapp.database.historicalSite
+package com.example.manitobahistoricalsocietyapp.database.HistoricalSite
 
 import androidx.room.Dao
 import androidx.room.Delete
