@@ -73,10 +73,11 @@ fun DisplayFullSiteDetails(
                    .verticalScroll(scrollState),
             ) {
                 //Site types, address, and distance from user
-                val fullAddress = (if (site.address.isNullOrBlank()) "" else site.address + ", ") + site.municipality
+                //moved this code to the entity
+                //val fullAddress = (if (site.address.isNullOrBlank()) "" else site.address + ", ") + site.municipality
                 DisplaySiteBasicInfo(
                     siteTypes = siteTypes,
-                    fullAddress = fullAddress,
+                    fullAddress = site.getFullAddress(),
                     metersFromUser = userLocation.distanceTo(turnLatLongIntoLocation(latitude = site.latitude, longitude = site.longitude)),
                     modifier = Modifier.padding(paddingBetweenItems))
 
