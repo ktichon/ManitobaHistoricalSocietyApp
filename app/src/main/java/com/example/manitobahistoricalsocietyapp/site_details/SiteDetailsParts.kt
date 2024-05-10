@@ -18,8 +18,6 @@ import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.wrapContentHeight
-import androidx.compose.foundation.lazy.LazyColumn
-import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.pager.HorizontalPager
 import androidx.compose.foundation.pager.rememberPagerState
 import androidx.compose.foundation.shape.CircleShape
@@ -75,16 +73,16 @@ fun DisplaySiteTitle(
         horizontalArrangement = Arrangement.SpaceBetween,
         modifier = modifier
             .fillMaxWidth()
-            .padding(5.dp)
     ){
         Text(
             text = name,
             maxLines = if (displayState == SiteDisplayState.HalfSite) 2 else 10,
             overflow = TextOverflow.Ellipsis,
             style = MaterialTheme.typography.titleLarge,
-            modifier = modifier
+
+            modifier = Modifier
                 .weight(1f)
-                .padding(vertical = 10.dp, horizontal = 2.dp)
+                .padding(horizontal = 2.dp)
 
 
         )
@@ -96,7 +94,7 @@ fun DisplaySiteTitle(
 
 
         IconButton(onClick = { onClickChangeDisplayState(newDisplayStateOnClick) },
-            modifier =  modifier.align(Alignment.Top)
+            modifier =  Modifier.align(Alignment.Top)
         ) {
             Icon(imageVector = icon,
                 contentDescription = contentDescription,
@@ -117,18 +115,15 @@ fun DisplaySiteBasicInfo(
     ) {
     val types = siteTypes.joinToString(separator = "/")
     val displayDistance = displayDistance(metersFromUser)
-    Column (
-        modifier = modifier
-    ){
-        Text(text = "$types, $displayDistance",
-            style = MaterialTheme.typography.bodyLarge,)
-        Text(text = fullAddress)
-
-        
-        
-
-
+    Row (modifier = modifier) {
+        Column{
+            Text(text = "$types, $displayDistance",
+                style = MaterialTheme.typography.bodyLarge,)
+            Text(text = fullAddress,
+                style = MaterialTheme.typography.bodyLarge,)
+        }
     }
+
 }
 
 //Displays the text for the distance from user
@@ -155,13 +150,34 @@ fun DisplaySitePhoto(
     uriHandler: UriHandler,
     modifier: Modifier = Modifier
 ) {
+
     Column(
         modifier = modifier,
         horizontalAlignment = Alignment.CenterHorizontally
 
     ) {
+        //Should use the simple AsyncImage before I try and use the more complex stuff
+        //As the more complex stuff (such as a loading wheel) might not be necessary
+        AsyncImage(
+            model = sitePhoto.url,
+            contentDescription = sitePhoto.name,
+            error = painterResource(id = R.drawable.error),
+            placeholder = painterResource(id = R.drawable.photo_placeholder_outlined),
+            contentScale = ContentScale.Fit,
+            modifier = Modifier
+                .size(height = (sitePhoto.height / 2).dp, width = (sitePhoto.width / 2).dp)
+                .padding(5.dp)
+                .combinedClickable(
+                onClick = { },
+                onLongClick = {
+                    uriHandler.openUri(sitePhoto.url)
+                },
+                onLongClickLabel = sitePhoto.url
+            )
 
-        SubcomposeAsyncImage(
+        )
+
+        /*SubcomposeAsyncImage(
             model = sitePhoto.url,
             contentDescription = sitePhoto.name,
             loading = {
@@ -169,7 +185,7 @@ fun DisplaySitePhoto(
             },
             contentScale = ContentScale.Fit,
             error ={ AsyncImage(model = sitePhoto.url, contentDescription = sitePhoto.name, error = painterResource(id = R.drawable.error) )}            ,
-            modifier = modifier
+            modifier = Modifier
                 //.fillMaxWidth().wrapContentHeight(
                 .size(height = (sitePhoto.height / 2).dp, width = (sitePhoto.width / 2).dp)
                 //.aspectRatio(sitePhoto.width.toFloat() / sitePhoto.height.toFloat())
@@ -182,23 +198,30 @@ fun DisplaySitePhoto(
                 .combinedClickable(
                     onClick = { },
                     onLongClick = {
-                        sitePhoto.url?.let { uriHandler.openUri(it) }
+                        uriHandler.openUri(sitePhoto.url)
                     },
                     onLongClickLabel = sitePhoto.url
                 )
 
-        )
+        )*/
 
             
 
 
         sitePhoto.info?.let {
-            GetAndroidViewWithStyle(textStyle = MaterialTheme.typography.bodyMedium, text = sitePhoto.info, textAlignment = TEXT_ALIGNMENT_CENTER, modifier = modifier.align(Alignment.CenterHorizontally))
+            GetAndroidViewWithStyle(
+                textStyle = MaterialTheme.typography.bodyMedium, text = sitePhoto.info,
+                textAlignment = TEXT_ALIGNMENT_CENTER,
+                modifier = modifier
+                    .align(Alignment.CenterHorizontally)
+                    .padding(horizontal = 10.dp)
+                    .fillMaxWidth()
+            )
         }
 
         Text(
             text = "$photoIndex/$totalNumberOfPhotos",
-            modifier = modifier.align(Alignment.End)
+            modifier = Modifier.align(Alignment.End)
         )
 
     }
@@ -224,44 +247,51 @@ fun DisplaySitePhotos(
         flingBehavior = rememberSnapFlingBehavior(lazyListState = state),
         modifier = modifier.fillMaxWidth()
     )*/
-    Column {
-        HorizontalPager(
-            state = pageState,
-            contentPadding = PaddingValues(10.dp),
-            modifier = modifier.fillMaxWidth()
+    Row (
+        modifier = modifier
+    ){
+        Column(
+
+        ) {
+            HorizontalPager(
+                state = pageState,
+                //contentPadding = PaddingValues(10.dp),
+                modifier = Modifier.fillMaxWidth()
 
 
-        )
-        {
-                index ->
-            DisplaySitePhoto(photoIndex = index + 1, totalNumberOfPhotos = photos.size, sitePhoto = photos[index], uriHandler = uriHandler )
+            )
+            {
+                    index ->
+                DisplaySitePhoto(photoIndex = index + 1, totalNumberOfPhotos = photos.size, sitePhoto = photos[index], uriHandler = uriHandler )
 
-
-        }
-
-        //This is the code that puts a row of circles to show how many photos there are
-        Row(
-            modifier = modifier
-                .wrapContentHeight()
-                .fillMaxWidth()
-                .align(Alignment.End)
-                .padding(bottom = 5.dp),
-            horizontalArrangement = Arrangement.Center
-        ){
-            repeat(pageState.pageCount){pageNum ->
-                val colour = if(pageState.pageCount == pageNum) Color.DarkGray else Color.LightGray
-                Box(modifier = Modifier
-                    .padding(3.dp)
-                    .clip(CircleShape)
-                    .background(colour)
-                    .size(15.dp)
-                )
 
             }
+
+            //This is the code that puts a row of circles to show how many photos there are
+            Row(
+                modifier = Modifier
+                    .wrapContentHeight()
+                    .fillMaxWidth()
+                    .align(Alignment.End)
+                    .padding(bottom = 5.dp),
+                horizontalArrangement = Arrangement.Center
+            ){
+                repeat(pageState.pageCount){pageNum ->
+                    val colour = if(pageState.pageCount == pageNum) Color.DarkGray else Color.LightGray
+                    Box(modifier = Modifier
+                        .padding(3.dp)
+                        .clip(CircleShape)
+                        .background(colour)
+                        .size(15.dp)
+                    )
+
+                }
+            }
+
+
         }
-
-
     }
+
 }
 
 //Displays if the are no photos for the site
@@ -280,10 +310,11 @@ fun DisplayNoPhotos(
         }
         pop()
     }
-
-    Column(
-        horizontalAlignment = Alignment.CenterHorizontally,
-        modifier = modifier.padding(5.dp)) {
+    Row(
+        verticalAlignment = Alignment.CenterVertically,
+        horizontalArrangement = Arrangement.Center,
+        modifier = modifier
+    ){
         ClickableText(text = annotatedString, style = MaterialTheme.typography.bodyLarge.merge( TextStyle(
             textAlign = TextAlign.Center)
         ), onClick = { offset ->
@@ -299,7 +330,13 @@ fun DisplaySiteDescription(
     siteInfo:String,
     modifier: Modifier = Modifier
 ) {
-    GetAndroidViewWithStyle(textStyle = MaterialTheme.typography.bodyLarge, text = siteInfo, textAlignment = TEXT_ALIGNMENT_TEXT_START, modifier = modifier)
+    Row(
+        modifier = modifier
+    ) {
+        GetAndroidViewWithStyle(textStyle = MaterialTheme.typography.bodyLarge, text = siteInfo, textAlignment = TEXT_ALIGNMENT_TEXT_START)
+    }
+
+
 
 }
 
@@ -309,46 +346,49 @@ fun DisplaySiteDescription(
 
 @Composable
 fun DisplaySiteSources(
-    sourceList: List<SiteSource>,
+    sourcesList: List<String>,
     modifier: Modifier = Modifier
 ) {
-    Column(
-        modifier = modifier
-    ) {
-        Row(
-            modifier = modifier
-        ) {
+    Row (modifier = modifier){
+        Column {
             Text(
-                text ="Sources:",
+                text = "Sources:",
                 style = MaterialTheme.typography.titleLarge
             )
-        }
+            if (sourcesList.isEmpty()){
+                Text(
+                    text = "There is no additional information about the sources used for this site",
+                    style = MaterialTheme.typography.bodyLarge
+                )
+            } else{
+                sourcesList.forEach {
+                    GetAndroidViewWithStyle(
+                        textStyle = MaterialTheme.typography.bodyLarge,
+                        text = it,
+                        textAlignment = TEXT_ALIGNMENT_TEXT_START,
+                        Modifier.padding(horizontal = 20.dp, vertical = 5.dp) )
+                }
 
-        LazyColumn(
-            contentPadding = PaddingValues(horizontal = 15.dp, vertical = 5.dp),
-            verticalArrangement = Arrangement.spacedBy(10.dp)
-
-        ) {
-            items(sourceList){ source ->
-                source.info?.let { GetAndroidViewWithStyle(textStyle = MaterialTheme.typography.bodyLarge, text = it, textAlignment = TEXT_ALIGNMENT_TEXT_START ) }
-                
             }
         }
 
-
     }
-    
 }
 
 @Composable
-fun DisplayLinkToHistoricalSocietyPage(siteUrl: String, uriHandler: UriHandler, modifier: Modifier = Modifier) {
-    Text(
-        text = "Click here to go to the Manitoba Historical Society webpage for this site!",
-        style = MaterialTheme.typography.titleLarge.merge(TextStyle(textDecoration = TextDecoration.Underline)),
-        color = MaterialTheme.colorScheme.primary,
-        textAlign = TextAlign.Center,
-        modifier =modifier.clickable { uriHandler.openUri(siteUrl) }
-    )
+fun DisplaySiteLink(siteUrl: String, uriHandler: UriHandler, modifier: Modifier = Modifier) {
+    Row(
+        modifier = modifier.fillMaxWidth()
+    ){
+        Text(
+            text = "Click here to go to the Manitoba Historical Society webpage for this site!",
+            style = MaterialTheme.typography.titleLarge.merge(TextStyle(textDecoration = TextDecoration.Underline)),
+            color = MaterialTheme.colorScheme.primary,
+            textAlign = TextAlign.Center,
+            modifier = Modifier.clickable { uriHandler.openUri(siteUrl) }
+        )
+    }
+
     
 }
 
@@ -472,12 +512,12 @@ fun PreviewSiteDescription() {
 fun PreviewSiteSources() {
     ManitobaHistoricalSocietyAppTheme {
         Surface {
-            val source1 = SiteSource(1,2,"<a href=\"http://www.gov.mb.ca/chc/hrb/mun/m053.html\" target=\"_blank\">St. Andrews United Church, NE4-13-6 EPM Garson</a>, Manitoba Historic Resources Branch.", "")
-            val source2 = SiteSource(2,2,"<em>One Hundred Years in the History of the Rural Schools of Manitoba: Their Formation, Reorganization and Dissolution (1871-1971)</em> by <a href=\"http://www.mhs.mb.ca/docs/people/perfect_mb.shtml\">Mary B. Perfect</a>, MEd thesis, University of Manitoba, April 1978.", "")
-            val source3 = SiteSource(3,2,"“Goodbye, Miss Chips,” <a href=\"http://www.mhs.mb.ca/docs/business/freepress.shtml\">Winnipeg Free Press</a>, 26 May 1962, page 3.", "")
-            val source4 = SiteSource(4,2,"This page was prepared by <a href=\"http://www.mhs.mb.ca/docs/people/penner_g.shtml\">George Penner</a>, <a href=\"http://www.mhs.mb.ca/docs/people/kuzina_r.shtml\">Rose Kuzina</a>, and <a href=\"http://www.mhs.mb.ca/docs/people/goldsborough_lg.shtml\">Gordon Goldsborough</a>.", "")
-            val source5 = SiteSource(5,2,"<a href=\"/info/links/lac_cef.shtml\" target=\"_blank\">Attestation papers, Canadian Expeditionary Force</a> [John Amos Comba], Library and Archives Canada.", "")
-            DisplaySiteSources(sourceList = listOf(source1, source2, source3, source4, source5))
+            val source1 = SiteSource(1,2,"<a href=\"http://www.gov.mb.ca/chc/hrb/mun/m053.html\" target=\"_blank\">St. Andrews United Church, NE4-13-6 EPM Garson</a>, Manitoba Historic Resources Branch.", "").info
+            val source2 = SiteSource(2,2,"<em>One Hundred Years in the History of the Rural Schools of Manitoba: Their Formation, Reorganization and Dissolution (1871-1971)</em> by <a href=\"http://www.mhs.mb.ca/docs/people/perfect_mb.shtml\">Mary B. Perfect</a>, MEd thesis, University of Manitoba, April 1978.", "").info
+            val source3 = SiteSource(3,2,"“Goodbye, Miss Chips,” <a href=\"http://www.mhs.mb.ca/docs/business/freepress.shtml\">Winnipeg Free Press</a>, 26 May 1962, page 3.", "").info
+            val source4 = SiteSource(4,2,"This page was prepared by <a href=\"http://www.mhs.mb.ca/docs/people/penner_g.shtml\">George Penner</a>, <a href=\"http://www.mhs.mb.ca/docs/people/kuzina_r.shtml\">Rose Kuzina</a>, and <a href=\"http://www.mhs.mb.ca/docs/people/goldsborough_lg.shtml\">Gordon Goldsborough</a>.", "").info
+            val source5 = SiteSource(5,2,"<a href=\"/info/links/lac_cef.shtml\" target=\"_blank\">Attestation papers, Canadian Expeditionary Force</a> [John Amos Comba], Library and Archives Canada.", "").info
+            DisplaySiteSources(sourcesList = listOf(source1, source2, source3, source4, source5))
         }
     }
 }
@@ -487,7 +527,7 @@ fun PreviewSiteSources() {
 fun PreviewSiteLink() {
     ManitobaHistoricalSocietyAppTheme {
         Surface {
-            DisplayLinkToHistoricalSocietyPage(siteUrl = "http://www.mhs.mb.ca/docs/sites/oddfellowshome.shtml", uriHandler = LocalUriHandler.current )
+            DisplaySiteLink(siteUrl = "http://www.mhs.mb.ca/docs/sites/oddfellowshome.shtml", uriHandler = LocalUriHandler.current )
         }
     }
 }
