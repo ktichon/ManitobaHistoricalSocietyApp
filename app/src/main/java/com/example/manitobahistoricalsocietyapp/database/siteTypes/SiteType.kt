@@ -1,4 +1,4 @@
-package com.example.manitobahistoricalsocietyapp.database.SiteTypes
+package com.example.manitobahistoricalsocietyapp.database.siteTypes
 
 import androidx.room.ColumnInfo
 import androidx.room.Entity
@@ -10,8 +10,8 @@ data class SiteType(
     @ColumnInfo(name = "site_type_id")
     val id: Int,
 
-    val type: String?,
+    val type: String,
 
     @ColumnInfo(name = "import_date")
-    val importDate: String?
+    val importDate: String
 )

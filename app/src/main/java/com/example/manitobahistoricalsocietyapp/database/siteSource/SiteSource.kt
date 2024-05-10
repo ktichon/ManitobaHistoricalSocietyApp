@@ -1,4 +1,4 @@
-package com.example.manitobahistoricalsocietyapp.database.SiteSource
+package com.example.manitobahistoricalsocietyapp.database.siteSource
 
 import androidx.room.ColumnInfo
 import androidx.room.Entity
@@ -13,8 +13,8 @@ data class SiteSource(
     @ColumnInfo(name = "site_id")
     val siteId: Int,
 
-    val info: String?,
+    val info: String,
 
     @ColumnInfo(name = "import_date")
-    val importDate: String?
+    val importDate: String
 )

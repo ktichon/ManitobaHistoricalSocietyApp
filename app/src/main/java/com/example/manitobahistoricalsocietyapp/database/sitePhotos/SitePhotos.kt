@@ -1,4 +1,4 @@
-package com.example.manitobahistoricalsocietyapp.database.SitePhotos
+package com.example.manitobahistoricalsocietyapp.database.sitePhotos
 
 import androidx.room.ColumnInfo
 import androidx.room.Entity
@@ -14,16 +14,16 @@ data class SitePhotos (
     val siteId: Int,
 
     @ColumnInfo(name = "photo_name")
-    val name: String?,
+    val name: String,
 
     val width: Int,
     val height: Int,
 
     @ColumnInfo(name = "photo_url")
-    val url: String?,
+    val url: String,
 
     val info: String?,
 
     @ColumnInfo(name = "import_date")
-    val importDate: String?
+    val importDate: String
 )

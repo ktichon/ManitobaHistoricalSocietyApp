@@ -1,4 +1,4 @@
-package com.example.manitobahistoricalsocietyapp.database.SiteSource
+package com.example.manitobahistoricalsocietyapp.database.siteSource
 
 import androidx.room.Dao
 import androidx.room.Delete
@@ -26,4 +26,8 @@ interface SiteSourceDao {
 
     @Query("SELECT * FROM siteSource WHERE site_id = :siteId ")
     fun getAllSiteSourcesForSite(siteId: Int): Flow<List<SiteSource>>
+
+    //Only really need the SiteSource.info strings
+    @Query("SELECT info FROM siteSource WHERE site_id = :siteId ")
+    fun getOnlySourceInfoForSite(siteId: Int): Flow<List<String>>
 }
