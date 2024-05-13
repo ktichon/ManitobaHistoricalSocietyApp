@@ -45,13 +45,13 @@ class MainActivity : ComponentActivity() {
 
 
 
-                    //Greeting(allSites.size.toString())
-                    DisplayMap(
+                    Greeting(allSites.size.toString())
+                    /*DisplayMap(
                         cameraPositionState = cameraPositionState,
                         sites = allSites,
                         onClusterItemClick = {Toast.makeText(this@MainActivity, "Clicked on site " + it.name, Toast.LENGTH_SHORT).show()},
                         modifier = Modifier.fillMaxSize()
-                        )
+                        )*/
                 }
             }
         }
