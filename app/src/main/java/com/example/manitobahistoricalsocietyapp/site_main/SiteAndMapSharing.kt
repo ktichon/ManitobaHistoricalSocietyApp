@@ -1,20 +1,20 @@
-package com.example.manitobahistoricalsocietyapp.site_details
+package com.example.manitobahistoricalsocietyapp.site_main
 
 import android.location.Location
-import android.location.LocationManager
-import androidx.compose.foundation.BorderStroke
 import androidx.compose.foundation.ScrollState
+import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Column
-import androidx.compose.foundation.layout.Row
-import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.fillMaxSize
+import androidx.compose.foundation.layout.height
+import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.rememberScrollState
-import androidx.compose.foundation.verticalScroll
-import androidx.compose.material3.CardDefaults
-import androidx.compose.material3.MaterialTheme
-import androidx.compose.material3.OutlinedCard
+import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.AccountBox
+import androidx.compose.material3.Icon
 import androidx.compose.material3.Surface
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalUriHandler
 import androidx.compose.ui.platform.UriHandler
 import androidx.compose.ui.tooling.preview.Preview
@@ -23,144 +23,96 @@ import androidx.compose.ui.tooling.preview.PreviewParameterProvider
 import androidx.compose.ui.unit.dp
 import com.example.manitobahistoricalsocietyapp.database.HistoricalSite.HistoricalSite
 import com.example.manitobahistoricalsocietyapp.database.SitePhotos.SitePhotos
+import com.example.manitobahistoricalsocietyapp.map.DisplayMap
+import com.example.manitobahistoricalsocietyapp.site_details.DisplayFullSiteDetails
+import com.example.manitobahistoricalsocietyapp.site_details.DisplayStatePreviewParameterProvider
+import com.example.manitobahistoricalsocietyapp.site_details.turnLatLongIntoLocation
 import com.example.manitobahistoricalsocietyapp.state_classes.SiteDisplayState
 import com.example.manitobahistoricalsocietyapp.ui.theme.ManitobaHistoricalSocietyAppTheme
+import com.google.maps.android.compose.CameraPositionState
 
 @Composable
-fun DisplayFullSiteDetails(
-    //Necessary for Title
-    site: HistoricalSite,
+fun DisplaySiteAndMapViewport(
+    //Map parameters
+    cameraPositionState: CameraPositionState,
+    allSites: List<HistoricalSite>,
+    onClusterItemClick: (HistoricalSite)  -> Unit,
+
+    //Site Details parameters
+    currentSite: HistoricalSite,
     displayState: SiteDisplayState,
     onClickChangeDisplayState: (SiteDisplayState) -> Unit,
-
-    //Necessary for Basic Info
-    siteTypes: List<String>,
+    currentSiteTypes: List<String>,
     userLocation: Location,
-
-    //Necessary for displaying Photos
-    allSitePhotos: List<SitePhotos>,
+    currentSitePhotos: List<SitePhotos>,
     uriHandler: UriHandler,
-
-    //Necessary for displaying Sources
-    sourcesList: List<String>,
-
-    scrollState: ScrollState,
+    currentSiteSourcesList: List<String>,
+    siteDetailsScrollState: ScrollState,
 
     modifier: Modifier = Modifier
+
+
 ) {
-    val paddingBetweenItems = 5.dp
-    OutlinedCard(
-        colors = CardDefaults.cardColors(
-            containerColor = MaterialTheme.colorScheme.surface,
-        ),
-        border = BorderStroke(2.dp, MaterialTheme.colorScheme.onSurface),
-
-        modifier = modifier) {
-        Column {
+    Column(modifier = modifier) {
+        /*DisplayMap(
+            cameraPositionState = cameraPositionState,
+            sites = allSites,
+            onClusterItemClick = onClusterItemClick,
+            modifier = Modifier)*/
 
 
+        if (displayState == SiteDisplayState.FullMap || displayState == SiteDisplayState.HalfSite ){
+            //This is the code for the map. However, maps don't show up on preview.
+            /*DisplayMap(
+                cameraPositionState = cameraPositionState,
+                sites = allSites,
+                onClusterItemClick = onClusterItemClick,
+                modifier = Modifier
+                    .fillMaxSize()
+                    .weight(1f) )*/
 
-            //Row of info that will not be scrollable
-            Row(
-                modifier = Modifier.padding(horizontal = paddingBetweenItems)
-            ) {
-                DisplaySiteTitle(
-                    name = site.name,
-                    displayState = displayState,
-                    onClickChangeDisplayState = onClickChangeDisplayState,
-                    modifier = Modifier.padding(paddingBetweenItems)
-                )
-
-            }
-
-
-            //Row for all the info that is scrollable
-            Row(
-                modifier = Modifier.padding(horizontal = paddingBetweenItems)
-            ){
-                Column(
-
-                    modifier = Modifier
-                        .verticalScroll(scrollState),
-                ) {
-                    //Site types, address, and distance from user
-                    //moved this code to the entity
-                    //val fullAddress = (if (site.address.isNullOrBlank()) "" else site.address + ", ") + site.municipality
-                    DisplaySiteBasicInfo(
-                        siteTypes = siteTypes,
-                        fullAddress = site.getFullAddress(),
-                        metersFromUser = userLocation.distanceTo(turnLatLongIntoLocation(latitude = site.latitude, longitude = site.longitude)),
-                        modifier = Modifier.padding(paddingBetweenItems))
-
-                    //Photos
-                    if (allSitePhotos.isNotEmpty()){
-                        DisplaySitePhotos(
-                            photos = allSitePhotos,
-                            uriHandler = uriHandler,
-                            modifier = Modifier.padding(paddingBetweenItems))
-                    } else {
-                        //Display this if there are no photos
-                        DisplayNoPhotos(
-                            uriHandler = uriHandler,
-                            modifier = Modifier.padding(paddingBetweenItems)
-                        )
-                    }
-
-
-                    //If displayState is set to FullSite, display the description, sources, and link to historical society page
-                    if (displayState == SiteDisplayState.FullSite){
-
-                        //If the site description isn't null, display description
-                        site.description?.let {
-                            DisplaySiteDescription(
-                                siteInfo = it,
-                                modifier = Modifier.padding(paddingBetweenItems)
-                            )
-                        }
-
-                        //Sources
-                        DisplaySiteSources(
-                            sourcesList = sourcesList,
-                            modifier = Modifier.padding(paddingBetweenItems)
-                        )
-
-                        //Link to the Historical Society page
-                        DisplaySiteLink(
-                            siteUrl = site.siteUrl,
-                            uriHandler = uriHandler,
-                            modifier = Modifier.padding(paddingBetweenItems))
-                    }
-
-                }
-
-            }
+            //Instead, there is a placeholder image so we can check how things look on the preview
+            Icon(imageVector = Icons.Default.AccountBox,
+                contentDescription = "Map Place Holder",
+                modifier = Modifier
+                    .background(Color.Cyan)
+                    .fillMaxSize()
+                    .weight(1f))
         }
 
+        if (displayState == SiteDisplayState.HalfSite || displayState == SiteDisplayState.FullSite)
+        {
+            DisplayFullSiteDetails(
+                site = currentSite,
+                displayState = displayState,
+                onClickChangeDisplayState = onClickChangeDisplayState,
+                siteTypes = currentSiteTypes,
+                userLocation = userLocation,
+                allSitePhotos = currentSitePhotos,
+                uriHandler = uriHandler,
+                sourcesList = currentSiteSourcesList,
+                scrollState = siteDetailsScrollState,
+                modifier = Modifier
+                    .fillMaxSize()
+                    .weight(1f)
+            )
+
+        }
+
+
+
     }
-    //Container for all site info
-
+    
 }
-
-
-//Helper method that turns lat/long into a location object
-fun turnLatLongIntoLocation(latitude: Double, longitude: Double): Location{
-    val location = Location(LocationManager.GPS_PROVIDER)
-    location.latitude = latitude
-    location.longitude = longitude
-    return location
-}
-
-
-
-class DisplayStatePreviewParameterProvider : PreviewParameterProvider<SiteDisplayState>{
+class DisplayStateWithMapPreviewParameterProvider : PreviewParameterProvider<SiteDisplayState>{
     override val values: Sequence<SiteDisplayState>
-        get() = sequenceOf(SiteDisplayState.FullSite, SiteDisplayState.HalfSite)
+        get() = sequenceOf(SiteDisplayState.HalfSite, SiteDisplayState.FullSite, SiteDisplayState.FullMap)
 }
 
 @Preview
 @Composable
-fun PreviewFullSiteDetails(
-    @PreviewParameter(DisplayStatePreviewParameterProvider::class) displayState :SiteDisplayState
+private fun PreviewSiteAndMap(
+    @PreviewParameter(DisplayStateWithMapPreviewParameterProvider::class) displayState :SiteDisplayState
 ) {
     ManitobaHistoricalSocietyAppTheme {
         Surface {
@@ -191,21 +143,31 @@ fun PreviewFullSiteDetails(
             val souce9 = "“Plans for a \$100,000 Odd Fellows Home,” <a href=\"http://www.mhs.mb.ca/docs/business/freepress.shtml\"><em>Manitoba Free Press</em></a>, 5 April 1922, page 8."
             val souce10 = "“Proposed Odd Fellows’ Home for Charleswood,” <a href=\"http://www.mhs.mb.ca/docs/business/freepress.shtml\"><em>Manitoba Free Press</em></a>, 5 March 1921, page 18."
             val sourcesList = listOf(souce1, souce2, souce3, souce4, souce5, souce6, souce7, souce8, souce9, souce10)
-
+            val cameraPositionState = CameraPositionState()
             val scrollState = rememberScrollState()
-            DisplayFullSiteDetails(
-                site = testSite,
+            DisplaySiteAndMapViewport(
+                currentSite = testSite,
                 displayState = displayState,
                 onClickChangeDisplayState = {},
-                siteTypes = siteTypes,
+                currentSiteTypes = siteTypes,
                 userLocation = userLocation,
-                allSitePhotos = allSitePhotos,
+                currentSitePhotos = allSitePhotos,
                 uriHandler = uriHandler,
-                sourcesList = sourcesList,
-                scrollState = scrollState,
+                currentSiteSourcesList = sourcesList,
+                siteDetailsScrollState = scrollState,
+
+                cameraPositionState = cameraPositionState,
+
+                allSites = listOf(testSite),
+                onClusterItemClick = {},
+                modifier = Modifier
+                    .height(1000.dp)
+                    .width(500.dp)
+                )
 
                 //modifier = Modifier.padding(5.dp)
-                )
+
         }
     }
+    
 }
