@@ -39,7 +39,6 @@ fun DisplayFullSiteDetails(
 
     //Necessary for displaying Photos
     allSitePhotos: List<SitePhotos>,
-    uriHandler: UriHandler,
 
     //Necessary for displaying Sources
     sourcesList: List<String>,
@@ -49,6 +48,10 @@ fun DisplayFullSiteDetails(
     modifier: Modifier = Modifier
 ) {
     val paddingBetweenItems = 5.dp
+    val uriHandler = LocalUriHandler.current
+
+
+
     OutlinedCard(
         colors = CardDefaults.cardColors(
             containerColor = MaterialTheme.colorScheme.surface,
@@ -200,7 +203,7 @@ fun PreviewFullSiteDetails(
                 siteTypes = siteTypes,
                 userLocation = userLocation,
                 allSitePhotos = allSitePhotos,
-                uriHandler = uriHandler,
+                //uriHandler = uriHandler,
                 sourcesList = sourcesList,
                 scrollState = scrollState,
 

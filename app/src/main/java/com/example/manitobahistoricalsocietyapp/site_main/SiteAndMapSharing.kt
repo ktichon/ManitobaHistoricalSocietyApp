@@ -39,13 +39,12 @@ fun DisplaySiteAndMapViewport(
     onClusterItemClick: (HistoricalSite)  -> Unit,
 
     //Site Details parameters
-    currentSite: HistoricalSite,
+    currentSite: HistoricalSite?,
     displayState: SiteDisplayState,
     onClickChangeDisplayState: (SiteDisplayState) -> Unit,
     currentSiteTypes: List<String>,
     userLocation: Location,
     currentSitePhotos: List<SitePhotos>,
-    uriHandler: UriHandler,
     currentSiteSourcesList: List<String>,
     siteDetailsScrollState: ScrollState,
 
@@ -80,22 +79,23 @@ fun DisplaySiteAndMapViewport(
                     .weight(1f))
         }
 
-        if (displayState == SiteDisplayState.HalfSite || displayState == SiteDisplayState.FullSite)
+        if (displayState == SiteDisplayState.HalfSite || displayState == SiteDisplayState.FullSite )
         {
-            DisplayFullSiteDetails(
-                site = currentSite,
-                displayState = displayState,
-                onClickChangeDisplayState = onClickChangeDisplayState,
-                siteTypes = currentSiteTypes,
-                userLocation = userLocation,
-                allSitePhotos = currentSitePhotos,
-                uriHandler = uriHandler,
-                sourcesList = currentSiteSourcesList,
-                scrollState = siteDetailsScrollState,
-                modifier = Modifier
-                    .fillMaxSize()
-                    .weight(1f)
-            )
+            if (currentSite != null) {
+                DisplayFullSiteDetails(
+                    site = currentSite,
+                    displayState = displayState,
+                    onClickChangeDisplayState = onClickChangeDisplayState,
+                    siteTypes = currentSiteTypes,
+                    userLocation = userLocation,
+                    allSitePhotos = currentSitePhotos,
+                    sourcesList = currentSiteSourcesList,
+                    scrollState = siteDetailsScrollState,
+                    modifier = Modifier
+                        .fillMaxSize()
+                        .weight(1f)
+                )
+            }
 
         }
 
@@ -152,7 +152,6 @@ private fun PreviewSiteAndMap(
                 currentSiteTypes = siteTypes,
                 userLocation = userLocation,
                 currentSitePhotos = allSitePhotos,
-                uriHandler = uriHandler,
                 currentSiteSourcesList = sourcesList,
                 siteDetailsScrollState = scrollState,
 

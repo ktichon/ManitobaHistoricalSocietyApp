@@ -130,4 +130,7 @@ dependencies {
     // Optionally, you can include the widgets library for ScaleBar, etc.
     implementation("com.google.maps.android:maps-compose-widgets:5.0.1")
 
+    implementation("androidx.lifecycle:lifecycle-viewmodel-compose:2.7.0")
+
+
 }
