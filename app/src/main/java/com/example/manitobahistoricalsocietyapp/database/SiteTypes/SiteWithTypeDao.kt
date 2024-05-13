@@ -17,8 +17,8 @@ interface SiteWithTypeDao {
     suspend fun delete(siteWithType: SiteWithType)
 
     @Query("SELECT * FROM SiteWithType")
-    fun getAllSiteWithType(): Flow<List<SiteWithType>>
+    suspend fun getAllSiteWithType(): List<SiteWithType>
 
     @Query("SELECT * FROM SiteWithType WHERE site_id = :siteId ")
-    fun getAllSiteWithTypesForSite(siteId: Int): Flow<List<SiteWithType>>
+    suspend fun getAllSiteWithTypesForSite(siteId: Int): List<SiteWithType>
 }

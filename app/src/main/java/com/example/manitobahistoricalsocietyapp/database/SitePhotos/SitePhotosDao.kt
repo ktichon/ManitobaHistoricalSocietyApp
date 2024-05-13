@@ -20,8 +20,8 @@ interface SitePhotosDao {
     suspend fun update(sitePhotos: SitePhotos)
 
     @Query("SELECT * FROM sitePhotos")
-     fun getAllSitePhotos(): Flow<List<SitePhotos>>
+    suspend  fun getAllSitePhotos(): List<SitePhotos>
 
     @Query("SELECT * FROM sitePhotos WHERE site_id = :siteId ")
-    fun getPhotosForSite(siteId: Int): Flow<List<SitePhotos>>
+    suspend fun getPhotosForSite(siteId: Int): List<SitePhotos>
 }

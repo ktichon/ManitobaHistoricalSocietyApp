@@ -34,9 +34,9 @@ class MainActivity : ComponentActivity() {
                     color = MaterialTheme.colorScheme.background
                 ) {
                     val db = HistoricalSiteDatabase.getDatabase(applicationContext)
-                    val allSites : List<HistoricalSite> by db.manitobaHistoricalSiteDao().getAllSites().collectAsState(
+                    /*val allSites : List<HistoricalSite> by db.manitobaHistoricalSiteDao().getAllSites().collectAsState(
                         emptyList()
-                    )
+                    )*/
 
                     val startingLatLong = LatLng(49.8555836, -97.2888901)
                     val cameraPositionState = rememberCameraPositionState {
@@ -45,7 +45,7 @@ class MainActivity : ComponentActivity() {
 
 
 
-                    Greeting(allSites.size.toString())
+                    //Greeting(allSites.size.toString())
                     /*DisplayMap(
                         cameraPositionState = cameraPositionState,
                         sites = allSites,

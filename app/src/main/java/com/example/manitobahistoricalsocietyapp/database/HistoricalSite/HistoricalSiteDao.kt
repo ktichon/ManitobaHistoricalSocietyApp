@@ -21,10 +21,10 @@ interface HistoricalSiteDao {
 
 
     @Query("SELECT * FROM manitobaHistoricalSite ORDER BY name ASC")
-     fun getAllSites(): Flow<List<HistoricalSite>>
+     suspend fun getAllSites():List<HistoricalSite>
 
     @Query("SELECT  * FROM manitobaHistoricalSite WHERE site_id = :id ")
-    fun getHistoricalSite(id: Int): Flow<HistoricalSite>
+    suspend fun getHistoricalSite(id: Int): HistoricalSite
 
 
 

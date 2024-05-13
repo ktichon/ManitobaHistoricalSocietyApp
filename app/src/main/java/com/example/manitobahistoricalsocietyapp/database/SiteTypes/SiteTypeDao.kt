@@ -21,14 +21,14 @@ interface SiteTypeDao {
     suspend fun update(siteType: SiteType)
 
     @Query("SELECT * FROM siteType")
-    fun getAllSiteType(): Flow<List<SiteType>>
+    suspend fun getAllSiteType(): List<SiteType>
 
     @Query(
-        "SELECT siteType.* FROM siteType " +
+        "SELECT siteType.type FROM siteType " +
                 "INNER JOIN siteWithType ON siteWithType.site_type_id = siteType.site_type_id" +
                 " WHERE site_id = :siteId "
     )
-    fun getAllSiteTypesForSite(siteId: Int): Flow<List<SiteType>>
+    suspend fun getAllTypesForSite(siteId: Int): List<String>
 
 }
 
