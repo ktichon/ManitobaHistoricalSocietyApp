@@ -1,6 +1,7 @@
 package com.example.manitobahistoricalsocietyapp.site_main
 
 import android.content.Context
+import android.location.Location
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.mutableStateOf
 import androidx.lifecycle.ViewModel
@@ -12,6 +13,8 @@ import com.example.manitobahistoricalsocietyapp.database.SiteSource.SiteSource
 import com.example.manitobahistoricalsocietyapp.database.SiteTypes.SiteType
 import com.example.manitobahistoricalsocietyapp.state_classes.CurrentSiteState
 import com.example.manitobahistoricalsocietyapp.state_classes.SiteDisplayState
+import com.google.android.gms.location.LocationServices
+import com.google.android.gms.maps.model.LatLng
 import com.google.maps.android.compose.CameraPositionState
 import com.google.maps.android.compose.rememberCameraPositionState
 import kotlinx.coroutines.flow.MutableStateFlow
@@ -26,6 +29,8 @@ class HistoricalSiteViewModel(context: Context) : ViewModel(){
     val currentSiteState: StateFlow<CurrentSiteState> = _currentSiteState.asStateFlow()
     private val db : HistoricalSiteDatabase= HistoricalSiteDatabase.getDatabase(context)
 
+    val locationProvider = LocationServices.getFusedLocationProviderClient(context)
+
     init {
         //Load all sites when the view model is initiated
         viewModelScope.launch {
@@ -35,6 +40,11 @@ class HistoricalSiteViewModel(context: Context) : ViewModel(){
 
     fun updateSiteDisplayState(newState: SiteDisplayState){
         _currentSiteState.value.displayState = newState
+    }
+
+    fun updateUserLocation(newLocation: LatLng?){
+        newLocation?.let { _currentSiteState.value.currentUserLocation = newLocation }
+
     }
 
     fun newSiteSelected(newSite: HistoricalSite){

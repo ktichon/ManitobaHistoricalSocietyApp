@@ -2,6 +2,9 @@ package com.example.manitobahistoricalsocietyapp.map
 
 import androidx.compose.foundation.isSystemInDarkTheme
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
 import androidx.compose.ui.Modifier
 import com.example.manitobahistoricalsocietyapp.R
 import com.example.manitobahistoricalsocietyapp.database.HistoricalSite.HistoricalSite
@@ -22,12 +25,21 @@ fun DisplayMap(
     cameraPositionState: CameraPositionState,
     sites: List<HistoricalSite>,
     onClusterItemClick: (HistoricalSite)  -> Unit,
+    locationEnabled: Boolean = false,
     modifier: Modifier = Modifier
 ) {
     //If the system is in dark mode, use dark map. Else use light map
     val mapStyle = MapStyleOptions(if (isSystemInDarkTheme()) mapStylingNight else mapStylingDay)
 
+    /*val mapProperties by remember {
+        mutableStateOf(MapProperties(
+            isMyLocationEnabled = locationEnabled,
+            mapStyleOptions = mapStyle
+        ))
+    }
+*/
     val mapProperties = MapProperties(
+        isMyLocationEnabled = locationEnabled,
         mapStyleOptions = mapStyle
     )
 

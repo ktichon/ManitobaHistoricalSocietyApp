@@ -18,6 +18,7 @@ import androidx.compose.ui.unit.dp
 import com.example.manitobahistoricalsocietyapp.database.HistoricalSite.HistoricalSite
 import com.example.manitobahistoricalsocietyapp.database.HistoricalSiteDatabase
 import com.example.manitobahistoricalsocietyapp.map.DisplayMap
+import com.example.manitobahistoricalsocietyapp.site_main.HistoricalSiteHome
 import com.example.manitobahistoricalsocietyapp.ui.theme.ManitobaHistoricalSocietyAppTheme
 import com.google.android.gms.maps.model.CameraPosition
 import com.google.android.gms.maps.model.LatLng
@@ -33,15 +34,18 @@ class MainActivity : ComponentActivity() {
                     modifier = Modifier.fillMaxSize(),
                     color = MaterialTheme.colorScheme.background
                 ) {
-                    val db = HistoricalSiteDatabase.getDatabase(applicationContext)
-                    /*val allSites : List<HistoricalSite> by db.manitobaHistoricalSiteDao().getAllSites().collectAsState(
+                    HistoricalSiteHome()
+
+
+                    /*val db = HistoricalSiteDatabase.getDatabase(applicationContext)
+                    *//*val allSites : List<HistoricalSite> by db.manitobaHistoricalSiteDao().getAllSites().collectAsState(
                         emptyList()
-                    )*/
+                    )*//*
 
                     val startingLatLong = LatLng(49.8555836, -97.2888901)
                     val cameraPositionState = rememberCameraPositionState {
                         position = CameraPosition.fromLatLngZoom(startingLatLong, 16f)
-                    }
+                    }*/
 
 
 
