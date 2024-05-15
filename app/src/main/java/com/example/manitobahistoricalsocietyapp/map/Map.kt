@@ -31,17 +31,17 @@ fun DisplayMap(
     //If the system is in dark mode, use dark map. Else use light map
     val mapStyle = MapStyleOptions(if (isSystemInDarkTheme()) mapStylingNight else mapStylingDay)
 
-    /*val mapProperties by remember {
+    val mapProperties by remember {
         mutableStateOf(MapProperties(
             isMyLocationEnabled = locationEnabled,
             mapStyleOptions = mapStyle
         ))
     }
-*/
-    val mapProperties = MapProperties(
+
+    /*val mapProperties = MapProperties(
         isMyLocationEnabled = locationEnabled,
         mapStyleOptions = mapStyle
-    )
+    )*/
 
 
     GoogleMap(
@@ -55,15 +55,16 @@ fun DisplayMap(
                 onClusterItemClick(it)
                                  false
                                  },
-            clusterItemContent = {item ->
+            /*clusterItemContent = {item ->
                 Marker(
                     title = item.title,
                     snippet = item.snippet,
-                    icon = setMarkerIcon(item.id)
+                    //icon = setMarkerIcon(item.id)
 
 
                 )
-            }
+            }*/
+
         )
     }
 

@@ -302,7 +302,10 @@ fun DisplayNoPhotos(
 
 ) {
     val annotatedString = buildAnnotatedString {
-        append("We have no photos for this site. If you have one in your personal collection and can provide a copy, please contact us at ")
+        withStyle(style = SpanStyle(color = MaterialTheme.colorScheme.onSurface)){
+            append("We have no photos for this site. If you have one in your personal collection and can provide a copy, please contact us at ")
+        }
+
 
         pushStringAnnotation(tag = "photo_email", annotation = "photos@mhs.mb.ca")
         withStyle(style = SpanStyle(color = MaterialTheme.colorScheme.primary)) {

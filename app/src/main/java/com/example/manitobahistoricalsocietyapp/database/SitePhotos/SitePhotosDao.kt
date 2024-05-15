@@ -23,5 +23,5 @@ interface SitePhotosDao {
     suspend  fun getAllSitePhotos(): List<SitePhotos>
 
     @Query("SELECT * FROM sitePhotos WHERE site_id = :siteId ")
-    suspend fun getPhotosForSite(siteId: Int): List<SitePhotos>
+    fun getPhotosForSite(siteId: Int): Flow<List<SitePhotos>>
 }

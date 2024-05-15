@@ -23,7 +23,9 @@ import com.example.manitobahistoricalsocietyapp.ui.theme.ManitobaHistoricalSocie
 import com.google.android.gms.maps.model.CameraPosition
 import com.google.android.gms.maps.model.LatLng
 import com.google.maps.android.compose.rememberCameraPositionState
+import dagger.hilt.android.AndroidEntryPoint
 
+@AndroidEntryPoint
 class MainActivity : ComponentActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -34,7 +36,10 @@ class MainActivity : ComponentActivity() {
                     modifier = Modifier.fillMaxSize(),
                     color = MaterialTheme.colorScheme.background
                 ) {
+
                     HistoricalSiteHome()
+                }
+
 
 
                     /*val db = HistoricalSiteDatabase.getDatabase(applicationContext)
@@ -56,11 +61,12 @@ class MainActivity : ComponentActivity() {
                         onClusterItemClick = {Toast.makeText(this@MainActivity, "Clicked on site " + it.name, Toast.LENGTH_SHORT).show()},
                         modifier = Modifier.fillMaxSize()
                         )*/
-                }
+
             }
         }
     }
 }
+
 
 @Composable
 fun Greeting(name: String, modifier: Modifier = Modifier) {

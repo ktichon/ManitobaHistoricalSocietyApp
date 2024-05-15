@@ -3,6 +3,9 @@ plugins {
     id("org.jetbrains.kotlin.android")
     id("com.google.devtools.ksp")
     id("com.google.android.libraries.mapsplatform.secrets-gradle-plugin")
+    id("kotlin-kapt")
+    id("com.google.dagger.hilt.android")
+    id("com.autonomousapps.dependency-analysis")
 }
 
 android {
@@ -42,7 +45,7 @@ android {
         compose = true
     }
     composeOptions {
-        kotlinCompilerExtensionVersion = "1.5.1"
+        kotlinCompilerExtensionVersion = "1.5.14"
     }
     packaging {
         resources {
@@ -69,8 +72,8 @@ secrets {
 
 dependencies {
 
-    implementation("androidx.core:core-ktx:1.13.1")
-    implementation("androidx.lifecycle:lifecycle-runtime-ktx:2.7.0")
+
+
     implementation("androidx.activity:activity-compose:1.9.0")
     implementation(platform("androidx.compose:compose-bom:2024.05.00"))
     implementation("androidx.compose.ui:ui")
@@ -78,13 +81,40 @@ dependencies {
     implementation("androidx.compose.ui:ui-tooling-preview")
     implementation("androidx.compose.material3:material3")
     implementation("com.google.android.gms:play-services-location:21.2.0")
+    implementation("androidx.lifecycle:lifecycle-runtime-compose-android:2.8.0")
     testImplementation("junit:junit:4.13.2")
-    androidTestImplementation("androidx.test.ext:junit:1.1.5")
-    androidTestImplementation("androidx.test.espresso:espresso-core:3.5.1")
+
     androidTestImplementation(platform("androidx.compose:compose-bom:2024.05.00"))
     androidTestImplementation("androidx.compose.ui:ui-test-junit4")
     debugImplementation("androidx.compose.ui:ui-tooling")
     debugImplementation("androidx.compose.ui:ui-test-manifest")
+
+    androidTestImplementation("androidx.test:monitor:1.6.1")
+    androidTestImplementation("junit:junit:4.13.2")
+    implementation("androidx.activity:activity:1.9.0")
+    implementation("androidx.annotation:annotation:1.8.0")
+    implementation("androidx.compose.foundation:foundation-layout:1.7.0-alpha01")
+    implementation("androidx.compose.foundation:foundation:1.7.0-alpha01")
+    implementation("androidx.compose.material:material-icons-core:1.6.7")
+    implementation("androidx.compose.runtime:runtime-saveable:1.7.0-alpha01")
+    implementation("androidx.compose.runtime:runtime:1.7.0-alpha01")
+    implementation("androidx.compose.ui:ui-text:1.7.0-alpha01")
+    implementation("androidx.compose.ui:ui-unit:1.7.0-alpha01")
+    implementation("androidx.core:core:1.13.1")
+    implementation("androidx.fragment:fragment:1.5.1")
+    implementation("androidx.lifecycle:lifecycle-common:2.8.0")
+    implementation("androidx.lifecycle:lifecycle-viewmodel-savedstate:2.8.0")
+    implementation("androidx.lifecycle:lifecycle-viewmodel:2.8.0")
+    implementation("androidx.room:room-common:2.6.1")
+    implementation("androidx.sqlite:sqlite:2.4.0")
+    implementation("com.google.dagger:dagger:2.51.1")
+    implementation("com.google.dagger:hilt-core:2.51.1")
+    implementation("com.google.maps.android:android-maps-utils:3.7.0")
+    implementation("io.coil-kt:coil-compose-base:2.6.0")
+    implementation("javax.inject:javax.inject:1")
+    implementation("org.jetbrains.kotlinx:kotlinx-coroutines-core:1.7.3")
+    kapt("com.google.dagger:dagger-compiler:2.51.1")
+
 
 
 
@@ -100,23 +130,9 @@ dependencies {
     // optional - Kotlin Extensions and Coroutines support for Room
     implementation("androidx.room:room-ktx:2.6.1")
 
-    // optional - RxJava2 support for Room
-    implementation("androidx.room:room-rxjava2:2.6.1")
 
-    // optional - RxJava3 support for Room
-    implementation("androidx.room:room-rxjava3:2.6.1")
-
-    // optional - Guava support for Room, including Optional and ListenableFuture
-    implementation("androidx.room:room-guava:2.6.1")
-
-    // optional - Test helpers
-    testImplementation("androidx.room:room-testing:2.6.1")
-
-    // optional - Paging 3 Integration
-    implementation("androidx.room:room-paging:2.6.1")
 
     //Coil Image load
-    implementation("io.coil-kt:coil:2.6.0")
     implementation("io.coil-kt:coil-compose:2.6.0")
 
     // Android Maps Compose composables for the Maps SDK for Android
@@ -128,12 +144,19 @@ dependencies {
     // Street View metadata checks, etc.
     implementation("com.google.maps.android:maps-compose-utils:5.0.1")
 
-    // Optionally, you can include the widgets library for ScaleBar, etc.
-    implementation("com.google.maps.android:maps-compose-widgets:5.0.1")
-
     implementation("com.google.accompanist:accompanist-permissions:0.35.0-alpha")
 
-    implementation("androidx.lifecycle:lifecycle-viewmodel-compose:2.7.0")
+    implementation("androidx.lifecycle:lifecycle-viewmodel-compose:2.8.0")
+
+    implementation("com.google.dagger:hilt-android:2.51.1")
+    kapt ("com.google.dagger:hilt-compiler:2.51.1")
+    implementation("androidx.hilt:hilt-navigation-compose:1.2.0")
 
 
+}
+hilt {
+    enableAggregatingTask = true
+}
+kapt {
+    correctErrorTypes = true
 }

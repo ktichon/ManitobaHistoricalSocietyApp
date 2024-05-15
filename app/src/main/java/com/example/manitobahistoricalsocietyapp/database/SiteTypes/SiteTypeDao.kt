@@ -28,7 +28,7 @@ interface SiteTypeDao {
                 "INNER JOIN siteWithType ON siteWithType.site_type_id = siteType.site_type_id" +
                 " WHERE site_id = :siteId "
     )
-    suspend fun getAllTypesForSite(siteId: Int): List<String>
+    fun getAllTypesForSite(siteId: Int): Flow<List<String>>
 
 }
 

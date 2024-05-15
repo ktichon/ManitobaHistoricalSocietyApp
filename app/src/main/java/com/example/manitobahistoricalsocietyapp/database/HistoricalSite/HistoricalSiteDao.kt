@@ -20,11 +20,11 @@ interface HistoricalSiteDao {
     suspend fun update( historicalSites: HistoricalSite)
 
 
-    @Query("SELECT * FROM manitobaHistoricalSite ORDER BY name ASC")
-     suspend fun getAllSites():List<HistoricalSite>
+    @Query("SELECT * FROM manitobaHistoricalSite LIMIT 1000")
+     suspend fun getAllSites(): List<HistoricalSite>
 
     @Query("SELECT  * FROM manitobaHistoricalSite WHERE site_id = :id ")
-    suspend fun getHistoricalSite(id: Int): HistoricalSite
+    fun getHistoricalSite(id: Int): Flow<HistoricalSite>
 
 
 

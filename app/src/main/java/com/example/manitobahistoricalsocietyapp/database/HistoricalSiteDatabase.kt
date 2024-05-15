@@ -36,7 +36,7 @@ abstract class HistoricalSiteDatabase : RoomDatabase() {
         @Volatile
         private var Instance: HistoricalSiteDatabase? = null
 
-        fun getDatabase(context: Context): HistoricalSiteDatabase{
+        fun getInstance(context: Context): HistoricalSiteDatabase{
             return Instance?: synchronized(this){
                 Room.databaseBuilder(context, HistoricalSiteDatabase::class.java, "historicalSiteData.db")
                     .fallbackToDestructiveMigration()

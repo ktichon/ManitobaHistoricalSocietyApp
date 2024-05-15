@@ -2,9 +2,12 @@ package com.example.manitobahistoricalsocietyapp.site_main
 
 import android.annotation.SuppressLint
 import android.os.Looper
+import androidx.compose.foundation.layout.Box
+import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.padding
 import androidx.compose.material3.AlertDialog
 import androidx.compose.material3.Button
+import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
@@ -13,11 +16,18 @@ import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
+import androidx.compose.runtime.rememberUpdatedState
 import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.runtime.setValue
+import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalContext
-import com.example.manitobahistoricalsocietyapp.Manifest
+import androidx.hilt.navigation.compose.hiltViewModel
+import androidx.lifecycle.ViewModel
+import androidx.lifecycle.compose.collectAsStateWithLifecycle
+import androidx.lifecycle.viewmodel.compose.viewModel
+import androidx.lifecycle.viewmodel.viewModelFactory
 import com.google.accompanist.permissions.ExperimentalPermissionsApi
 import com.google.accompanist.permissions.isGranted
 import com.google.accompanist.permissions.rememberMultiplePermissionsState
@@ -35,16 +45,30 @@ import org.w3c.dom.Text
 @OptIn(ExperimentalPermissionsApi::class)
 @Composable
 fun HistoricalSiteHome(
-    viewModel: HistoricalSiteViewModel = HistoricalSiteViewModel(LocalContext.current),
+    viewModel: HistoricalSiteViewModel = viewModel(),
+
+
     modifier: Modifier = Modifier
 ) {
+    val displayState by viewModel.displayState.collectAsState()
+    val currentSite by viewModel.currentSite.collectAsState()
+    val allSites by viewModel.allHistoricalSites.collectAsState()
+    val siteTypes by viewModel.siteTypes.collectAsState()
+    val sitePhotos by viewModel.sitePhotos.collectAsState()
+    val siteSources by viewModel.siteSources.collectAsState()
+    val locationEnabled by viewModel.locationEnabled.collectAsState()
+    val currentUserLocation by viewModel.currentUserLocation.collectAsState()
 
-    val currentSiteState by viewModel.currentSiteState.collectAsState()
+    //viewModel.getAllHistoricalSites()
+
+
+    val locationProvider = LocationServices.getFusedLocationProviderClient(LocalContext.current)
+
     
 
-    val manitobaMuseumCoordinates = LatLng(49.9000253, -97.1386276)
+    //val manitobaMuseumCoordinates = LatLng(49.9000253, -97.1386276)
     val cameraPositionState = rememberCameraPositionState{
-        position = CameraPosition.fromLatLngZoom(manitobaMuseumCoordinates, 16f)
+        position = CameraPosition.fromLatLngZoom(currentUserLocation, 16f)
     }
 
     //Old code, now replaced by RequestLocationPermission
@@ -72,45 +96,63 @@ fun HistoricalSiteHome(
     //Request location permissions, and storing the value in currentSiteState
     RequestLocationPermission(
         onPermissionGranted = {
-            currentSiteState.locationEnabled = true
+            viewModel.updateLocationEnabled(true)
                               },
-        onPermissionDenied = {currentSiteState.locationEnabled = false}
+        onPermissionDenied = {viewModel.updateLocationEnabled(false)}
     )
 
     //If location enable is set to true
-    if (currentSiteState.locationEnabled ){
+    if (locationEnabled  ){
         getUserLocation(
             onNewLocation = {newLocation -> viewModel.updateUserLocation(newLocation)},
-            locationProvider = viewModel.locationProvider)
+            locationProvider = locationProvider)
+    }
+
+
+    var showLoadingScreen by remember { mutableStateOf(true) }
+
+    //Only show map if all the sites are loaded
+    if (showLoadingScreen && allSites.isEmpty()){
+        LoadingScreen(
+            waitOn = { viewModel.getAllHistoricalSites() },
+            onCompleted = { showLoadingScreen = false },
+            modifier = modifier
+        )
+    } else {
+
+        Scaffold(
+            modifier = modifier
+        ) {innerPadding ->
+
+
+            DisplaySiteAndMapViewport(
+                cameraPositionState = cameraPositionState,
+                allSites = allSites,
+                onClusterItemClick = {
+                        newSite -> viewModel.newSiteSelected(newSite)
+                    cameraPositionState.position = CameraPosition.fromLatLngZoom(LatLng(newSite.latitude, newSite.longitude), 16f)
+                },
+                currentSite = currentSite,
+                displayState = displayState,
+                onClickChangeDisplayState = {newState -> viewModel.updateSiteDisplayState(newState)},
+                currentSiteTypes = siteTypes,
+                userLocation =  currentUserLocation,
+                locationEnabled = locationEnabled,
+                currentSitePhotos = sitePhotos,
+                currentSiteSourcesList = siteSources,
+                //siteDetailsScrollState = ,
+                modifier = Modifier.padding(innerPadding)
+            )
+
+        }
+
     }
 
 
 
 
 
-   Scaffold {innerPadding ->
 
-
-       DisplaySiteAndMapViewport(
-           cameraPositionState = cameraPositionState,
-           allSites = currentSiteState.allHistoricalSites,
-           onClusterItemClick = {
-               newSite -> viewModel.newSiteSelected(newSite)
-               cameraPositionState.position = CameraPosition.fromLatLngZoom(LatLng(newSite.latitude, newSite.longitude), 16f)
-                                },
-           currentSite = currentSiteState.currentSite,
-           displayState = currentSiteState.displayState,
-           onClickChangeDisplayState = {newState -> viewModel.updateSiteDisplayState(newState)},
-           currentSiteTypes = currentSiteState.siteTypes,
-           userLocation = currentSiteState.currentUserLocation,
-           locationEnabled = currentSiteState.locationEnabled,
-           currentSitePhotos = currentSiteState.sitePhotos,
-           currentSiteSourcesList = currentSiteState.siteSources,
-           //siteDetailsScrollState = ,
-           modifier = Modifier.padding(innerPadding)
-       )
-
-   }
 
 }
 
@@ -206,7 +248,7 @@ fun getUserLocation(
 
     val locationRequest = LocationRequest.Builder(Priority.PRIORITY_HIGH_ACCURACY, updateInterval    ).build()
 
-    DisposableEffect(Unit) {
+    DisposableEffect(locationProvider) {
         locationProvider.requestLocationUpdates(locationRequest, locationCallback, Looper.getMainLooper())
         onDispose {
             locationProvider.removeLocationUpdates(locationCallback)
@@ -214,6 +256,30 @@ fun getUserLocation(
     }
 
 
+
+
+}
+
+
+//Displays while we are loading all the historical sites from the viewmodel
+@Composable
+fun LoadingScreen(
+    waitOn: suspend () -> Unit,
+    onCompleted: () -> Unit,
+    modifier: Modifier = Modifier
+) {
+    Box(modifier = modifier.fillMaxSize(), contentAlignment = Alignment.Center){
+        val currentOnCompeted by rememberUpdatedState( onCompleted)
+
+        LaunchedEffect(Unit) {
+            waitOn()
+            currentOnCompeted()
+        }
+
+        Text(text = "Loading App Data ...",
+            style = MaterialTheme.typography.titleLarge)
+
+    }
 
 
 }
