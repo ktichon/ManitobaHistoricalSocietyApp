@@ -7,6 +7,7 @@ import javax.inject.Singleton
 @Singleton
 class HistoricalSiteRepository @Inject constructor(private  val historicalSiteDao: HistoricalSiteDao){
     suspend fun getAllSites() = historicalSiteDao.getAllSites()
+    suspend fun getAllSiteClusterItems() = historicalSiteDao.getAllSiteClusterItems()
     fun getHistoricalSite(siteID: Int) = historicalSiteDao.getHistoricalSite(siteID)
 
     companion object{

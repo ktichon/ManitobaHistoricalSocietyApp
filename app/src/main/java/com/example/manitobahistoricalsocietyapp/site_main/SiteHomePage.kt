@@ -59,6 +59,8 @@ fun HistoricalSiteHome(
     val locationEnabled by viewModel.locationEnabled.collectAsState()
     val currentUserLocation by viewModel.currentUserLocation.collectAsState()
 
+    val allSiteClusterItems by viewModel.allHistoricalSiteClusterItems.collectAsState()
+
     //viewModel.getAllHistoricalSites()
 
 
@@ -112,7 +114,7 @@ fun HistoricalSiteHome(
     var showLoadingScreen by remember { mutableStateOf(true) }
 
     //Only show map if all the sites are loaded
-    if (showLoadingScreen && allSites.isEmpty()){
+    if (showLoadingScreen && allSiteClusterItems.isEmpty()){
         LoadingScreen(
             waitOn = { viewModel.getAllHistoricalSites() },
             onCompleted = { showLoadingScreen = false },
@@ -127,11 +129,13 @@ fun HistoricalSiteHome(
 
             DisplaySiteAndMapViewport(
                 cameraPositionState = cameraPositionState,
-                allSites = allSites,
+                allSites = allSiteClusterItems,
                 onClusterItemClick = {
-                        newSite -> viewModel.newSiteSelected(newSite)
-                    cameraPositionState.position = CameraPosition.fromLatLngZoom(LatLng(newSite.latitude, newSite.longitude), 16f)
-                },
+                        id ->
+                    viewModel.newSiteSelected(id)
+                    val newPosition = if (currentSite != null ) currentSite!!.getPosition() else currentUserLocation
+                    cameraPositionState.position = CameraPosition.fromLatLngZoom(newPosition, cameraPositionState.position.zoom)
+                                     },
                 currentSite = currentSite,
                 displayState = displayState,
                 onClickChangeDisplayState = {newState -> viewModel.updateSiteDisplayState(newState)},

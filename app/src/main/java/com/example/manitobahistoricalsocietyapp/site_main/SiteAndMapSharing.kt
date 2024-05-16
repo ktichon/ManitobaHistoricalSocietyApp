@@ -28,6 +28,7 @@ import androidx.compose.ui.tooling.preview.PreviewParameter
 import androidx.compose.ui.tooling.preview.PreviewParameterProvider
 import androidx.compose.ui.unit.dp
 import com.example.manitobahistoricalsocietyapp.database.HistoricalSite.HistoricalSite
+import com.example.manitobahistoricalsocietyapp.database.HistoricalSite.HistoricalSiteClusterItem
 import com.example.manitobahistoricalsocietyapp.database.SitePhotos.SitePhotos
 import com.example.manitobahistoricalsocietyapp.map.DisplayMap
 import com.example.manitobahistoricalsocietyapp.site_details.DisplayFullSiteDetails
@@ -42,8 +43,8 @@ import com.google.maps.android.compose.CameraPositionState
 fun DisplaySiteAndMapViewport(
     //Map parameters
     cameraPositionState: CameraPositionState,
-    allSites: List<HistoricalSite>,
-    onClusterItemClick: (HistoricalSite)  -> Unit,
+    allSites: List<HistoricalSiteClusterItem>,
+    onClusterItemClick: (id:Int)  -> Unit,
     locationEnabled: Boolean = false,
 
     //Site Details parameters
@@ -187,7 +188,7 @@ private fun PreviewSiteAndMap(
 
                 cameraPositionState = cameraPositionState,
 
-                allSites = listOf(testSite),
+                allSites = emptyList(),
                 onClusterItemClick = {},
                 modifier = Modifier
                     .height(1000.dp)

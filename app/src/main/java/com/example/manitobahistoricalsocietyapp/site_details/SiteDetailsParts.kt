@@ -272,7 +272,7 @@ fun DisplaySitePhotos(
             }
 
             //This is the code that puts a row of circles to show how many photos there are
-            Row(
+           /* Row(
                 modifier = Modifier
                     .wrapContentHeight()
                     .fillMaxWidth()
@@ -290,7 +290,7 @@ fun DisplaySitePhotos(
                     )
 
                 }
-            }
+            }*/
 
 
         }

@@ -8,6 +8,7 @@ import androidx.compose.runtime.remember
 import androidx.compose.ui.Modifier
 import com.example.manitobahistoricalsocietyapp.R
 import com.example.manitobahistoricalsocietyapp.database.HistoricalSite.HistoricalSite
+import com.example.manitobahistoricalsocietyapp.database.HistoricalSite.HistoricalSiteClusterItem
 import com.google.android.gms.maps.model.BitmapDescriptor
 import com.google.android.gms.maps.model.BitmapDescriptorFactory
 import com.google.android.gms.maps.model.MapStyleOptions
@@ -23,8 +24,8 @@ import com.google.maps.android.compose.clustering.Clustering
 fun DisplayMap(
 
     cameraPositionState: CameraPositionState,
-    sites: List<HistoricalSite>,
-    onClusterItemClick: (HistoricalSite)  -> Unit,
+    sites: List<HistoricalSiteClusterItem>,
+     onClusterItemClick: (id:Int)  -> Unit,
     locationEnabled: Boolean = false,
     modifier: Modifier = Modifier
 ) {
@@ -52,7 +53,8 @@ fun DisplayMap(
         Clustering(
             items = sites,
             onClusterItemClick = {
-                onClusterItemClick(it)
+
+                onClusterItemClick(it.id)
                                  false
                                  },
             /*clusterItemContent = {item ->
