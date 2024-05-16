@@ -103,10 +103,13 @@ fun HistoricalSiteHome(
     if (showLoadingScreen && allSiteClusterItems.isEmpty()){
         LoadingScreen(
             waitOn = { viewModel.getAllHistoricalSites() },
-            onCompleted = { showLoadingScreen = false },
+            onCompleted = { showLoadingScreen = false
+                cameraPositionState.position = CameraPosition.fromLatLngZoom(currentUserLocation, 16f)
+                          },
             modifier = modifier
         )
     } else {
+
 
         Scaffold(
             modifier = modifier
