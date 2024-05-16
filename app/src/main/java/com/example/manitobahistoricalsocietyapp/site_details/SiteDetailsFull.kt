@@ -4,6 +4,7 @@ import android.location.Location
 import android.location.LocationManager
 import androidx.compose.foundation.BorderStroke
 import androidx.compose.foundation.ScrollState
+import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.padding
@@ -18,6 +19,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalUriHandler
 import androidx.compose.ui.platform.UriHandler
 import androidx.compose.ui.tooling.preview.Preview
+import androidx.compose.ui.tooling.preview.PreviewLightDark
 import androidx.compose.ui.tooling.preview.PreviewParameter
 import androidx.compose.ui.tooling.preview.PreviewParameterProvider
 import androidx.compose.ui.unit.dp
@@ -48,27 +50,30 @@ fun DisplayFullSiteDetails(
 
     modifier: Modifier = Modifier
 ) {
-    val paddingBetweenItems = 5.dp
+    val paddingBetweenItems = 10.dp
     val uriHandler = LocalUriHandler.current
 
     val scrollState = rememberScrollState()
 
 
-    OutlinedCard(
-        colors = CardDefaults.cardColors(
-            containerColor = MaterialTheme.colorScheme.surface,
-        ),
-        border = BorderStroke(2.dp, MaterialTheme.colorScheme.onSurface),
 
-        modifier = modifier) {
-        Column {
+    Column (
+        modifier = modifier
+    ){
 
 
 
-            //Row of info that will not be scrollable
-            Row(
-                modifier = Modifier.padding(horizontal = paddingBetweenItems)
-            ) {
+        //Row of info that will not be scrollable
+        Row(
+            //modifier = Modifier.padding(horizontal = paddingBetweenItems)
+        ) {
+            OutlinedCard(
+                colors = CardDefaults.cardColors(
+                    containerColor = MaterialTheme.colorScheme.surface,
+                ),
+                border = BorderStroke(2.dp, MaterialTheme.colorScheme.onSurface),
+
+                ){
                 DisplaySiteTitle(
                     name = site.name,
                     displayState = displayState,
@@ -79,70 +84,73 @@ fun DisplayFullSiteDetails(
             }
 
 
-            //Row for all the info that is scrollable
-            Row(
-                modifier = Modifier.padding(horizontal = paddingBetweenItems)
-            ){
-                Column(
+        }
 
-                    modifier = Modifier
-                        .verticalScroll(scrollState),
-                ) {
-                    //Site types, address, and distance from user
-                    //moved this code to the entity
-                    //val fullAddress = (if (site.address.isNullOrBlank()) "" else site.address + ", ") + site.municipality
-                    DisplaySiteBasicInfo(
-                        siteTypes = siteTypes,
-                        fullAddress = site.getFullAddress(),
-                        //Turns both the user location and the site from Latlng objects to Location objects so that we can use the Location.distanceToMethod
-                        metersFromUser = turnLatLongIntoLocation(latitude = userLocation.latitude, userLocation.longitude).distanceTo(turnLatLongIntoLocation(latitude = site.latitude, longitude = site.longitude)),
+
+        //Row for all the info that is scrollable
+        Row(
+            modifier = Modifier.padding(horizontal = paddingBetweenItems)
+        ){
+            Column(
+
+                modifier = Modifier
+                    .verticalScroll(scrollState),
+            ) {
+                //Site types, address, and distance from user
+                //moved this code to the entity
+                //val fullAddress = (if (site.address.isNullOrBlank()) "" else site.address + ", ") + site.municipality
+                DisplaySiteBasicInfo(
+                    siteTypes = siteTypes,
+                    fullAddress = site.getFullAddress(),
+                    //Turns both the user location and the site from Latlng objects to Location objects so that we can use the Location.distanceToMethod
+                    metersFromUser = turnLatLongIntoLocation(latitude = userLocation.latitude, userLocation.longitude).distanceTo(turnLatLongIntoLocation(latitude = site.latitude, longitude = site.longitude)),
+                    modifier = Modifier.padding(paddingBetweenItems))
+
+                //Photos
+                if (allSitePhotos.isNotEmpty()){
+                    DisplaySitePhotos(
+                        photos = allSitePhotos,
+                        uriHandler = uriHandler,
                         modifier = Modifier.padding(paddingBetweenItems))
+                } else {
+                    //Display this if there are no photos
+                    DisplayNoPhotos(
+                        uriHandler = uriHandler,
+                        modifier = Modifier.padding(paddingBetweenItems)
+                    )
+                }
 
-                    //Photos
-                    if (allSitePhotos.isNotEmpty()){
-                        DisplaySitePhotos(
-                            photos = allSitePhotos,
-                            uriHandler = uriHandler,
-                            modifier = Modifier.padding(paddingBetweenItems))
-                    } else {
-                        //Display this if there are no photos
-                        DisplayNoPhotos(
-                            uriHandler = uriHandler,
+
+                //If displayState is set to FullSite, display the description, sources, and link to historical society page
+                if (displayState == SiteDisplayState.FullSite){
+
+                    //If the site description isn't null, display description
+                    site.description?.let {
+                        DisplaySiteDescription(
+                            siteInfo = it,
                             modifier = Modifier.padding(paddingBetweenItems)
                         )
                     }
 
+                    //Sources
+                    DisplaySiteSources(
+                        sourcesList = sourcesList,
+                        modifier = Modifier.padding(paddingBetweenItems)
+                    )
 
-                    //If displayState is set to FullSite, display the description, sources, and link to historical society page
-                    if (displayState == SiteDisplayState.FullSite){
-
-                        //If the site description isn't null, display description
-                        site.description?.let {
-                            DisplaySiteDescription(
-                                siteInfo = it,
-                                modifier = Modifier.padding(paddingBetweenItems)
-                            )
-                        }
-
-                        //Sources
-                        DisplaySiteSources(
-                            sourcesList = sourcesList,
-                            modifier = Modifier.padding(paddingBetweenItems)
-                        )
-
-                        //Link to the Historical Society page
-                        DisplaySiteLink(
-                            siteUrl = site.siteUrl,
-                            uriHandler = uriHandler,
-                            modifier = Modifier.padding(paddingBetweenItems))
-                    }
-
+                    //Link to the Historical Society page
+                    DisplaySiteLink(
+                        siteUrl = site.siteUrl,
+                        uriHandler = uriHandler,
+                        modifier = Modifier.padding(paddingBetweenItems))
                 }
 
             }
-        }
 
+        }
     }
+
+
     //Container for all site info
 
 }
@@ -163,7 +171,7 @@ class DisplayStatePreviewParameterProvider : PreviewParameterProvider<SiteDispla
         get() = sequenceOf(SiteDisplayState.FullSite, SiteDisplayState.HalfSite)
 }
 
-@Preview
+@PreviewLightDark
 @Composable
 fun PreviewFullSiteDetails(
     @PreviewParameter(DisplayStatePreviewParameterProvider::class) displayState :SiteDisplayState

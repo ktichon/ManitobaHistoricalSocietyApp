@@ -6,6 +6,7 @@ import android.view.View.TEXT_ALIGNMENT_TEXT_START
 import android.widget.TextView
 import androidx.compose.foundation.ExperimentalFoundationApi
 import androidx.compose.foundation.background
+import androidx.compose.foundation.border
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.combinedClickable
 import androidx.compose.foundation.layout.Arrangement
@@ -36,6 +37,7 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.graphics.toArgb
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.platform.LocalUriHandler
 import androidx.compose.ui.platform.UriHandler
@@ -210,7 +212,9 @@ fun DisplaySitePhoto(
 
         sitePhoto.info?.let {
             GetAndroidViewWithStyle(
-                textStyle = MaterialTheme.typography.bodyMedium, text = sitePhoto.info,
+                text = sitePhoto.info,
+                textStyle = MaterialTheme.typography.bodyMedium,
+                textColour = MaterialTheme.colorScheme.onSurface,
                 textAlignment = TEXT_ALIGNMENT_CENTER,
                 modifier = modifier
                     .align(Alignment.CenterHorizontally)
@@ -336,7 +340,11 @@ fun DisplaySiteDescription(
     Row(
         modifier = modifier
     ) {
-        GetAndroidViewWithStyle(textStyle = MaterialTheme.typography.bodyLarge, text = siteInfo, textAlignment = TEXT_ALIGNMENT_TEXT_START)
+        GetAndroidViewWithStyle(
+            textStyle = MaterialTheme.typography.bodyLarge,
+            textColour = MaterialTheme.colorScheme.onSurface,
+            text = siteInfo,
+            textAlignment = TEXT_ALIGNMENT_TEXT_START)
     }
 
 
@@ -361,15 +369,18 @@ fun DisplaySiteSources(
             if (sourcesList.isEmpty()){
                 Text(
                     text = "There is no additional information about the sources used for this site",
-                    style = MaterialTheme.typography.bodyLarge
+                    style = MaterialTheme.typography.bodyLarge,
+                    modifier = Modifier.padding(horizontal = 20.dp, vertical = 5.dp)
                 )
             } else{
                 sourcesList.forEach {
                     GetAndroidViewWithStyle(
                         textStyle = MaterialTheme.typography.bodyLarge,
+                        textColour = MaterialTheme.colorScheme.onSurface,
                         text = it,
                         textAlignment = TEXT_ALIGNMENT_TEXT_START,
-                        Modifier.padding(horizontal = 20.dp, vertical = 5.dp) )
+                        Modifier.padding(horizontal = 20.dp, vertical = 5.dp)
+                    )
                 }
 
             }
@@ -401,6 +412,7 @@ fun DisplaySiteLink(siteUrl: String, uriHandler: UriHandler, modifier: Modifier 
 @Composable
 fun GetAndroidViewWithStyle(
     textStyle: TextStyle,
+    textColour: Color,
     text:String,
     textAlignment: Int,
     modifier: Modifier = Modifier
@@ -413,6 +425,7 @@ fun GetAndroidViewWithStyle(
             it.movementMethod = LinkMovementMethod.getInstance()
             it.textSize = textStyle.fontSize.value
             it.textAlignment = textAlignment
+            it.setTextColor(textColour.toArgb())
             // it.letterSpacing = textStyle.letterSpacing.value
         }
     )
