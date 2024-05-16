@@ -3,11 +3,13 @@ package com.example.manitobahistoricalsocietyapp.site_details
 import android.location.Location
 import android.location.LocationManager
 import androidx.compose.foundation.BorderStroke
+import androidx.compose.foundation.ExperimentalFoundationApi
 import androidx.compose.foundation.ScrollState
-import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.pager.PagerState
+import androidx.compose.foundation.pager.rememberPagerState
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.material3.CardDefaults
@@ -15,10 +17,9 @@ import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.OutlinedCard
 import androidx.compose.material3.Surface
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalUriHandler
-import androidx.compose.ui.platform.UriHandler
-import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.tooling.preview.PreviewLightDark
 import androidx.compose.ui.tooling.preview.PreviewParameter
 import androidx.compose.ui.tooling.preview.PreviewParameterProvider
@@ -29,6 +30,7 @@ import com.example.manitobahistoricalsocietyapp.state_classes.SiteDisplayState
 import com.example.manitobahistoricalsocietyapp.ui.theme.ManitobaHistoricalSocietyAppTheme
 import com.google.android.gms.maps.model.LatLng
 
+@OptIn(ExperimentalFoundationApi::class)
 @Composable
 fun DisplayFullSiteDetails(
     //Necessary for Title
@@ -46,20 +48,29 @@ fun DisplayFullSiteDetails(
     //Necessary for displaying Sources
     sourcesList: List<String>,
 
-    //scrollState: ScrollState,
+    //Used to check if this site has been newly selected
+    newSiteSelected: Boolean = false,
+    updateNewSiteSelected: (Boolean) -> Unit,
 
     modifier: Modifier = Modifier
 ) {
     val paddingBetweenItems = 10.dp
     val uriHandler = LocalUriHandler.current
-
-    val scrollState = rememberScrollState()
-
-
-
     Column (
         modifier = modifier
     ){
+
+        val photosPagerState = rememberPagerState{allSitePhotos.size}
+        val scrollState = rememberScrollState()
+
+        //Once a site has been selected, make sure to scroll to top and to the first image
+        LaunchedEffect(key1 = newSiteSelected ) {
+            if (newSiteSelected){
+                photosPagerState.scrollToPage(0)
+                scrollState.scrollTo(0)
+                updateNewSiteSelected(false)
+            }
+        }
 
 
 
@@ -111,6 +122,7 @@ fun DisplayFullSiteDetails(
                     DisplaySitePhotos(
                         photos = allSitePhotos,
                         uriHandler = uriHandler,
+                        pageState = photosPagerState,
                         modifier = Modifier.padding(paddingBetweenItems))
                 } else {
                     //Display this if there are no photos
@@ -171,6 +183,7 @@ class DisplayStatePreviewParameterProvider : PreviewParameterProvider<SiteDispla
         get() = sequenceOf(SiteDisplayState.FullSite, SiteDisplayState.HalfSite)
 }
 
+@OptIn(ExperimentalFoundationApi::class)
 @PreviewLightDark
 @Composable
 fun PreviewFullSiteDetails(
@@ -192,7 +205,7 @@ fun PreviewFullSiteDetails(
             val photo7 = SitePhotos(140229,3817,  "3817_oddfellowshome7_1715023463.jpg", 600, 450,"http://www.mhs.mb.ca/docs/sites/images/oddfellowshome7.jpg", "<strong>Remaining fence post of the Odd Fellows Home grounds</strong> (December 2020)<br/>\n" + "<em>Source:</em> <a href=\"http://www.mhs.mb.ca/docs/people/goldsborough_lg.shtml\">Gordon Goldsborough</a>","2024-05-06 14:24:23"  )
             val photo8 = SitePhotos(140229,3817,  "3817_oddfellowshome8_1715023463.jpg", 600, 400,"http://www.mhs.mb.ca/docs/sites/images/oddfellowshome8.jpg", "<strong>Front view of the Odd Fellows Home</strong> (May 2020)<br/>\n" + "<em>Source:</em> <a href=\"http://www.mhs.mb.ca/docs/people/penner_g.shtml\">George Penner</a> ","2024-05-06 14:24:23"  )
             val allSitePhotos = listOf(photo1, photo2, photo3, photo4, photo5, photo6, photo7, photo8)
-            val uriHandler = LocalUriHandler.current
+          
 
             val souce1 = "“Tenders wanted,” <a href=\"http://www.mhs.mb.ca/docs/business/freepress.shtml\"><em>Manitoba Free Press</em></a>, 7 June 1916, page 2."
             val souce2 = "“Fraternal notes,” <a href=\"http://www.mhs.mb.ca/docs/business/tribune.shtml\"><em>Winnipeg Tribune</em></a>, 1 July 1916, page 13. "
@@ -216,7 +229,11 @@ fun PreviewFullSiteDetails(
                 allSitePhotos = allSitePhotos,
                 //uriHandler = uriHandler,
                 sourcesList = sourcesList,
+                updateNewSiteSelected = {},
                 //scrollState = scrollState,
+                /*photosPagerState = rememberPagerState {
+                    allSitePhotos.size
+                }*/
 
                 //modifier = Modifier.padding(5.dp)
                 )

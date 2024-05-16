@@ -30,10 +30,11 @@ class HistoricalSiteViewModel @Inject internal constructor(
     private val _displayState = MutableStateFlow(SiteDisplayState.FullMap)
     val displayState: StateFlow<SiteDisplayState> = _displayState.asStateFlow()
 
-    private val _allHistoricalSites = MutableStateFlow<List<HistoricalSite>>(emptyList())
-    val allHistoricalSites = _allHistoricalSites.asStateFlow()
+    /*private val _allHistoricalSites = MutableStateFlow<List<HistoricalSite>>(emptyList())
+    val allHistoricalSites = _allHistoricalSites.asStateFlow()*/
 
-    private val _currentSite:MutableStateFlow<HistoricalSite?>  = MutableStateFlow(null)
+    //Initialize with a blank site
+    private val _currentSite:MutableStateFlow<HistoricalSite>  = MutableStateFlow(HistoricalSite(0, "","", 1, 0.0, 0.0, "", "", "", "https://www.mhs.ca/", "", ""))
     val currentSite = _currentSite.asStateFlow()
 
     private val _siteTypes = MutableStateFlow<List<String>>(emptyList())
@@ -54,6 +55,9 @@ class HistoricalSiteViewModel @Inject internal constructor(
 
     private val _allHistoricalSiteClusterItems = MutableStateFlow<List<HistoricalSiteClusterItem>>(emptyList())
     val allHistoricalSiteClusterItems = _allHistoricalSiteClusterItems.asStateFlow()
+
+    private val _newSiteSelected = MutableStateFlow(false)
+    val newSiteSelected = _newSiteSelected.asStateFlow()
 
 
     //private val db : HistoricalSiteDatabase= HistoricalSiteDatabase.getDatabase(context)
@@ -87,16 +91,19 @@ class HistoricalSiteViewModel @Inject internal constructor(
 
     }
 
+    fun updateSiteSelected(selected: Boolean)
+    {
+        _newSiteSelected.value = selected
+    }
+
     fun newSiteSelected(siteId: Int){
         viewModelScope.launch {
             historicalSiteRepository.getHistoricalSite(siteId).collect{ _currentSite.value = it}
         }
-
-
+        updateSiteSelected(true)
         updateSiteDisplayState(SiteDisplayState.HalfSite)
-
+        viewModelScope.launch{sitePhotosRepository.getPhotosForSite(siteId).collect{ _sitePhotos.value = it}}
         viewModelScope.launch {   siteTypeRepository.getTypesForSite(siteId).collect{ _siteTypes.value = it} }
-        viewModelScope.launch {   sitePhotosRepository.getPhotosForSite(siteId).collect{ _sitePhotos.value = it} }
         viewModelScope.launch {   siteSourceRepository.getSourceInfoForSite(siteId).collect{ _siteSources.value = it} }
     }
 }

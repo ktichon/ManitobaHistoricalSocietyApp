@@ -1,6 +1,7 @@
 package com.example.manitobahistoricalsocietyapp.site_details
 
 import android.text.method.LinkMovementMethod
+import android.util.Log
 import android.view.View.TEXT_ALIGNMENT_CENTER
 import android.view.View.TEXT_ALIGNMENT_TEXT_START
 import android.widget.TextView
@@ -20,6 +21,7 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.wrapContentHeight
 import androidx.compose.foundation.pager.HorizontalPager
+import androidx.compose.foundation.pager.PagerState
 import androidx.compose.foundation.pager.rememberPagerState
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.text.ClickableText
@@ -33,6 +35,7 @@ import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
@@ -170,12 +173,12 @@ fun DisplaySitePhoto(
                 .size(height = (sitePhoto.height / 2).dp, width = (sitePhoto.width / 2).dp)
                 .padding(5.dp)
                 .combinedClickable(
-                onClick = { },
-                onLongClick = {
-                    uriHandler.openUri(sitePhoto.url)
-                },
-                onLongClickLabel = sitePhoto.url
-            )
+                    onClick = { },
+                    onLongClick = {
+                        uriHandler.openUri(sitePhoto.url)
+                    },
+                    onLongClickLabel = sitePhoto.url
+                )
 
         )
 
@@ -239,9 +242,10 @@ fun DisplaySitePhoto(
 fun DisplaySitePhotos(
     photos: List<SitePhotos>,
     uriHandler: UriHandler,
+    pageState: PagerState,
     modifier: Modifier = Modifier
 ) {
-    val pageState = rememberPagerState{photos.size}
+
 
     /*LazyRow(
         contentPadding = PaddingValues(10.dp),
@@ -485,6 +489,7 @@ private fun PreviewSitePhoto()
     }
 }
 
+@OptIn(ExperimentalFoundationApi::class)
 @Preview
 @Composable
 private fun PreviewSitePhotos()
@@ -497,7 +502,9 @@ private fun PreviewSitePhotos()
                     "<em>Source:</em> Jack Hardman", "2024-05-06 14:24:23"  )
 
             val bunchOfPhotos :List<SitePhotos> = listOf(photo1, photo2, photo3)
-            DisplaySitePhotos(photos = bunchOfPhotos, LocalUriHandler.current)
+            DisplaySitePhotos(photos = bunchOfPhotos, LocalUriHandler.current, rememberPagerState {
+                bunchOfPhotos.size
+            })
         }
     }
 }

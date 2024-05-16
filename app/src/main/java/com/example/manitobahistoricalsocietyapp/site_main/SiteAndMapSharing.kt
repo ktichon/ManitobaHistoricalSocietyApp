@@ -1,28 +1,18 @@
 package com.example.manitobahistoricalsocietyapp.site_main
 
-import android.location.Location
-import androidx.compose.animation.AnimatedVisibility
-import androidx.compose.animation.animateContentSize
-import androidx.compose.animation.core.LinearOutSlowInEasing
-import androidx.compose.animation.core.tween
-import androidx.compose.animation.slideInVertically
-import androidx.compose.animation.slideOutVertically
+import androidx.compose.foundation.ExperimentalFoundationApi
 import androidx.compose.foundation.ScrollState
-import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.width
+import androidx.compose.foundation.pager.PagerState
+import androidx.compose.foundation.pager.rememberPagerState
 import androidx.compose.foundation.rememberScrollState
-import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.filled.AccountBox
-import androidx.compose.material3.Icon
 import androidx.compose.material3.Surface
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalUriHandler
-import androidx.compose.ui.platform.UriHandler
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.tooling.preview.PreviewParameter
 import androidx.compose.ui.tooling.preview.PreviewParameterProvider
@@ -32,13 +22,12 @@ import com.example.manitobahistoricalsocietyapp.database.HistoricalSite.Historic
 import com.example.manitobahistoricalsocietyapp.database.SitePhotos.SitePhotos
 import com.example.manitobahistoricalsocietyapp.map.DisplayMap
 import com.example.manitobahistoricalsocietyapp.site_details.DisplayFullSiteDetails
-import com.example.manitobahistoricalsocietyapp.site_details.DisplayStatePreviewParameterProvider
-import com.example.manitobahistoricalsocietyapp.site_details.turnLatLongIntoLocation
 import com.example.manitobahistoricalsocietyapp.state_classes.SiteDisplayState
 import com.example.manitobahistoricalsocietyapp.ui.theme.ManitobaHistoricalSocietyAppTheme
 import com.google.android.gms.maps.model.LatLng
 import com.google.maps.android.compose.CameraPositionState
 
+@OptIn(ExperimentalFoundationApi::class)
 @Composable
 fun DisplaySiteAndMapViewport(
     //Map parameters
@@ -48,14 +37,15 @@ fun DisplaySiteAndMapViewport(
     locationEnabled: Boolean = false,
 
     //Site Details parameters
-    currentSite: HistoricalSite?,
+    currentSite: HistoricalSite,
     displayState: SiteDisplayState,
     onClickChangeDisplayState: (SiteDisplayState) -> Unit,
     currentSiteTypes: List<String>,
     userLocation: LatLng,
     currentSitePhotos: List<SitePhotos>,
     currentSiteSourcesList: List<String>,
-   // siteDetailsScrollState: ScrollState,
+    newSiteSelected: Boolean = false,
+    updateNewSiteSelected: (Boolean) -> Unit,
 
     modifier: Modifier = Modifier
 
@@ -63,7 +53,7 @@ fun DisplaySiteAndMapViewport(
 ) {
     Column(modifier = modifier) {
 
-        val siteWeight = if(displayState == SiteDisplayState.FullSite) 49f else 1f
+        val siteWeight = if(displayState == SiteDisplayState.FullSite) 99f else 1.5f
         val animationLengthInMilliSeconds = 200
 
         //Always display map, as we do not want it to leave the composition
@@ -87,7 +77,7 @@ fun DisplaySiteAndMapViewport(
                 .fillMaxSize()
                 .weight(1f))*/
 
-        AnimatedVisibility(
+        /*AnimatedVisibility(
             visible = (displayState == SiteDisplayState.HalfSite || displayState == SiteDisplayState.FullSite) and (currentSite != null),
             modifier = Modifier.weight(siteWeight),
             enter = slideInVertically (
@@ -106,6 +96,12 @@ fun DisplaySiteAndMapViewport(
             ),
 
         ) {
+
+        }*/
+
+
+        if (displayState == SiteDisplayState.HalfSite || displayState == SiteDisplayState.FullSite )
+        {
             if (currentSite != null) {
                 DisplayFullSiteDetails(
                     site = currentSite,
@@ -115,20 +111,15 @@ fun DisplaySiteAndMapViewport(
                     userLocation = userLocation,
                     allSitePhotos = currentSitePhotos,
                     sourcesList = currentSiteSourcesList,
-                    //scrollState = siteDetailsScrollState,
+                    newSiteSelected = newSiteSelected,
+                    updateNewSiteSelected = updateNewSiteSelected,
                     modifier = Modifier
+                        .weight(siteWeight)
                         .fillMaxSize()
 
                 )
             }
         }
-
-
-        /*if (displayState == SiteDisplayState.HalfSite || displayState == SiteDisplayState.FullSite )
-        {
-
-
-        }*/
 
 
 
@@ -140,6 +131,7 @@ class DisplayStateWithMapPreviewParameterProvider : PreviewParameterProvider<Sit
         get() = sequenceOf(SiteDisplayState.HalfSite, SiteDisplayState.FullSite, SiteDisplayState.FullMap)
 }
 
+@OptIn(ExperimentalFoundationApi::class)
 @Preview
 @Composable
 private fun PreviewSiteAndMap(
@@ -190,6 +182,11 @@ private fun PreviewSiteAndMap(
 
                 allSites = emptyList(),
                 onClusterItemClick = {},
+                /*siteDetailsScrollState = scrollState,
+                photosPagerState = rememberPagerState {
+                    allSitePhotos.size
+                },*/
+                updateNewSiteSelected = {},
                 modifier = Modifier
                     .height(1000.dp)
                     .width(500.dp)

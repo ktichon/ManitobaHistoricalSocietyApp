@@ -2,9 +2,12 @@ package com.example.manitobahistoricalsocietyapp.site_main
 
 import android.annotation.SuppressLint
 import android.os.Looper
+import androidx.compose.foundation.ExperimentalFoundationApi
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.pager.rememberPagerState
+import androidx.compose.foundation.rememberScrollState
 import androidx.compose.material3.AlertDialog
 import androidx.compose.material3.Button
 import androidx.compose.material3.MaterialTheme
@@ -17,6 +20,7 @@ import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
+import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.runtime.rememberUpdatedState
 import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.runtime.setValue
@@ -42,7 +46,7 @@ import com.google.android.gms.maps.model.LatLng
 import com.google.maps.android.compose.rememberCameraPositionState
 import org.w3c.dom.Text
 
-@OptIn(ExperimentalPermissionsApi::class)
+@OptIn(ExperimentalPermissionsApi::class, ExperimentalFoundationApi::class)
 @Composable
 fun HistoricalSiteHome(
     viewModel: HistoricalSiteViewModel = viewModel(),
@@ -52,7 +56,7 @@ fun HistoricalSiteHome(
 ) {
     val displayState by viewModel.displayState.collectAsState()
     val currentSite by viewModel.currentSite.collectAsState()
-    val allSites by viewModel.allHistoricalSites.collectAsState()
+
     val siteTypes by viewModel.siteTypes.collectAsState()
     val sitePhotos by viewModel.sitePhotos.collectAsState()
     val siteSources by viewModel.siteSources.collectAsState()
@@ -61,39 +65,21 @@ fun HistoricalSiteHome(
 
     val allSiteClusterItems by viewModel.allHistoricalSiteClusterItems.collectAsState()
 
-    //viewModel.getAllHistoricalSites()
+    //Used to let composable know that a new site has been selected, so that we can scroll to top
+    val newSiteSelected by viewModel.newSiteSelected.collectAsState()
+    //var newSiteSelected by remember { mutableStateOf(false) }
 
+    var showLoadingScreen by remember { mutableStateOf(true) }
 
     val locationProvider = LocationServices.getFusedLocationProviderClient(LocalContext.current)
 
-    
 
-    //val manitobaMuseumCoordinates = LatLng(49.9000253, -97.1386276)
+
     val cameraPositionState = rememberCameraPositionState{
         position = CameraPosition.fromLatLngZoom(currentUserLocation, 16f)
     }
 
-    //Old code, now replaced by RequestLocationPermission
-    /*val permissionState = rememberMultiplePermissionsState(
-        listOf(
-            android.Manifest.permission.ACCESS_COARSE_LOCATION,
-            android.Manifest.permission.ACCESS_FINE_LOCATION
-        )
-    )
-    currentSiteState.locationEnabled = permissionState.allPermissionsGranted\
-    var haveAskedForPermissions by rememberSaveable {
-        mutableStateOf(false)
-    }
-    if (!permissionState.allPermissionsGranted && !haveAskedForPermissions){
-          RequestPermissionAlert(
-              onConfirmClick = {
-                               permissionState.launchMultiplePermissionRequest()
-                               haveAskedForPermissions = true
-                               },
-              onDismiss = {
-                  haveAskedForPermissions = true
-              })
-      }*/
+
 
     //Request location permissions, and storing the value in currentSiteState
     RequestLocationPermission(
@@ -111,7 +97,7 @@ fun HistoricalSiteHome(
     }
 
 
-    var showLoadingScreen by remember { mutableStateOf(true) }
+
 
     //Only show map if all the sites are loaded
     if (showLoadingScreen && allSiteClusterItems.isEmpty()){
@@ -130,21 +116,22 @@ fun HistoricalSiteHome(
             DisplaySiteAndMapViewport(
                 cameraPositionState = cameraPositionState,
                 allSites = allSiteClusterItems,
-                onClusterItemClick = {
-                        id ->
-                    viewModel.newSiteSelected(id)
-                    val newPosition = if (currentSite != null ) currentSite!!.getPosition() else currentUserLocation
-                    cameraPositionState.position = CameraPosition.fromLatLngZoom(newPosition, cameraPositionState.position.zoom)
+                onClusterItemClick = { id -> viewModel.newSiteSelected(id)
+                    cameraPositionState.position = CameraPosition.fromLatLngZoom(currentSite.getPosition(), cameraPositionState.position.zoom)
                                      },
                 currentSite = currentSite,
                 displayState = displayState,
-                onClickChangeDisplayState = {newState -> viewModel.updateSiteDisplayState(newState)},
+                onClickChangeDisplayState = {newState ->
+                    viewModel.updateSiteDisplayState(newState) },
                 currentSiteTypes = siteTypes,
                 userLocation =  currentUserLocation,
                 locationEnabled = locationEnabled,
                 currentSitePhotos = sitePhotos,
                 currentSiteSourcesList = siteSources,
-                //siteDetailsScrollState = ,
+                newSiteSelected = newSiteSelected,
+                updateNewSiteSelected = {
+                    selected -> viewModel.updateSiteSelected(selected)
+                },
                 modifier = Modifier.padding(innerPadding)
             )
 
