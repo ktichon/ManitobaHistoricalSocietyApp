@@ -1,6 +1,12 @@
 package com.example.manitobahistoricalsocietyapp.site_main
 
 import android.location.Location
+import androidx.compose.animation.AnimatedVisibility
+import androidx.compose.animation.animateContentSize
+import androidx.compose.animation.core.LinearOutSlowInEasing
+import androidx.compose.animation.core.tween
+import androidx.compose.animation.slideInVertically
+import androidx.compose.animation.slideOutVertically
 import androidx.compose.foundation.ScrollState
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Column
@@ -55,35 +61,50 @@ fun DisplaySiteAndMapViewport(
 
 ) {
     Column(modifier = modifier) {
-        /*DisplayMap(
+
+        val siteWeight = if(displayState == SiteDisplayState.FullSite) 49f else 1f
+        val animationLengthInMilliSeconds = 200
+
+        //Always display map, as we do not want it to leave the composition
+        //If it leaves the composition, all the markers would need to be re-added to the map, and that takes time
+        //This is the code for the map. However, maps don't show up on preview.
+        DisplayMap(
             cameraPositionState = cameraPositionState,
             sites = allSites,
             onClusterItemClick = onClusterItemClick,
-            modifier = Modifier)*/
+            locationEnabled = locationEnabled,
+            modifier = Modifier
+                .fillMaxSize()
+                .weight(1f)
+        )
 
+        //Instead, there is a placeholder image so we can check how things look on the preview
+       /* Icon(imageVector = Icons.Default.AccountBox,
+            contentDescription = "Map Place Holder",
+            modifier = Modifier
+                .background(Color.Cyan)
+                .fillMaxSize()
+                .weight(1f))*/
 
-        if (displayState == SiteDisplayState.FullMap || displayState == SiteDisplayState.HalfSite ){
-            //This is the code for the map. However, maps don't show up on preview.
-            DisplayMap(
-                cameraPositionState = cameraPositionState,
-                sites = allSites,
-                onClusterItemClick = onClusterItemClick,
-                locationEnabled = locationEnabled,
-                modifier = Modifier
-                    .fillMaxSize()
-                    .weight(1f) )
+        AnimatedVisibility(
+            visible = (displayState == SiteDisplayState.HalfSite || displayState == SiteDisplayState.FullSite) and (currentSite != null),
+            modifier = Modifier.weight(siteWeight),
+            enter = slideInVertically (
+                //slide in from bottom
+                initialOffsetY = {
+                    it / 2
+                },
+                animationSpec = tween(durationMillis = animationLengthInMilliSeconds, easing = LinearOutSlowInEasing)
+            ),
+             //slide out from bottom
+            exit = slideOutVertically(
+                targetOffsetY = {
+                    it / 2
+                },
+                animationSpec = tween(durationMillis = animationLengthInMilliSeconds, easing = LinearOutSlowInEasing)
+            ),
 
-            //Instead, there is a placeholder image so we can check how things look on the preview
-            /*Icon(imageVector = Icons.Default.AccountBox,
-                contentDescription = "Map Place Holder",
-                modifier = Modifier
-                    .background(Color.Cyan)
-                    .fillMaxSize()
-                    .weight(1f))*/
-        }
-
-        if (displayState == SiteDisplayState.HalfSite || displayState == SiteDisplayState.FullSite )
-        {
+        ) {
             if (currentSite != null) {
                 DisplayFullSiteDetails(
                     site = currentSite,
@@ -96,11 +117,17 @@ fun DisplaySiteAndMapViewport(
                     //scrollState = siteDetailsScrollState,
                     modifier = Modifier
                         .fillMaxSize()
-                        .weight(1f)
+
                 )
             }
-
         }
+
+
+        /*if (displayState == SiteDisplayState.HalfSite || displayState == SiteDisplayState.FullSite )
+        {
+
+
+        }*/
 
 
 
