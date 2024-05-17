@@ -1,28 +1,18 @@
 package com.example.manitobahistoricalsocietyapp
 
 import android.os.Bundle
-import android.widget.Toast
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
 import androidx.compose.foundation.layout.fillMaxSize
-import androidx.compose.foundation.layout.size
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.collectAsState
-import androidx.compose.runtime.getValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.tooling.preview.Preview
-import androidx.compose.ui.unit.dp
-import com.example.manitobahistoricalsocietyapp.database.HistoricalSite.HistoricalSite
-import com.example.manitobahistoricalsocietyapp.database.HistoricalSiteDatabase
-import com.example.manitobahistoricalsocietyapp.map.DisplayMap
-import com.example.manitobahistoricalsocietyapp.site_main.HistoricalSiteHome
+import com.example.manitobahistoricalsocietyapp.map.GoogleMapClustering
+import com.example.manitobahistoricalsocietyapp.site_main.SiteMainPageScreen
 import com.example.manitobahistoricalsocietyapp.ui.theme.ManitobaHistoricalSocietyAppTheme
-import com.google.android.gms.maps.model.CameraPosition
-import com.google.android.gms.maps.model.LatLng
-import com.google.maps.android.compose.rememberCameraPositionState
 import dagger.hilt.android.AndroidEntryPoint
 
 @AndroidEntryPoint
@@ -37,8 +27,10 @@ class MainActivity : ComponentActivity() {
                     color = MaterialTheme.colorScheme.background
                 ) {
 
-                    HistoricalSiteHome()
+                    SiteMainPageScreen()
                 }
+
+               // GoogleMapClustering()
 
 
 

@@ -46,6 +46,7 @@ class HistoricalSiteViewModel @Inject internal constructor(
     private val _siteSources = MutableStateFlow<List<String>>(emptyList())
     val siteSources = _siteSources.asStateFlow()
 
+    //Checks if the location permission has been enabled
     private val _locationEnabled = MutableStateFlow(false)
     val locationEnabled = _locationEnabled.asStateFlow()
 
@@ -56,8 +57,12 @@ class HistoricalSiteViewModel @Inject internal constructor(
     private val _allHistoricalSiteClusterItems = MutableStateFlow<List<HistoricalSiteClusterItem>>(emptyList())
     val allHistoricalSiteClusterItems = _allHistoricalSiteClusterItems.asStateFlow()
 
+    //Used to notify the scrollState to scroll to top when a new site is selected
     private val _newSiteSelected = MutableStateFlow(false)
     val newSiteSelected = _newSiteSelected.asStateFlow()
+
+
+
 
 
     //private val db : HistoricalSiteDatabase= HistoricalSiteDatabase.getDatabase(context)

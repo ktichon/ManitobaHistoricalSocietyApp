@@ -1,195 +1,104 @@
-package com.example.manitobahistoricalsocietyapp.site_details
+package com.example.manitobahistoricalsocietyapp.site_main
 
-import android.location.Location
-import android.location.LocationManager
-import androidx.compose.foundation.BorderStroke
-import androidx.compose.foundation.ExperimentalFoundationApi
-import androidx.compose.foundation.ScrollState
-import androidx.compose.foundation.layout.Column
-import androidx.compose.foundation.layout.Row
+import androidx.compose.foundation.layout.Box
+import androidx.compose.foundation.layout.fillMaxSize
+import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
-import androidx.compose.foundation.pager.PagerState
-import androidx.compose.foundation.pager.rememberPagerState
-import androidx.compose.foundation.rememberScrollState
-import androidx.compose.foundation.verticalScroll
-import androidx.compose.material3.CardDefaults
+import androidx.compose.foundation.layout.width
 import androidx.compose.material3.MaterialTheme
-import androidx.compose.material3.OutlinedCard
+import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Surface
+import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.rememberUpdatedState
+import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.platform.LocalUriHandler
-import androidx.compose.ui.tooling.preview.PreviewLightDark
+import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.tooling.preview.PreviewParameter
-import androidx.compose.ui.tooling.preview.PreviewParameterProvider
 import androidx.compose.ui.unit.dp
 import com.example.manitobahistoricalsocietyapp.database.HistoricalSite.HistoricalSite
+import com.example.manitobahistoricalsocietyapp.database.HistoricalSite.HistoricalSiteClusterItem
 import com.example.manitobahistoricalsocietyapp.database.SitePhotos.SitePhotos
 import com.example.manitobahistoricalsocietyapp.state_classes.SiteDisplayState
 import com.example.manitobahistoricalsocietyapp.ui.theme.ManitobaHistoricalSocietyAppTheme
 import com.google.android.gms.maps.model.LatLng
+import com.google.maps.android.compose.CameraPositionState
 
-@OptIn(ExperimentalFoundationApi::class)
 @Composable
-fun DisplayFullSiteDetails(
-    //Necessary for Title
-    site: HistoricalSite,
+fun SiteMainPageContent(
+    cameraPositionState: CameraPositionState,
+    allSites: List<HistoricalSiteClusterItem>,
+    onClusterItemClick: (id:Int)  -> Unit,
+    locationEnabled: Boolean = false,
+
+    //Site Details parameters
+    currentSite: HistoricalSite,
     displayState: SiteDisplayState,
     onClickChangeDisplayState: (SiteDisplayState) -> Unit,
-
-    //Necessary for Basic Info
-    siteTypes: List<String>,
+    currentSiteTypes: List<String>,
     userLocation: LatLng,
-
-    //Necessary for displaying Photos
-    allSitePhotos: List<SitePhotos>,
-
-    //Necessary for displaying Sources
-    sourcesList: List<String>,
-
-    //Used to check if this site has been newly selected
+    currentSitePhotos: List<SitePhotos>,
+    currentSiteSourcesList: List<String>,
     newSiteSelected: Boolean = false,
     updateNewSiteSelected: (Boolean) -> Unit,
 
     modifier: Modifier = Modifier
 ) {
-    val paddingBetweenItems = 10.dp
-    val uriHandler = LocalUriHandler.current
-    Column (
+
+    Scaffold(
         modifier = modifier
-    ){
-
-        val photosPagerState = rememberPagerState{allSitePhotos.size}
-        val scrollState = rememberScrollState()
-
-        //Once a site has been selected, make sure to scroll to top and to the first image
-        LaunchedEffect(key1 = newSiteSelected ) {
-            if (newSiteSelected){
-                photosPagerState.scrollToPage(0)
-                scrollState.scrollTo(0)
-                updateNewSiteSelected(false)
-            }
-        }
+    ) {innerPadding ->
 
 
+        DisplaySiteAndMapViewport(
+            cameraPositionState = cameraPositionState,
+            allSites = allSites,
+            onClusterItemClick = onClusterItemClick,
+            currentSite = currentSite,
+            displayState = displayState,
+            onClickChangeDisplayState = onClickChangeDisplayState,
+            currentSiteTypes = currentSiteTypes,
+            userLocation =  userLocation,
+            locationEnabled = locationEnabled,
+            currentSitePhotos = currentSitePhotos,
+            currentSiteSourcesList = currentSiteSourcesList,
+            newSiteSelected = newSiteSelected,
+            updateNewSiteSelected = updateNewSiteSelected,
+            modifier = Modifier.padding(innerPadding)
+        )
 
-        //Row of info that will not be scrollable
-        Row(
-            //modifier = Modifier.padding(horizontal = paddingBetweenItems)
-        ) {
-            OutlinedCard(
-                colors = CardDefaults.cardColors(
-                    containerColor = MaterialTheme.colorScheme.surface,
-                ),
-                border = BorderStroke(2.dp, MaterialTheme.colorScheme.onSurface),
-
-                ){
-                DisplaySiteTitle(
-                    name = site.name,
-                    displayState = displayState,
-                    onClickChangeDisplayState = onClickChangeDisplayState,
-                    modifier = Modifier.padding(paddingBetweenItems)
-                )
-
-            }
-
-
-        }
-
-
-        //Row for all the info that is scrollable
-        Row(
-            modifier = Modifier.padding(horizontal = paddingBetweenItems)
-        ){
-            Column(
-
-                modifier = Modifier
-                    .verticalScroll(scrollState),
-            ) {
-                //Site types, address, and distance from user
-                //moved this code to the entity
-                //val fullAddress = (if (site.address.isNullOrBlank()) "" else site.address + ", ") + site.municipality
-                DisplaySiteBasicInfo(
-                    siteTypes = siteTypes,
-                    fullAddress = site.getFullAddress(),
-                    //Turns both the user location and the site from Latlng objects to Location objects so that we can use the Location.distanceToMethod
-                    metersFromUser = turnLatLongIntoLocation(latitude = userLocation.latitude, userLocation.longitude).distanceTo(turnLatLongIntoLocation(latitude = site.latitude, longitude = site.longitude)),
-                    modifier = Modifier.padding(paddingBetweenItems))
-
-                //Photos
-                if (allSitePhotos.isNotEmpty()){
-                    DisplaySitePhotos(
-                        photos = allSitePhotos,
-                        uriHandler = uriHandler,
-                        pageState = photosPagerState,
-                        modifier = Modifier.padding(paddingBetweenItems))
-                } else {
-                    //Display this if there are no photos
-                    DisplayNoPhotos(
-                        uriHandler = uriHandler,
-                        modifier = Modifier.padding(paddingBetweenItems)
-                    )
-                }
-
-
-                //If the site description isn't null, display description
-                site.description?.let {
-                    DisplaySiteDescription(
-                        siteInfo = it,
-                        modifier = Modifier.padding(paddingBetweenItems)
-                    )
-                }
-
-                //Sources
-                DisplaySiteSources(
-                    sourcesList = sourcesList,
-                    modifier = Modifier.padding(paddingBetweenItems)
-                )
-
-                //Link to the Historical Society page
-                DisplaySiteLink(
-                    siteUrl = site.siteUrl,
-                    uriHandler = uriHandler,
-                    modifier = Modifier.padding(paddingBetweenItems))
-
-
-                //If displayState is set to FullSite, display the description, sources, and link to historical society page
-                /*if (displayState == SiteDisplayState.FullSite){
-
-                }*/
-
-            }
-
-        }
     }
 
-
-    //Container for all site info
-
 }
 
 
-//Helper method that turns lat/long into a location object
-fun turnLatLongIntoLocation(latitude: Double, longitude: Double): Location{
-    val location = Location(LocationManager.GPS_PROVIDER)
-    location.latitude = latitude
-    location.longitude = longitude
-    return location
-}
-
-
-
-class DisplayStatePreviewParameterProvider : PreviewParameterProvider<SiteDisplayState>{
-    override val values: Sequence<SiteDisplayState>
-        get() = sequenceOf(SiteDisplayState.FullSite, SiteDisplayState.HalfSite)
-}
-
-@OptIn(ExperimentalFoundationApi::class)
-@PreviewLightDark
+//Displays while we are loading all the historical sites from the viewmodel
 @Composable
-fun PreviewFullSiteDetails(
-    @PreviewParameter(DisplayStatePreviewParameterProvider::class) displayState :SiteDisplayState
+fun LoadingScreen(
+    waitOn: suspend () -> Unit,
+    onCompleted: () -> Unit,
+    modifier: Modifier = Modifier
+) {
+    Box(modifier = modifier.fillMaxSize(), contentAlignment = Alignment.Center){
+        val currentOnCompeted by rememberUpdatedState( onCompleted)
+
+        LaunchedEffect(Unit) {
+            waitOn()
+            currentOnCompeted()
+        }
+
+        Text(text = "Loading App Data ...",
+            style = MaterialTheme.typography.titleLarge)
+
+    }
+}
+
+@Preview
+@Composable
+private fun PreviewHistoricalSiteHomeContent(
+    @PreviewParameter(DisplayStateWithMapPreviewParameterProvider::class) displayState :SiteDisplayState
 ) {
     ManitobaHistoricalSocietyAppTheme {
         Surface {
@@ -207,7 +116,7 @@ fun PreviewFullSiteDetails(
             val photo7 = SitePhotos(140229,3817,  "3817_oddfellowshome7_1715023463.jpg", 600, 450,"http://www.mhs.mb.ca/docs/sites/images/oddfellowshome7.jpg", "<strong>Remaining fence post of the Odd Fellows Home grounds</strong> (December 2020)<br/>\n" + "<em>Source:</em> <a href=\"http://www.mhs.mb.ca/docs/people/goldsborough_lg.shtml\">Gordon Goldsborough</a>","2024-05-06 14:24:23"  )
             val photo8 = SitePhotos(140229,3817,  "3817_oddfellowshome8_1715023463.jpg", 600, 400,"http://www.mhs.mb.ca/docs/sites/images/oddfellowshome8.jpg", "<strong>Front view of the Odd Fellows Home</strong> (May 2020)<br/>\n" + "<em>Source:</em> <a href=\"http://www.mhs.mb.ca/docs/people/penner_g.shtml\">George Penner</a> ","2024-05-06 14:24:23"  )
             val allSitePhotos = listOf(photo1, photo2, photo3, photo4, photo5, photo6, photo7, photo8)
-          
+            //val uriHandler = LocalUriHandler.current
 
             val souce1 = "“Tenders wanted,” <a href=\"http://www.mhs.mb.ca/docs/business/freepress.shtml\"><em>Manitoba Free Press</em></a>, 7 June 1916, page 2."
             val souce2 = "“Fraternal notes,” <a href=\"http://www.mhs.mb.ca/docs/business/tribune.shtml\"><em>Winnipeg Tribune</em></a>, 1 July 1916, page 13. "
@@ -220,25 +129,54 @@ fun PreviewFullSiteDetails(
             val souce9 = "“Plans for a \$100,000 Odd Fellows Home,” <a href=\"http://www.mhs.mb.ca/docs/business/freepress.shtml\"><em>Manitoba Free Press</em></a>, 5 April 1922, page 8."
             val souce10 = "“Proposed Odd Fellows’ Home for Charleswood,” <a href=\"http://www.mhs.mb.ca/docs/business/freepress.shtml\"><em>Manitoba Free Press</em></a>, 5 March 1921, page 18."
             val sourcesList = listOf(souce1, souce2, souce3, souce4, souce5, souce6, souce7, souce8, souce9, souce10)
-
-            val scrollState = rememberScrollState()
-            DisplayFullSiteDetails(
-                site = testSite,
+            val cameraPositionState = CameraPositionState()
+            //val scrollState = rememberScrollState()
+            SiteMainPageContent(
+                currentSite = testSite,
                 displayState = displayState,
                 onClickChangeDisplayState = {},
-                siteTypes = siteTypes,
+                currentSiteTypes = siteTypes,
                 userLocation = userLocation,
-                allSitePhotos = allSitePhotos,
-                //uriHandler = uriHandler,
-                sourcesList = sourcesList,
-                updateNewSiteSelected = {},
-                //scrollState = scrollState,
-                /*photosPagerState = rememberPagerState {
-                    allSitePhotos.size
-                }*/
+                currentSitePhotos = allSitePhotos,
+                currentSiteSourcesList = sourcesList,
+                //siteDetailsScrollState = scrollState,
 
-                //modifier = Modifier.padding(5.dp)
-                )
+                cameraPositionState = cameraPositionState,
+
+                allSites = emptyList(),
+                onClusterItemClick = {},
+                /*siteDetailsScrollState = scrollState,
+                photosPagerState = rememberPagerState {
+                    allSitePhotos.size
+                },*/
+                updateNewSiteSelected = {},
+                modifier = Modifier
+                    .height(1000.dp)
+                    .width(500.dp)
+            )
+
+            //modifier = Modifier.padding(5.dp)
+
         }
     }
+
+}
+
+@Preview
+@Composable
+private fun PreviewLoadingScreen() {
+    ManitobaHistoricalSocietyAppTheme {
+        Surface {
+            LoadingScreen(waitOn = {},
+                onCompleted = {  },
+                modifier = Modifier
+                    .height(1000.dp)
+                    .width(500.dp)
+
+            )
+        }
+    }
+
+
+
 }

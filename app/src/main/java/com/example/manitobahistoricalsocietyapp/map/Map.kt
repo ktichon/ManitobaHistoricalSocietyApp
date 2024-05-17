@@ -30,14 +30,14 @@ fun DisplayMap(
     modifier: Modifier = Modifier
 ) {
     //If the system is in dark mode, use dark map. Else use light map
-    val mapStyle = MapStyleOptions(if (isSystemInDarkTheme()) mapStylingNight else mapStylingDay)
+    /*val mapStyle = MapStyleOptions(if (isSystemInDarkTheme()) mapStylingNight else mapStylingDay)*/
 
-    val mapProperties by remember {
+    /*val mapProperties by remember {
         mutableStateOf(MapProperties(
             isMyLocationEnabled = locationEnabled,
             mapStyleOptions = mapStyle
         ))
-    }
+    }*/
 
     /*val mapProperties = MapProperties(
         isMyLocationEnabled = locationEnabled,
@@ -47,17 +47,22 @@ fun DisplayMap(
 
     GoogleMap(
         cameraPositionState = cameraPositionState,
-        properties = mapProperties,
+        properties = MapProperties(
+            isMyLocationEnabled = locationEnabled,
+            //If the system is in dark mode, use dark map. Else use light map
+            mapStyleOptions = MapStyleOptions(if (isSystemInDarkTheme()) mapStylingNight else mapStylingDay)
+        ),
         modifier = modifier
     ){
-        Clustering(
+        CustomClusterRenderer(sites = sites, onClusterItemClick = onClusterItemClick)
+        /*Clustering(
             items = sites,
             onClusterItemClick = {
 
                 onClusterItemClick(it.id)
                                  false
                                  },
-            /*clusterItemContent = {item ->
+            *//*clusterItemContent = {item ->
                 Marker(
                     title = item.title,
                     snippet = item.snippet,
@@ -65,9 +70,9 @@ fun DisplayMap(
 
 
                 )
-            }*/
+            }*//*
 
-        )
+        )*/
     }
 
 }

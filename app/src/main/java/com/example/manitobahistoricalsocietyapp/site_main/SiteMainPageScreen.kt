@@ -1,18 +1,9 @@
 package com.example.manitobahistoricalsocietyapp.site_main
 
 import android.annotation.SuppressLint
+import android.content.Context
 import android.os.Looper
 import androidx.compose.foundation.ExperimentalFoundationApi
-import androidx.compose.foundation.layout.Box
-import androidx.compose.foundation.layout.fillMaxSize
-import androidx.compose.foundation.layout.padding
-import androidx.compose.foundation.pager.rememberPagerState
-import androidx.compose.foundation.rememberScrollState
-import androidx.compose.material3.AlertDialog
-import androidx.compose.material3.Button
-import androidx.compose.material3.MaterialTheme
-import androidx.compose.material3.Scaffold
-import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.DisposableEffect
 import androidx.compose.runtime.LaunchedEffect
@@ -20,18 +11,10 @@ import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
-import androidx.compose.runtime.rememberCoroutineScope
-import androidx.compose.runtime.rememberUpdatedState
-import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.runtime.setValue
-import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalContext
-import androidx.hilt.navigation.compose.hiltViewModel
-import androidx.lifecycle.ViewModel
-import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import androidx.lifecycle.viewmodel.compose.viewModel
-import androidx.lifecycle.viewmodel.viewModelFactory
 import com.google.accompanist.permissions.ExperimentalPermissionsApi
 import com.google.accompanist.permissions.isGranted
 import com.google.accompanist.permissions.rememberMultiplePermissionsState
@@ -44,12 +27,12 @@ import com.google.android.gms.location.Priority
 import com.google.android.gms.maps.model.CameraPosition
 import com.google.android.gms.maps.model.LatLng
 import com.google.maps.android.compose.rememberCameraPositionState
-import org.w3c.dom.Text
 
 @OptIn(ExperimentalPermissionsApi::class, ExperimentalFoundationApi::class)
 @Composable
-fun HistoricalSiteHome(
+fun SiteMainPageScreen(
     viewModel: HistoricalSiteViewModel = viewModel(),
+    context: Context = LocalContext.current,
 
 
     modifier: Modifier = Modifier
@@ -71,7 +54,9 @@ fun HistoricalSiteHome(
 
     var showLoadingScreen by remember { mutableStateOf(true) }
 
-    val locationProvider = LocationServices.getFusedLocationProviderClient(LocalContext.current)
+    val locationProvider by remember {
+        mutableStateOf(LocationServices.getFusedLocationProviderClient(context))
+    }
 
 
 
@@ -111,34 +96,26 @@ fun HistoricalSiteHome(
     } else {
 
 
-        Scaffold(
-            modifier = modifier
-        ) {innerPadding ->
-
-
-            DisplaySiteAndMapViewport(
-                cameraPositionState = cameraPositionState,
-                allSites = allSiteClusterItems,
-                onClusterItemClick = { id -> viewModel.newSiteSelected(id)
-                    cameraPositionState.position = CameraPosition.fromLatLngZoom(currentSite.getPosition(), cameraPositionState.position.zoom)
-                                     },
-                currentSite = currentSite,
-                displayState = displayState,
-                onClickChangeDisplayState = {newState ->
-                    viewModel.updateSiteDisplayState(newState) },
-                currentSiteTypes = siteTypes,
-                userLocation =  currentUserLocation,
-                locationEnabled = locationEnabled,
-                currentSitePhotos = sitePhotos,
-                currentSiteSourcesList = siteSources,
-                newSiteSelected = newSiteSelected,
-                updateNewSiteSelected = {
+        SiteMainPageContent(
+            cameraPositionState = cameraPositionState,
+            allSites = allSiteClusterItems,
+            onClusterItemClick = { id -> viewModel.newSiteSelected(id)
+                cameraPositionState.position = CameraPosition.fromLatLngZoom(currentSite.getPosition(), cameraPositionState.position.zoom)
+            },
+            currentSite = currentSite,
+            displayState = displayState,
+            onClickChangeDisplayState = {newState ->
+                viewModel.updateSiteDisplayState(newState) },
+            currentSiteTypes = siteTypes,
+            userLocation =  currentUserLocation,
+            locationEnabled = locationEnabled,
+            currentSitePhotos = sitePhotos,
+            currentSiteSourcesList = siteSources,
+            newSiteSelected = newSiteSelected,
+            updateNewSiteSelected = {
                     selected -> viewModel.updateSiteSelected(selected)
-                },
-                modifier = Modifier.padding(innerPadding)
-            )
-
-        }
+            },
+        )
 
     }
 
@@ -255,26 +232,5 @@ fun getUserLocation(
 }
 
 
-//Displays while we are loading all the historical sites from the viewmodel
-@Composable
-fun LoadingScreen(
-    waitOn: suspend () -> Unit,
-    onCompleted: () -> Unit,
-    modifier: Modifier = Modifier
-) {
-    Box(modifier = modifier.fillMaxSize(), contentAlignment = Alignment.Center){
-        val currentOnCompeted by rememberUpdatedState( onCompleted)
 
-        LaunchedEffect(Unit) {
-            waitOn()
-            currentOnCompeted()
-        }
-
-        Text(text = "Loading App Data ...",
-            style = MaterialTheme.typography.titleLarge)
-
-    }
-
-
-}
 
