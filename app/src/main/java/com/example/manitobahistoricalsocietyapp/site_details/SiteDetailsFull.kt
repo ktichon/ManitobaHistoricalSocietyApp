@@ -4,11 +4,9 @@ import android.location.Location
 import android.location.LocationManager
 import androidx.compose.foundation.BorderStroke
 import androidx.compose.foundation.ExperimentalFoundationApi
-import androidx.compose.foundation.ScrollState
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.padding
-import androidx.compose.foundation.pager.PagerState
 import androidx.compose.foundation.pager.rememberPagerState
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.verticalScroll
@@ -26,7 +24,7 @@ import androidx.compose.ui.tooling.preview.PreviewParameterProvider
 import androidx.compose.ui.unit.dp
 import com.example.manitobahistoricalsocietyapp.database.HistoricalSite.HistoricalSite
 import com.example.manitobahistoricalsocietyapp.database.SitePhotos.SitePhotos
-import com.example.manitobahistoricalsocietyapp.state_classes.SiteDisplayState
+import com.example.manitobahistoricalsocietyapp.storage_classes.SiteDisplayState
 import com.example.manitobahistoricalsocietyapp.ui.theme.ManitobaHistoricalSocietyAppTheme
 import com.google.android.gms.maps.model.LatLng
 

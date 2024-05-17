@@ -9,7 +9,7 @@ import com.example.manitobahistoricalsocietyapp.database.SitePhotos.SitePhotos
 import com.example.manitobahistoricalsocietyapp.database.SitePhotos.SitePhotosRepository
 import com.example.manitobahistoricalsocietyapp.database.SiteSource.SiteSourceRepository
 import com.example.manitobahistoricalsocietyapp.database.SiteTypes.SiteTypeRepository
-import com.example.manitobahistoricalsocietyapp.state_classes.SiteDisplayState
+import com.example.manitobahistoricalsocietyapp.storage_classes.SiteDisplayState
 import com.google.android.gms.maps.model.LatLng
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.MutableStateFlow

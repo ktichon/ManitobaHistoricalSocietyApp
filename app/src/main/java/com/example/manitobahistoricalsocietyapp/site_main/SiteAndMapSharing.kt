@@ -1,13 +1,10 @@
 package com.example.manitobahistoricalsocietyapp.site_main
 
 import androidx.compose.foundation.ExperimentalFoundationApi
-import androidx.compose.foundation.ScrollState
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.width
-import androidx.compose.foundation.pager.PagerState
-import androidx.compose.foundation.pager.rememberPagerState
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.material3.Surface
 import androidx.compose.runtime.Composable
@@ -22,7 +19,7 @@ import com.example.manitobahistoricalsocietyapp.database.HistoricalSite.Historic
 import com.example.manitobahistoricalsocietyapp.database.SitePhotos.SitePhotos
 import com.example.manitobahistoricalsocietyapp.map.DisplayMap
 import com.example.manitobahistoricalsocietyapp.site_details.DisplayFullSiteDetails
-import com.example.manitobahistoricalsocietyapp.state_classes.SiteDisplayState
+import com.example.manitobahistoricalsocietyapp.storage_classes.SiteDisplayState
 import com.example.manitobahistoricalsocietyapp.ui.theme.ManitobaHistoricalSocietyAppTheme
 import com.google.android.gms.maps.model.LatLng
 import com.google.maps.android.compose.CameraPositionState

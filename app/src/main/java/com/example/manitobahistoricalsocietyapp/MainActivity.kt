@@ -10,7 +10,6 @@ import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.tooling.preview.Preview
-import com.example.manitobahistoricalsocietyapp.map.GoogleMapClustering
 import com.example.manitobahistoricalsocietyapp.site_main.SiteMainPageScreen
 import com.example.manitobahistoricalsocietyapp.ui.theme.ManitobaHistoricalSocietyAppTheme
 import dagger.hilt.android.AndroidEntryPoint

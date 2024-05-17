@@ -1,4 +1,4 @@
-package com.example.manitobahistoricalsocietyapp.state_classes
+package com.example.manitobahistoricalsocietyapp.storage_classes
 
 enum class SiteDisplayState {
     FullMap,

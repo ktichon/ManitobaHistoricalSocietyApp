@@ -21,7 +21,7 @@ import androidx.compose.ui.unit.dp
 import com.example.manitobahistoricalsocietyapp.database.HistoricalSite.HistoricalSite
 import com.example.manitobahistoricalsocietyapp.database.HistoricalSite.HistoricalSiteClusterItem
 import com.example.manitobahistoricalsocietyapp.database.SitePhotos.SitePhotos
-import com.example.manitobahistoricalsocietyapp.state_classes.SiteDisplayState
+import com.example.manitobahistoricalsocietyapp.storage_classes.SiteDisplayState
 import com.example.manitobahistoricalsocietyapp.ui.theme.ManitobaHistoricalSocietyAppTheme
 import com.google.android.gms.maps.model.LatLng
 import com.google.maps.android.compose.CameraPositionState

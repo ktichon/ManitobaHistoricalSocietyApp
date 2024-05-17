@@ -11,10 +11,12 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.SideEffect
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.graphics.BlendMode
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.ColorFilter
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.platform.LocalConfiguration
+import androidx.compose.ui.res.colorResource
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
@@ -25,6 +27,7 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.example.manitobahistoricalsocietyapp.R
 import com.example.manitobahistoricalsocietyapp.database.HistoricalSite.HistoricalSiteClusterItem
+import com.example.manitobahistoricalsocietyapp.storage_classes.ColoursForEachSiteType
 import com.example.manitobahistoricalsocietyapp.ui.theme.ClusterLessThan100
 import com.example.manitobahistoricalsocietyapp.ui.theme.ClusterLessThan1000
 import com.example.manitobahistoricalsocietyapp.ui.theme.ClusterLessThan20
@@ -64,7 +67,9 @@ fun CustomClusterRenderer(
                         ClusterCircleContent(numOfItems = cluster.size)
         } ,
         clusterItemContent = {
-                             ClusterItemContent(Modifier.size(50.dp))
+                             ClusterItemContent(
+                                 typeId = it.mainType,
+                                 Modifier.size(50.dp))
         },
         clusterManager = clusterManager
     )
@@ -140,12 +145,17 @@ fun ClusterCircleContent(
 }
 
 @Composable
-fun ClusterItemContent( modifier: Modifier = Modifier,) {
+fun ClusterItemContent(
+    typeId: Int,
+    modifier: Modifier = Modifier) {
     Image(
         painter = painterResource(id = R.drawable.site_location_marker),
         contentDescription = null,
         contentScale = ContentScale.Fit,
-        //colorFilter = ColorFilter.tint(color = ),
+        colorFilter = ColorFilter.tint(
+            color = ColoursForEachSiteType.getTypeColour(typeId),
+            blendMode =  BlendMode.Modulate
+            ),
         modifier = modifier
         )
     
@@ -174,6 +184,7 @@ private fun PreviewClusterCircle(
 @Preview
 @Composable
 private fun PreviewClusterItem() {
-    ClusterItemContent(Modifier.size(40.dp))
+    ClusterItemContent(7,
+        Modifier.size(40.dp))
 
 }
