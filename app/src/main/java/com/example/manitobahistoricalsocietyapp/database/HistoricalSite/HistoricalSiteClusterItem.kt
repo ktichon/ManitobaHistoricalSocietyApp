@@ -17,15 +17,15 @@ data class HistoricalSiteClusterItem(
         return LatLng(latitude, longitude)
     }
 
-    override fun getTitle(): String? {
+    override fun getTitle(): String {
         return name
     }
 
-    override fun getSnippet(): String? {
+    override fun getSnippet(): String {
         return (if (address.isNullOrBlank()) "" else "$address, ") + municipality
     }
 
-    override fun getZIndex(): Float? {
+    override fun getZIndex(): Float {
         return 0f
     }
 }

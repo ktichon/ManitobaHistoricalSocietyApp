@@ -3,7 +3,6 @@ package com.example.manitobahistoricalsocietyapp.site_main
 import android.annotation.SuppressLint
 import android.content.Context
 import android.os.Looper
-import androidx.compose.foundation.ExperimentalFoundationApi
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.DisposableEffect
 import androidx.compose.runtime.LaunchedEffect
@@ -28,7 +27,7 @@ import com.google.android.gms.maps.model.CameraPosition
 import com.google.android.gms.maps.model.LatLng
 import com.google.maps.android.compose.rememberCameraPositionState
 
-@OptIn(ExperimentalPermissionsApi::class, ExperimentalFoundationApi::class)
+
 @Composable
 fun SiteMainPageScreen(
     viewModel: HistoricalSiteViewModel = viewModel(),
@@ -50,7 +49,7 @@ fun SiteMainPageScreen(
 
     //Used to let composable know that a new site has been selected, so that we can scroll to top
     val newSiteSelected by viewModel.newSiteSelected.collectAsState()
-    //var newSiteSelected by remember { mutableStateOf(false) }
+
 
     var showLoadingScreen by remember { mutableStateOf(true) }
 

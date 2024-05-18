@@ -1,7 +1,6 @@
 package com.example.manitobahistoricalsocietyapp.database.SiteTypes
 
-import com.example.manitobahistoricalsocietyapp.database.SitePhotos.SitePhotosDao
-import com.example.manitobahistoricalsocietyapp.database.SitePhotos.SitePhotosRepository
+
 import javax.inject.Inject
 import javax.inject.Singleton
 

@@ -1,7 +1,6 @@
 package com.example.manitobahistoricalsocietyapp.di
 
 import android.content.Context
-import androidx.room.Room
 import com.example.manitobahistoricalsocietyapp.database.HistoricalSite.HistoricalSiteDao
 import com.example.manitobahistoricalsocietyapp.database.HistoricalSiteDatabase
 import com.example.manitobahistoricalsocietyapp.database.SitePhotos.SitePhotosDao

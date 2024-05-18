@@ -21,11 +21,11 @@ interface SiteSourceDao {
     suspend fun update(siteSource: SiteSource)
 
 
-    @Query("SELECT * FROM siteSource")
+    /*@Query("SELECT * FROM siteSource")
     suspend fun getAllSources(): List<SiteSource>
 
     @Query("SELECT * FROM siteSource WHERE site_id = :siteId ")
-    suspend fun getAllSiteSourcesForSite(siteId: Int): List<SiteSource>
+    suspend fun getAllSiteSourcesForSite(siteId: Int): List<SiteSource>*/
 
     //Only really need the SiteSource.info strings
     @Query("SELECT info FROM siteSource WHERE site_id = :siteId ")

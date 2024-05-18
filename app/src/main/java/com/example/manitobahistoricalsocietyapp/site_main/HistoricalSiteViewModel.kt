@@ -30,8 +30,6 @@ class HistoricalSiteViewModel @Inject internal constructor(
     private val _displayState = MutableStateFlow(SiteDisplayState.FullMap)
     val displayState: StateFlow<SiteDisplayState> = _displayState.asStateFlow()
 
-    /*private val _allHistoricalSites = MutableStateFlow<List<HistoricalSite>>(emptyList())
-    val allHistoricalSites = _allHistoricalSites.asStateFlow()*/
 
     //Initialize with a blank site
     private val _currentSite:MutableStateFlow<HistoricalSite>  = MutableStateFlow(HistoricalSite(0, "","", 1, 0.0, 0.0, "", "", "", "https://www.mhs.ca/", "", ""))
@@ -65,20 +63,10 @@ class HistoricalSiteViewModel @Inject internal constructor(
 
 
 
-    //private val db : HistoricalSiteDatabase= HistoricalSiteDatabase.getDatabase(context)
 
-    /*init {
-        viewModelScope.launch {
-            historicalSiteRepository.getAllSites().collect{
-                _allHistoricalSites.value = it
-            }
-        }
-
-    }*/
 
     suspend fun getAllHistoricalSites()
     {
-        //_allHistoricalSites.value = historicalSiteRepository.getAllSites()
         _allHistoricalSiteClusterItems.value = historicalSiteRepository.getAllSiteClusterItems()
     }
 

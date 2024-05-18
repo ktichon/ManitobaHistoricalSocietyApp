@@ -1,7 +1,6 @@
 package com.example.manitobahistoricalsocietyapp.database
 
 import android.content.Context
-import androidx.room.AutoMigration
 import androidx.room.Database
 import androidx.room.Room
 import androidx.room.RoomDatabase
@@ -45,23 +44,5 @@ abstract class HistoricalSiteDatabase : RoomDatabase() {
                     .also { Instance = it }
             }
         }
-
-
-        /*fun getInstance(context: Context): HistoricalSiteDatabase? {
-            if (INSTANCE == null) {
-                synchronized(HistoricalSiteDatabase::class.java) {
-                    if (INSTANCE == null) {
-                        INSTANCE = databaseBuilder(
-                            context.applicationContext,
-                            HistoricalSiteDatabase::class.java, "historicalSiteDatabase.db"
-                        )
-                            .fallbackToDestructiveMigration()
-                            .createFromAsset("historicalSiteData.db")
-                            .build()
-                    }
-                }
-            }
-            return INSTANCE
-        }*/
     }
 }

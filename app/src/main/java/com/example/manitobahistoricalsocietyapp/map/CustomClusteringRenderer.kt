@@ -16,7 +16,6 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.ColorFilter
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.platform.LocalConfiguration
-import androidx.compose.ui.res.colorResource
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
@@ -36,7 +35,6 @@ import com.example.manitobahistoricalsocietyapp.ui.theme.ClusterLessThan500
 import com.example.manitobahistoricalsocietyapp.ui.theme.ClusterMax
 import com.example.manitobahistoricalsocietyapp.ui.theme.ManitobaHistoricalSocietyAppTheme
 import com.google.maps.android.clustering.algo.NonHierarchicalViewBasedAlgorithm
-import com.google.maps.android.clustering.view.ClusterRenderer
 import com.google.maps.android.compose.MapsComposeExperimentalApi
 import com.google.maps.android.compose.clustering.Clustering
 import com.google.maps.android.compose.clustering.rememberClusterManager
@@ -181,10 +179,16 @@ private fun PreviewClusterCircle(
     }
 }
 
+class ClusterItemWithSiteTypesPreviewProvider : PreviewParameterProvider<Int> {
+    override val values: Sequence<Int>
+        get() = sequenceOf(2,3,4,5,6,7)
+}
 @Preview
 @Composable
-private fun PreviewClusterItem() {
-    ClusterItemContent(7,
+private fun PreviewClusterItem(
+    @PreviewParameter(ClusterItemWithSiteTypesPreviewProvider::class) siteTypeId : Int
+) {
+    ClusterItemContent(siteTypeId,
         Modifier.size(40.dp))
 
 }

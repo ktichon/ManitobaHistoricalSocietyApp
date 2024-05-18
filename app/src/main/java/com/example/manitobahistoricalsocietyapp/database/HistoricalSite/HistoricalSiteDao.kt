@@ -20,8 +20,8 @@ interface HistoricalSiteDao {
     suspend fun update( historicalSites: HistoricalSite)
 
 
-    @Query("SELECT * FROM manitobaHistoricalSite  WHERE municipality = 'Winnipeg' LIMIT 100")
-     suspend fun getAllSites(): List<HistoricalSite>
+    /*@Query("SELECT * FROM manitobaHistoricalSite  WHERE municipality = 'Winnipeg' LIMIT 100")
+     suspend fun getAllSites(): List<HistoricalSite>*/
 
     @Query("SELECT site_id as id,  main_type as  mainType, name, address, municipality, latitude, longitude FROM manitobaHistoricalSite  ")
     suspend fun getAllSiteClusterItems(): List<HistoricalSiteClusterItem>

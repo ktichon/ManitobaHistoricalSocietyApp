@@ -5,7 +5,7 @@ import androidx.room.Delete
 import androidx.room.Insert
 import androidx.room.OnConflictStrategy
 import androidx.room.Query
-import kotlinx.coroutines.flow.Flow
+
 
 
 @Dao
@@ -16,9 +16,9 @@ interface SiteWithTypeDao {
     @Delete
     suspend fun delete(siteWithType: SiteWithType)
 
-    @Query("SELECT * FROM SiteWithType")
+    /*@Query("SELECT * FROM SiteWithType")
     suspend fun getAllSiteWithType(): List<SiteWithType>
 
     @Query("SELECT * FROM SiteWithType WHERE site_id = :siteId ")
-    suspend fun getAllSiteWithTypesForSite(siteId: Int): List<SiteWithType>
+    suspend fun getAllSiteWithTypesForSite(siteId: Int): List<SiteWithType>*/
 }

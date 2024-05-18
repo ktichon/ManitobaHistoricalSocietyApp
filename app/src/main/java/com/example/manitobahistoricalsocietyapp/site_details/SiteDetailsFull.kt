@@ -47,7 +47,7 @@ fun DisplayFullSiteDetails(
     sourcesList: List<String>,
 
     //Used to check if this site has been newly selected
-    newSiteSelected: Boolean = false,
+    newSiteSelected: Boolean,
     updateNewSiteSelected: (Boolean) -> Unit,
 
     modifier: Modifier = Modifier
@@ -106,8 +106,6 @@ fun DisplayFullSiteDetails(
                     .verticalScroll(scrollState),
             ) {
                 //Site types, address, and distance from user
-                //moved this code to the entity
-                //val fullAddress = (if (site.address.isNullOrBlank()) "" else site.address + ", ") + site.municipality
                 DisplaySiteBasicInfo(
                     siteTypes = siteTypes,
                     fullAddress = site.getFullAddress(),
@@ -152,18 +150,12 @@ fun DisplayFullSiteDetails(
                     modifier = Modifier.padding(paddingBetweenItems))
 
 
-                //If displayState is set to FullSite, display the description, sources, and link to historical society page
-                /*if (displayState == SiteDisplayState.FullSite){
 
-                }*/
 
             }
 
         }
     }
-
-
-    //Container for all site info
 
 }
 
@@ -183,7 +175,6 @@ class DisplayStatePreviewParameterProvider : PreviewParameterProvider<SiteDispla
         get() = sequenceOf(SiteDisplayState.FullSite, SiteDisplayState.HalfSite)
 }
 
-@OptIn(ExperimentalFoundationApi::class)
 @PreviewLightDark
 @Composable
 fun PreviewFullSiteDetails(
@@ -218,8 +209,6 @@ fun PreviewFullSiteDetails(
             val souce9 = "“Plans for a \$100,000 Odd Fellows Home,” <a href=\"http://www.mhs.mb.ca/docs/business/freepress.shtml\"><em>Manitoba Free Press</em></a>, 5 April 1922, page 8."
             val souce10 = "“Proposed Odd Fellows’ Home for Charleswood,” <a href=\"http://www.mhs.mb.ca/docs/business/freepress.shtml\"><em>Manitoba Free Press</em></a>, 5 March 1921, page 18."
             val sourcesList = listOf(souce1, souce2, souce3, souce4, souce5, souce6, souce7, souce8, souce9, souce10)
-
-            val scrollState = rememberScrollState()
             DisplayFullSiteDetails(
                 site = testSite,
                 displayState = displayState,
@@ -229,6 +218,7 @@ fun PreviewFullSiteDetails(
                 allSitePhotos = allSitePhotos,
                 //uriHandler = uriHandler,
                 sourcesList = sourcesList,
+                newSiteSelected = false,
                 updateNewSiteSelected = {},
                 //scrollState = scrollState,
                 /*photosPagerState = rememberPagerState {

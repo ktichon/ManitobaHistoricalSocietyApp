@@ -76,8 +76,6 @@ fun DisplaySiteTitle(
             modifier = Modifier
                 .weight(1f)
                 .padding(horizontal = 2.dp)
-
-
         )
 
         //Changes the icon, content description, and on click depending on state
@@ -101,8 +99,6 @@ fun DisplaySiteTitle(
 fun DisplaySiteBasicInfo(
     siteTypes: List<String>,
     fullAddress: String,
-    /*siteLocation: Location,
-    userLocation: Location,*/
     metersFromUser: Float,
     modifier: Modifier = Modifier
     ) {
@@ -170,37 +166,6 @@ fun DisplaySitePhoto(
 
         )
 
-        /*SubcomposeAsyncImage(
-            model = sitePhoto.url,
-            contentDescription = sitePhoto.name,
-            loading = {
-                CircularProgressIndicator()
-            },
-            contentScale = ContentScale.Fit,
-            error ={ AsyncImage(model = sitePhoto.url, contentDescription = sitePhoto.name, error = painterResource(id = R.drawable.error) )}            ,
-            modifier = Modifier
-                //.fillMaxWidth().wrapContentHeight(
-                .size(height = (sitePhoto.height / 2).dp, width = (sitePhoto.width / 2).dp)
-                //.aspectRatio(sitePhoto.width.toFloat() / sitePhoto.height.toFloat())
-                .height(sitePhoto.height.dp)
-                //.size(10.dp)
-                // .fillMaxWidth()
-                //.wrapContentHeight()
-                //.defaultMinSize(50.dp)
-                .padding(5.dp)
-                .combinedClickable(
-                    onClick = { },
-                    onLongClick = {
-                        uriHandler.openUri(sitePhoto.url)
-                    },
-                    onLongClickLabel = sitePhoto.url
-                )
-
-        )*/
-
-            
-
-
         sitePhoto.info?.let {
             GetAndroidViewWithStyle(
                 text = sitePhoto.info,
@@ -234,15 +199,6 @@ fun DisplaySitePhotos(
     modifier: Modifier = Modifier
 ) {
 
-
-    /*LazyRow(
-        contentPadding = PaddingValues(10.dp),
-        verticalAlignment = Alignment.CenterVertically,
-        horizontalArrangement = Arrangement.spacedBy(10.dp),
-        state = state,
-        flingBehavior = rememberSnapFlingBehavior(lazyListState = state),
-        modifier = modifier.fillMaxWidth()
-    )*/
     Row (
         modifier = modifier
     ){
@@ -259,32 +215,7 @@ fun DisplaySitePhotos(
             {
                     index ->
                 DisplaySitePhoto(photoIndex = index + 1, totalNumberOfPhotos = photos.size, sitePhoto = photos[index], uriHandler = uriHandler )
-
-
             }
-
-            //This is the code that puts a row of circles to show how many photos there are
-           /* Row(
-                modifier = Modifier
-                    .wrapContentHeight()
-                    .fillMaxWidth()
-                    .align(Alignment.End)
-                    .padding(bottom = 5.dp),
-                horizontalArrangement = Arrangement.Center
-            ){
-                repeat(pageState.pageCount){pageNum ->
-                    val colour = if(pageState.pageCount == pageNum) Color.DarkGray else Color.LightGray
-                    Box(modifier = Modifier
-                        .padding(3.dp)
-                        .clip(CircleShape)
-                        .background(colour)
-                        .size(15.dp)
-                    )
-
-                }
-            }*/
-
-
         }
     }
 
@@ -297,6 +228,7 @@ fun DisplayNoPhotos(
     modifier: Modifier = Modifier
 
 ) {
+    //One way to presive a link in a string
     val annotatedString = buildAnnotatedString {
         withStyle(style = SpanStyle(color = MaterialTheme.colorScheme.onSurface)){
             append("We have no photos for this site. If you have one in your personal collection and can provide a copy, please contact us at ")

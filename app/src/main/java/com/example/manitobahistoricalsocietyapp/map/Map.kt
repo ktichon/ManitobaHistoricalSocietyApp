@@ -2,24 +2,13 @@ package com.example.manitobahistoricalsocietyapp.map
 
 import androidx.compose.foundation.isSystemInDarkTheme
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.getValue
-import androidx.compose.runtime.mutableStateOf
-import androidx.compose.runtime.remember
 import androidx.compose.ui.Modifier
-import com.example.manitobahistoricalsocietyapp.R
-import com.example.manitobahistoricalsocietyapp.database.HistoricalSite.HistoricalSite
 import com.example.manitobahistoricalsocietyapp.database.HistoricalSite.HistoricalSiteClusterItem
-import com.google.android.gms.maps.model.BitmapDescriptor
-import com.google.android.gms.maps.model.BitmapDescriptorFactory
 import com.google.android.gms.maps.model.MapStyleOptions
 import com.google.maps.android.compose.CameraPositionState
 import com.google.maps.android.compose.GoogleMap
 import com.google.maps.android.compose.MapProperties
-import com.google.maps.android.compose.MapsComposeExperimentalApi
-import com.google.maps.android.compose.Marker
-import com.google.maps.android.compose.clustering.Clustering
 
-@OptIn(MapsComposeExperimentalApi::class)
 @Composable
 fun DisplayMap(
 
@@ -30,19 +19,12 @@ fun DisplayMap(
     modifier: Modifier = Modifier
 ) {
     //If the system is in dark mode, use dark map. Else use light map
-    /*val mapStyle = MapStyleOptions(if (isSystemInDarkTheme()) mapStylingNight else mapStylingDay)*/
-
     /*val mapProperties by remember {
         mutableStateOf(MapProperties(
             isMyLocationEnabled = locationEnabled,
-            mapStyleOptions = mapStyle
+            mapStyleOptions = MapStyleOptions(if (isSystemInDarkTheme()) mapStylingNight else mapStylingDay)
         ))
     }*/
-
-    /*val mapProperties = MapProperties(
-        isMyLocationEnabled = locationEnabled,
-        mapStyleOptions = mapStyle
-    )*/
 
 
     GoogleMap(
@@ -55,36 +37,10 @@ fun DisplayMap(
         modifier = modifier
     ){
         CustomClusterRenderer(sites = sites, onClusterItemClick = onClusterItemClick)
-        /*Clustering(
-            items = sites,
-            onClusterItemClick = {
-
-                onClusterItemClick(it.id)
-                                 false
-                                 },
-            *//*clusterItemContent = {item ->
-                Marker(
-                    title = item.title,
-                    snippet = item.snippet,
-                    //icon = setMarkerIcon(item.id)
-
-
-                )
-            }*//*
-
-        )*/
     }
 
 }
 
-
-//Used to set the different icons for the main site type
-//currently it only returns one type
-private fun setMarkerIcon(typeID: Int): BitmapDescriptor {
-
-    return BitmapDescriptorFactory.fromResource(R.drawable.site_marker)
-
-}
 
 val mapStylingDay ="""
    [

@@ -1,15 +1,12 @@
 package com.example.manitobahistoricalsocietyapp.site_main
 
-import androidx.compose.foundation.ExperimentalFoundationApi
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.width
-import androidx.compose.foundation.rememberScrollState
 import androidx.compose.material3.Surface
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.platform.LocalUriHandler
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.tooling.preview.PreviewParameter
 import androidx.compose.ui.tooling.preview.PreviewParameterProvider
@@ -24,7 +21,7 @@ import com.example.manitobahistoricalsocietyapp.ui.theme.ManitobaHistoricalSocie
 import com.google.android.gms.maps.model.LatLng
 import com.google.maps.android.compose.CameraPositionState
 
-@OptIn(ExperimentalFoundationApi::class)
+
 @Composable
 fun DisplaySiteAndMapViewport(
     //Map parameters
@@ -50,8 +47,8 @@ fun DisplaySiteAndMapViewport(
 ) {
     Column(modifier = modifier) {
 
-        val siteWeight = if(displayState == SiteDisplayState.FullSite) 99f else 1.5f
-        val animationLengthInMilliSeconds = 200
+        val siteWeight = if(displayState == SiteDisplayState.FullSite) 99f else 1.4f
+       // val animationLengthInMilliSeconds = 200
 
         //Always display map, as we do not want it to leave the composition
         //If it leaves the composition, all the markers would need to be re-added to the map, and that takes time
@@ -99,23 +96,21 @@ fun DisplaySiteAndMapViewport(
 
         if (displayState == SiteDisplayState.HalfSite || displayState == SiteDisplayState.FullSite )
         {
-            if (currentSite != null) {
-                DisplayFullSiteDetails(
-                    site = currentSite,
-                    displayState = displayState,
-                    onClickChangeDisplayState = onClickChangeDisplayState,
-                    siteTypes = currentSiteTypes,
-                    userLocation = userLocation,
-                    allSitePhotos = currentSitePhotos,
-                    sourcesList = currentSiteSourcesList,
-                    newSiteSelected = newSiteSelected,
-                    updateNewSiteSelected = updateNewSiteSelected,
-                    modifier = Modifier
-                        .weight(siteWeight)
-                        .fillMaxSize()
+            DisplayFullSiteDetails(
+                site = currentSite,
+                displayState = displayState,
+                onClickChangeDisplayState = onClickChangeDisplayState,
+                siteTypes = currentSiteTypes,
+                userLocation = userLocation,
+                allSitePhotos = currentSitePhotos,
+                sourcesList = currentSiteSourcesList,
+                newSiteSelected = newSiteSelected,
+                updateNewSiteSelected = updateNewSiteSelected,
+                modifier = Modifier
+                    .weight(siteWeight)
+                    .fillMaxSize()
 
-                )
-            }
+            )
         }
 
 
@@ -128,7 +123,7 @@ class DisplayStateWithMapPreviewParameterProvider : PreviewParameterProvider<Sit
         get() = sequenceOf(SiteDisplayState.HalfSite, SiteDisplayState.FullSite, SiteDisplayState.FullMap)
 }
 
-@OptIn(ExperimentalFoundationApi::class)
+
 @Preview
 @Composable
 private fun PreviewSiteAndMap(
@@ -150,7 +145,7 @@ private fun PreviewSiteAndMap(
             val photo7 = SitePhotos(140229,3817,  "3817_oddfellowshome7_1715023463.jpg", 600, 450,"http://www.mhs.mb.ca/docs/sites/images/oddfellowshome7.jpg", "<strong>Remaining fence post of the Odd Fellows Home grounds</strong> (December 2020)<br/>\n" + "<em>Source:</em> <a href=\"http://www.mhs.mb.ca/docs/people/goldsborough_lg.shtml\">Gordon Goldsborough</a>","2024-05-06 14:24:23"  )
             val photo8 = SitePhotos(140229,3817,  "3817_oddfellowshome8_1715023463.jpg", 600, 400,"http://www.mhs.mb.ca/docs/sites/images/oddfellowshome8.jpg", "<strong>Front view of the Odd Fellows Home</strong> (May 2020)<br/>\n" + "<em>Source:</em> <a href=\"http://www.mhs.mb.ca/docs/people/penner_g.shtml\">George Penner</a> ","2024-05-06 14:24:23"  )
             val allSitePhotos = listOf(photo1, photo2, photo3, photo4, photo5, photo6, photo7, photo8)
-            val uriHandler = LocalUriHandler.current
+            //val uriHandler = LocalUriHandler.current
 
             val souce1 = "“Tenders wanted,” <a href=\"http://www.mhs.mb.ca/docs/business/freepress.shtml\"><em>Manitoba Free Press</em></a>, 7 June 1916, page 2."
             val souce2 = "“Fraternal notes,” <a href=\"http://www.mhs.mb.ca/docs/business/tribune.shtml\"><em>Winnipeg Tribune</em></a>, 1 July 1916, page 13. "
@@ -164,7 +159,7 @@ private fun PreviewSiteAndMap(
             val souce10 = "“Proposed Odd Fellows’ Home for Charleswood,” <a href=\"http://www.mhs.mb.ca/docs/business/freepress.shtml\"><em>Manitoba Free Press</em></a>, 5 March 1921, page 18."
             val sourcesList = listOf(souce1, souce2, souce3, souce4, souce5, souce6, souce7, souce8, souce9, souce10)
             val cameraPositionState = CameraPositionState()
-            val scrollState = rememberScrollState()
+            //val scrollState = rememberScrollState()
             DisplaySiteAndMapViewport(
                 currentSite = testSite,
                 displayState = displayState,
