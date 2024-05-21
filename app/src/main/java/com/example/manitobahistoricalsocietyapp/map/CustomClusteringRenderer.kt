@@ -27,6 +27,7 @@ import androidx.compose.ui.unit.sp
 import com.example.manitobahistoricalsocietyapp.R
 import com.example.manitobahistoricalsocietyapp.database.HistoricalSite.HistoricalSiteClusterItem
 import com.example.manitobahistoricalsocietyapp.storage_classes.ColoursForEachSiteType
+import com.example.manitobahistoricalsocietyapp.ui.theme.ClusterLessThan10
 import com.example.manitobahistoricalsocietyapp.ui.theme.ClusterLessThan100
 import com.example.manitobahistoricalsocietyapp.ui.theme.ClusterLessThan1000
 import com.example.manitobahistoricalsocietyapp.ui.theme.ClusterLessThan20
@@ -62,12 +63,14 @@ fun CustomClusterRenderer(
     //Sets what to display for the Cluster and Cluster Item
     val renderer = rememberClusterRenderer(
         clusterContent ={cluster ->
-                        ClusterCircleContent(numOfItems = cluster.size)
+                        ClusterCircleContent(
+                            numOfItems = cluster.size,
+                            baseSize = 41)
         } ,
         clusterItemContent = {
                              ClusterItemContent(
                                  typeId = it.mainType,
-                                 Modifier.size(50.dp))
+                                 )
         },
         clusterManager = clusterManager
     )
@@ -101,23 +104,27 @@ fun CustomClusterRenderer(
 fun ClusterCircleContent(
     //colour: Color,
     numOfItems: Int,
+    baseSize: Int,
     modifier: Modifier = Modifier) {
 
     val colour = when(numOfItems){
-        in 0..20 -> ClusterLessThan20
+        in 0 .. 10 -> ClusterLessThan10
+        in 11..20 -> ClusterLessThan20
         in 21..50 -> ClusterLessThan50
         in 51..100 -> ClusterLessThan100
         in 101..500 -> ClusterLessThan500
         in 501..1000 -> ClusterLessThan1000
         else -> ClusterMax
     }
+
     val size = when(numOfItems){
-        in 0..20 -> 40.dp
-        in 21..50 -> 45.dp
-        in 51..100 -> 50.dp
-        in 101..500 -> 55.dp
-        in 501..1000 -> 60.dp
-        else -> 65.dp
+        in 0 .. 10 -> (baseSize +  (5* 0)).dp
+        in 11..20 -> (baseSize +  (5* 1)).dp
+        in 21..50 -> (baseSize +  (5* 2)).dp
+        in 51..100 -> (baseSize +  (5* 3)).dp
+        in 101..500 -> (baseSize +  (5* 4)).dp
+        in 501..1000 -> (baseSize +  (5* 5)).dp
+        else -> (baseSize +  (5* 6)).dp
     }
 
 
@@ -174,6 +181,7 @@ private fun PreviewClusterCircle(
     ManitobaHistoricalSocietyAppTheme {
         ClusterCircleContent(
             numOfItems = numOfItems,
+            baseSize = 41
             //modifier = Modifier.size(50.dp)
         )
     }
