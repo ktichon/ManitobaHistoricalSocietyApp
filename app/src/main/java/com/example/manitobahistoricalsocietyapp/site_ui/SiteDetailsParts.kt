@@ -1,4 +1,4 @@
-package com.example.manitobahistoricalsocietyapp.site_details
+package com.example.manitobahistoricalsocietyapp.site_ui
 
 import android.text.method.LinkMovementMethod
 import android.view.View.TEXT_ALIGNMENT_CENTER
@@ -50,7 +50,7 @@ import com.example.manitobahistoricalsocietyapp.R
 import com.example.manitobahistoricalsocietyapp.database.SitePhotos.SitePhotos
 import com.example.manitobahistoricalsocietyapp.database.SiteSource.SiteSource
 import com.example.manitobahistoricalsocietyapp.storage_classes.SiteDisplayState
-import com.example.manitobahistoricalsocietyapp.ui.theme.ManitobaHistoricalSocietyAppTheme
+import com.example.manitobahistoricalsocietyapp.ui.theme.AppTheme
 import kotlin.math.roundToInt
 
 @Composable
@@ -366,7 +366,7 @@ private const val description = "By June 1916, the <a href=\"http://www.mhs.mb.c
 @Preview
 @Composable
 private fun PreviewSiteTitleHalfSite () {
-    ManitobaHistoricalSocietyAppTheme {
+    AppTheme {
         Surface {
             DisplaySiteTitle(name = longName, displayState = SiteDisplayState.HalfSite, onClickChangeDisplayState = {})
         }
@@ -376,7 +376,7 @@ private fun PreviewSiteTitleHalfSite () {
 @Preview
 @Composable
 private fun PreviewSiteTitleFullSite () {
-    ManitobaHistoricalSocietyAppTheme {
+    AppTheme {
         Surface {
             DisplaySiteTitle(name = longName, displayState = SiteDisplayState.FullSite, onClickChangeDisplayState = {})
         }
@@ -386,7 +386,7 @@ private fun PreviewSiteTitleFullSite () {
 @Preview
 @Composable
 private fun PreviewSiteBasicInfo () {
-    ManitobaHistoricalSocietyAppTheme {
+    AppTheme {
         Surface {
             DisplaySiteBasicInfo(
                 siteTypes = listOf("Building", "Museum or Archives"),
@@ -401,7 +401,7 @@ private fun PreviewSiteBasicInfo () {
 @Composable
 private fun PreviewSitePhoto()
 {
-    ManitobaHistoricalSocietyAppTheme {
+    AppTheme {
         Surface {
             val photo1 = SitePhotos(140229,3817,  "3817_oddfellowshome2_1715023463.jpg", 600, 422,"http://www.mhs.mb.ca/docs/sites/images/oddfellowshome2.jpg", "<strong>Architect’s drawing of the Odd Fellows Home</strong> (1922)<br/><a href=\"http://www.mhs.mb.ca/docs/business/freepress.shtml\">Manitoba Free Press</a>, 15 July 1922, page 48.", "2024-05-06 14:24:23"  )
             DisplaySitePhoto(photoIndex = 1, totalNumberOfPhotos = 3, sitePhoto = photo1, LocalUriHandler.current )
@@ -414,7 +414,7 @@ private fun PreviewSitePhoto()
 @Composable
 private fun PreviewSitePhotos()
 {
-    ManitobaHistoricalSocietyAppTheme {
+    AppTheme {
         Surface {
             val photo1 = SitePhotos(140229,3817,  "3817_oddfellowshome2_1715023463.jpg", 600, 422,"http://www.mhs.mb.ca/docs/sites/images/oddfellowshome2.jpg", "<strong>Architect’s drawing of the Odd Fellows Home</strong> (1922)<br/><a href=\"http://www.mhs.mb.ca/docs/business/freepress.shtml\">Manitoba Free Press</a>, 15 July 1922, page 48.", "2024-05-06 14:24:23"  )
             val photo2 = SitePhotos(140229,3817,  "3817_oddfellowshome2_1715023463.jpg", 600, 250,"http://www.mhs.mb.ca/docs/sites/images/oddfellowshome4.jpg", "<strong>Odd Fellows Home</strong> (1923)<br/><a href=\"http://www.mhs.mb.ca/docs/business/tribune.shtml\">Winnipeg Tribune</a>, 13 March 1923, page 2.", "2024-05-06 14:24:23"  )
@@ -432,7 +432,7 @@ private fun PreviewSitePhotos()
 @Preview
 @Composable
 fun PreviewNoPhotos() {
-    ManitobaHistoricalSocietyAppTheme {
+    AppTheme {
         Surface {
             DisplayNoPhotos(LocalUriHandler.current)
         }
@@ -443,7 +443,7 @@ fun PreviewNoPhotos() {
 @Preview
 @Composable
 fun PreviewSiteDescription() {
-    ManitobaHistoricalSocietyAppTheme {
+    AppTheme {
         Surface {
             DisplaySiteDescription(siteInfo = description )
         }
@@ -453,7 +453,7 @@ fun PreviewSiteDescription() {
 @Preview
 @Composable
 fun PreviewSiteSources() {
-    ManitobaHistoricalSocietyAppTheme {
+    AppTheme {
         Surface {
             val source1 = SiteSource(1,2,"<a href=\"http://www.gov.mb.ca/chc/hrb/mun/m053.html\" target=\"_blank\">St. Andrews United Church, NE4-13-6 EPM Garson</a>, Manitoba Historic Resources Branch.", "").info
             val source2 = SiteSource(2,2,"<em>One Hundred Years in the History of the Rural Schools of Manitoba: Their Formation, Reorganization and Dissolution (1871-1971)</em> by <a href=\"http://www.mhs.mb.ca/docs/people/perfect_mb.shtml\">Mary B. Perfect</a>, MEd thesis, University of Manitoba, April 1978.", "").info
@@ -468,7 +468,7 @@ fun PreviewSiteSources() {
 @Preview
 @Composable
 fun PreviewSiteLink() {
-    ManitobaHistoricalSocietyAppTheme {
+    AppTheme {
         Surface {
             DisplaySiteLink(siteUrl = "http://www.mhs.mb.ca/docs/sites/oddfellowshome.shtml", uriHandler = LocalUriHandler.current )
         }

@@ -34,7 +34,7 @@ import com.example.manitobahistoricalsocietyapp.ui.theme.ClusterLessThan20
 import com.example.manitobahistoricalsocietyapp.ui.theme.ClusterLessThan50
 import com.example.manitobahistoricalsocietyapp.ui.theme.ClusterLessThan500
 import com.example.manitobahistoricalsocietyapp.ui.theme.ClusterMax
-import com.example.manitobahistoricalsocietyapp.ui.theme.ManitobaHistoricalSocietyAppTheme
+import com.example.manitobahistoricalsocietyapp.ui.theme.AppTheme
 import com.google.maps.android.clustering.algo.NonHierarchicalViewBasedAlgorithm
 import com.google.maps.android.compose.MapsComposeExperimentalApi
 import com.google.maps.android.compose.clustering.Clustering
@@ -178,7 +178,7 @@ class ClusterCircleWithSizesPreviewProvider : PreviewParameterProvider<Int> {
 private fun PreviewClusterCircle(
     @PreviewParameter(ClusterCircleWithSizesPreviewProvider::class) numOfItems :Int
 ) {
-    ManitobaHistoricalSocietyAppTheme {
+    AppTheme {
         ClusterCircleContent(
             numOfItems = numOfItems,
             baseSize = 41

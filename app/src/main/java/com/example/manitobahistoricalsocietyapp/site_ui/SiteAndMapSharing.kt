@@ -1,47 +1,31 @@
-package com.example.manitobahistoricalsocietyapp.site_main
+package com.example.manitobahistoricalsocietyapp.site_ui
 
-import androidx.compose.animation.AnimatedVisibility
-import androidx.compose.animation.animateContentSize
-import androidx.compose.animation.core.tween
-import androidx.compose.animation.slideInHorizontally
-import androidx.compose.animation.slideOutHorizontally
-import androidx.compose.foundation.layout.Box
-import androidx.compose.foundation.layout.Spacer
+import androidx.compose.foundation.background
+import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.height
-import androidx.compose.foundation.layout.padding
-import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
-import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.automirrored.filled.KeyboardArrowLeft
-import androidx.compose.material3.ExperimentalMaterial3Api
-import androidx.compose.material3.Icon
-import androidx.compose.material3.IconButton
 import androidx.compose.material3.MaterialTheme
-import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Surface
-import androidx.compose.material3.Text
-import androidx.compose.material3.TopAppBar
-import androidx.compose.material3.TopAppBarDefaults.topAppBarColors
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.LaunchedEffect
-import androidx.compose.runtime.getValue
-import androidx.compose.runtime.rememberUpdatedState
-import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.tooling.preview.PreviewParameter
+import androidx.compose.ui.tooling.preview.PreviewParameterProvider
 import androidx.compose.ui.unit.dp
 import com.example.manitobahistoricalsocietyapp.database.HistoricalSite.HistoricalSite
 import com.example.manitobahistoricalsocietyapp.database.HistoricalSite.HistoricalSiteClusterItem
 import com.example.manitobahistoricalsocietyapp.database.SitePhotos.SitePhotos
+import com.example.manitobahistoricalsocietyapp.map.DisplayMap
 import com.example.manitobahistoricalsocietyapp.storage_classes.SiteDisplayState
-import com.example.manitobahistoricalsocietyapp.ui.theme.ManitobaHistoricalSocietyAppTheme
+import com.example.manitobahistoricalsocietyapp.ui.theme.AppTheme
 import com.google.android.gms.maps.model.LatLng
 import com.google.maps.android.compose.CameraPositionState
 
+
 @Composable
-fun SiteMainPageContent(
+fun DisplaySiteAndMapViewport(
+    //Map parameters
     cameraPositionState: CameraPositionState,
     allSites: List<HistoricalSiteClusterItem>,
     onClusterItemClick: (id:Int)  -> Unit,
@@ -59,136 +43,94 @@ fun SiteMainPageContent(
     updateNewSiteSelected: (Boolean) -> Unit,
 
     modifier: Modifier = Modifier
+
+
 ) {
+    Column(modifier = modifier.background(MaterialTheme.colorScheme.primary)) {
 
-    Scaffold(
-        topBar = {
-            SiteMainPageTopBar(
-                onClickChangeDisplayState = onClickChangeDisplayState,
-                displayState = displayState)
-        },
-        modifier = modifier
-    ) {innerPadding ->
+        val siteWeight = if(displayState == SiteDisplayState.FullSite) 99f else 1.4f
+       // val animationLengthInMilliSeconds = 200
 
-
-        DisplaySiteAndMapViewport(
+        //Always display map, as we do not want it to leave the composition
+        //If it leaves the composition, all the markers would need to be re-added to the map, and that takes time
+        //This is the code for the map. However, maps don't show up on preview.
+        DisplayMap(
             cameraPositionState = cameraPositionState,
-            allSites = allSites,
+            sites = allSites,
             onClusterItemClick = onClusterItemClick,
-            currentSite = currentSite,
-            displayState = displayState,
-            onClickChangeDisplayState = onClickChangeDisplayState,
-            currentSiteTypes = currentSiteTypes,
-            userLocation =  userLocation,
             locationEnabled = locationEnabled,
-            currentSitePhotos = currentSitePhotos,
-            currentSiteSourcesList = currentSiteSourcesList,
-            newSiteSelected = newSiteSelected,
-            updateNewSiteSelected = updateNewSiteSelected,
-            modifier = Modifier.padding(innerPadding)
+            modifier = Modifier
+                .fillMaxSize()
+                .weight(1f)
         )
 
-    }
+        //Instead, there is a placeholder image so we can check how things look on the preview
+       /* Icon(imageVector = Icons.Default.AccountBox,
+            contentDescription = "Map Place Holder",
+            modifier = Modifier
+                .background(Color.Cyan)
+                .fillMaxSize()
+                .weight(1f))*/
 
-}
+        /*AnimatedVisibility(
+            visible = (displayState == SiteDisplayState.HalfSite || displayState == SiteDisplayState.FullSite) and (currentSite != null),
+            modifier = Modifier.weight(siteWeight),
+            enter = slideInVertically (
+                //slide in from bottom
+                initialOffsetY = {
+                    it / 2
+                },
+                animationSpec = tween(durationMillis = animationLengthInMilliSeconds, easing = LinearOutSlowInEasing)
+            ),
+             //slide out from bottom
+            exit = slideOutVertically(
+                targetOffsetY = {
+                    it / 2
+                },
+                animationSpec = tween(durationMillis = animationLengthInMilliSeconds, easing = LinearOutSlowInEasing)
+            ),
 
-@OptIn(ExperimentalMaterial3Api::class)
-@Composable
-fun SiteMainPageTopBar(
-    onClickChangeDisplayState: (SiteDisplayState) -> Unit,
-    displayState: SiteDisplayState,
-    modifier: Modifier = Modifier) {
-    TopAppBar(
-        navigationIcon = {
+        ) {
 
-            /*AnimatedVisibility(
-                visible = (displayState != SiteDisplayState.FullMap ),
-                enter = slideInHorizontally(
-                    initialOffsetX = {fullWidth -> -fullWidth },
-                    animationSpec = tween(1000)
-                ),
-                exit = slideOutHorizontally(
-                    targetOffsetX = {fullWidth -> -fullWidth },
-                    animationSpec = tween(1000)
-                )
-            ) {
-                IconButton(
-                    onClick = { onClickChangeDisplayState(SiteDisplayState.FullMap) }
-                ){
-                    Icon(
-                        imageVector = Icons.AutoMirrored.Filled.KeyboardArrowLeft,
-                        contentDescription = "Back",
-                        modifier = Modifier.size(40.dp)
-                    )
-
-                }
-            }*/
-            //On click show full map
-            if (displayState != SiteDisplayState.FullMap){
-                IconButton(
-                    onClick = { onClickChangeDisplayState(SiteDisplayState.FullMap) }
-                ){
-                    Icon(
-                        imageVector = Icons.AutoMirrored.Filled.KeyboardArrowLeft,
-                        contentDescription = "Back",
-                        modifier = Modifier.size(40.dp)
-                    )
-
-                }
-
-            }
-            //However if it is already full map then display nothing
-            else{
-                // I have the blank icon button to keep the padding the same
-                IconButton(onClick = {  }) {
-                    Spacer(modifier = Modifier
-                        .size(40.dp))
-                }
-
-            }
-
-        },
-        colors = topAppBarColors(
-            containerColor = MaterialTheme.colorScheme.primaryContainer,
-            titleContentColor = MaterialTheme.colorScheme.primary,
-        ),
-        title = {
-            Text(text = "Historical Sites")
-        },
-        modifier = modifier.animateContentSize(
-            tween(500)
-        ))
-    
-}
+        }*/
 
 
-//Displays while we are loading all the historical sites from the viewmodel
-@Composable
-fun LoadingScreen(
-    waitOn: suspend () -> Unit,
-    onCompleted: () -> Unit,
-    modifier: Modifier = Modifier
-) {
-    Box(modifier = modifier.fillMaxSize(), contentAlignment = Alignment.Center){
-        val currentOnCompeted by rememberUpdatedState( onCompleted)
+        if (displayState == SiteDisplayState.HalfSite || displayState == SiteDisplayState.FullSite )
+        {
+            DisplayFullSiteDetails(
+                site = currentSite,
+                displayState = displayState,
+                onClickChangeDisplayState = onClickChangeDisplayState,
+                siteTypes = currentSiteTypes,
+                userLocation = userLocation,
+                allSitePhotos = currentSitePhotos,
+                sourcesList = currentSiteSourcesList,
+                newSiteSelected = newSiteSelected,
+                updateNewSiteSelected = updateNewSiteSelected,
+                modifier = Modifier
+                    .weight(siteWeight)
+                    .fillMaxSize()
 
-        LaunchedEffect(Unit) {
-            waitOn()
-            currentOnCompeted()
+            )
         }
 
-        Text(text = "Loading App Data ...",
-            style = MaterialTheme.typography.titleLarge)
+
 
     }
+    
 }
+class DisplayStateWithMapPreviewParameterProvider : PreviewParameterProvider<SiteDisplayState>{
+    override val values: Sequence<SiteDisplayState>
+        get() = sequenceOf(SiteDisplayState.HalfSite, SiteDisplayState.FullSite, SiteDisplayState.FullMap)
+}
+
 
 @Preview
 @Composable
-private fun PreviewHistoricalSiteHomeContent(
+private fun PreviewSiteAndMap(
     @PreviewParameter(DisplayStateWithMapPreviewParameterProvider::class) displayState :SiteDisplayState
 ) {
-    ManitobaHistoricalSocietyAppTheme {
+    AppTheme {
         Surface {
 
             val testSite = HistoricalSite(3817, "Odd Fellows Home","4025 Roblin Boulevard", 3, 49.86902, -97.26729, "MB", "Winnipeg", "By June 1916, the <a href=\"http://www.mhs.mb.ca/docs/organization/ioof.shtml\">Independent Order of Odd Fellows</a> began searching in the greater <a href=\"http://www.mhs.mb.ca/docs/municipalities/winnipeg.shtml\">Winnipeg</a> area for property on which to built a home for elderly members and their spouses, as well as orphaned children of deceased members. These large grounds in the <a href=\"http://www.mhs.mb.ca/docs/municipalities/charleswood.shtml\">Rural Municipality of Charleswood</a> were selected and a contest was held for the design plans. The winning entry was drawn up by Winnipeg architect <a href=\"http://www.mhs.mb.ca/docs/people/russell_jhg.shtml\">John Hamilton Gordon Russell</a>. It called for a structure measuring 120 feet by 66 feet, costing \$30,000 to \$40,000, with capacity for around 40 beds. Excavation was to begin by the fall of 1917. However, construction did not proceed and, over the following years, additional funds were raised to build a larger facility.<br><br>Construction on the present building began in 1922, with site preparation and excavation work underway by the spring. A cornerstone-laying ceremony officiated by Grand Secretary <a href=\"http://www.mhs.mb.ca/docs/people/deering_bd.shtml\">Benjamin Draper Deering</a> was held on 15 July. It was to be the second IOOF Home in Canada (the first being located in Toronto) and one of 57 such Homes across North America. Once completed, it would measure 140 feet by 30 feet, with two south wings (each 24 feet by 30 feet), and a joint dining room and kitchen (measuring 33 feet by 56 feet). Accomodation was provided for 70 people with additional undeveloped capacity for orphans in the attic. The two-storey structure cost around \$125,000 with another \$25,000 in furnishings and equipment. In the basement, in addition to the steam heating plant, there were two large playrooms for orphans along with two corresponding rear (north side) entrances to the building labeled “Girls” and “Boys.” A school was later operated at the site.<br><br>The facility was opened officially on 13 March 1923 at a ceremony attended by some 850 people. It was dedicated by Lucian J. Eastin (IOOF Grand Sire of St. Joseph, Missouri) and Lieutenant-Governor <a href=\"http://www.mhs.mb.ca/docs/people/aikins_jam.shtml\">James Albert Manning Aikins</a> addressed the crowd.<br><br>In 1997, the facility was closed following withdrawal of government funding. The building was given a \$2 million renovation, resulting in seven studio apartments and 25 single bedroom suites. In April 2001, it reopened as an assisted living facility known as Assiniboine Links. A private residential subdivision was later constructed between the building and the Assiniboine River.<br><br>The building became a <a href=\"http://www.mhs.mb.ca/docs/sites/municipal.shtml\">municipally-designated heritage site</a> in January 2023.<br><br>", "http://www.mhs.mb.ca/docs/sites/oddfellowshome.shtml", "Charleswood, year=1923, arc=Russell, mat=bricks, oddfellows, photo=2020, des=2023", "2024-05-06 14:35:26")
@@ -219,7 +161,7 @@ private fun PreviewHistoricalSiteHomeContent(
             val sourcesList = listOf(souce1, souce2, souce3, souce4, souce5, souce6, souce7, souce8, souce9, souce10)
             val cameraPositionState = CameraPositionState()
             //val scrollState = rememberScrollState()
-            SiteMainPageContent(
+            DisplaySiteAndMapViewport(
                 currentSite = testSite,
                 displayState = displayState,
                 onClickChangeDisplayState = {},
@@ -241,40 +183,11 @@ private fun PreviewHistoricalSiteHomeContent(
                 modifier = Modifier
                     .height(1000.dp)
                     .width(500.dp)
-            )
+                )
 
-            //modifier = Modifier.padding(5.dp)
+                //modifier = Modifier.padding(5.dp)
 
         }
     }
-
-}
-
-@Preview
-@Composable
-private fun PreviewLoadingScreen() {
-    ManitobaHistoricalSocietyAppTheme {
-        Surface {
-            LoadingScreen(waitOn = {},
-                onCompleted = {  },
-                modifier = Modifier
-                    .height(1000.dp)
-                    .width(500.dp)
-
-            )
-        }
-    }
-}
-
-@Preview
-@Composable
-private fun PreviewTopBar(
-    @PreviewParameter(DisplayStateWithMapPreviewParameterProvider::class) displayState :SiteDisplayState
-) {
-    ManitobaHistoricalSocietyAppTheme {
-        Surface {
-            SiteMainPageTopBar({},displayState)
-        }
-    }
-
+    
 }
