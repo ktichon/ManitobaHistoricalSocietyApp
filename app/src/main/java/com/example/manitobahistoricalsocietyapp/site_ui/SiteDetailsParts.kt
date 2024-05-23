@@ -51,7 +51,6 @@ import com.example.manitobahistoricalsocietyapp.database.SitePhotos.SitePhotos
 import com.example.manitobahistoricalsocietyapp.database.SiteSource.SiteSource
 import com.example.manitobahistoricalsocietyapp.storage_classes.SiteDisplayState
 import com.example.manitobahistoricalsocietyapp.ui.theme.AppTheme
-import kotlin.math.roundToInt
 
 @Composable
 fun DisplaySiteTitle(
@@ -99,14 +98,13 @@ fun DisplaySiteTitle(
 fun DisplaySiteBasicInfo(
     siteTypes: List<String>,
     fullAddress: String,
-    metersFromUser: Float,
+    distanceFromUser: String,
     modifier: Modifier = Modifier
     ) {
     val types = siteTypes.joinToString(separator = "/")
-    val displayDistance = displayDistance(metersFromUser)
     Row (modifier = modifier) {
         Column{
-            Text(text = "$types, $displayDistance",
+            Text(text = "$types, $distanceFromUser",
                 style = MaterialTheme.typography.bodyLarge,)
             Text(text = fullAddress,
                 style = MaterialTheme.typography.bodyLarge,)
@@ -115,20 +113,6 @@ fun DisplaySiteBasicInfo(
 
 }
 
-//Displays the text for the distance from user
-private fun displayDistance(metersFromUser: Float): String{
-
-        //When meters is greater than 100 km
-    val displayDistance = if (metersFromUser > 100000) (metersFromUser/1000).roundToInt().toString() + " km"
-        //When meters is greater than 10 km
-        else if (metersFromUser > 10000)  "%.1f".format (metersFromUser/1000) + " km"
-        //When meters is greater than 1 km
-        else if (metersFromUser >= 1000) "%.2f".format (metersFromUser/1000) + " km"
-        //When meters is less than 1 km
-        else metersFromUser.roundToInt().toString() + " m"
-
-    return "$displayDistance away"
-}
 
 @OptIn(ExperimentalFoundationApi::class)
 @Composable
@@ -391,7 +375,7 @@ private fun PreviewSiteBasicInfo () {
             DisplaySiteBasicInfo(
                 siteTypes = listOf("Building", "Museum or Archives"),
                 fullAddress = "333 Alexander Avenue, Winnipeg",
-                metersFromUser = 10567f
+                distanceFromUser = "100 km away"
             )
         }
     }

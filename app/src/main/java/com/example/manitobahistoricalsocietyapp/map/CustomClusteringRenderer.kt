@@ -26,7 +26,6 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.example.manitobahistoricalsocietyapp.R
 import com.example.manitobahistoricalsocietyapp.database.HistoricalSite.HistoricalSiteClusterItem
-import com.example.manitobahistoricalsocietyapp.storage_classes.ColoursForEachSiteType
 import com.example.manitobahistoricalsocietyapp.ui.theme.ClusterLessThan10
 import com.example.manitobahistoricalsocietyapp.ui.theme.ClusterLessThan100
 import com.example.manitobahistoricalsocietyapp.ui.theme.ClusterLessThan1000
@@ -35,6 +34,7 @@ import com.example.manitobahistoricalsocietyapp.ui.theme.ClusterLessThan50
 import com.example.manitobahistoricalsocietyapp.ui.theme.ClusterLessThan500
 import com.example.manitobahistoricalsocietyapp.ui.theme.ClusterMax
 import com.example.manitobahistoricalsocietyapp.ui.theme.AppTheme
+import com.example.manitobahistoricalsocietyapp.helperClasses.GetTypeValues
 import com.google.maps.android.clustering.algo.NonHierarchicalViewBasedAlgorithm
 import com.google.maps.android.compose.MapsComposeExperimentalApi
 import com.google.maps.android.compose.clustering.Clustering
@@ -158,7 +158,7 @@ fun ClusterItemContent(
         contentDescription = null,
         contentScale = ContentScale.Fit,
         colorFilter = ColorFilter.tint(
-            color = ColoursForEachSiteType.getTypeColour(typeId),
+            color = GetTypeValues.getTypeColour(typeId),
             blendMode =  BlendMode.Modulate
             ),
         modifier = modifier

@@ -1,7 +1,6 @@
 package com.example.manitobahistoricalsocietyapp.site_ui
 
-import android.location.Location
-import android.location.LocationManager
+
 import androidx.compose.foundation.BorderStroke
 import androidx.compose.foundation.ExperimentalFoundationApi
 import androidx.compose.foundation.background
@@ -25,6 +24,7 @@ import androidx.compose.ui.tooling.preview.PreviewParameterProvider
 import androidx.compose.ui.unit.dp
 import com.example.manitobahistoricalsocietyapp.database.HistoricalSite.HistoricalSite
 import com.example.manitobahistoricalsocietyapp.database.SitePhotos.SitePhotos
+import com.example.manitobahistoricalsocietyapp.helperClasses.DistanceAwayFromSite
 import com.example.manitobahistoricalsocietyapp.storage_classes.SiteDisplayState
 import com.example.manitobahistoricalsocietyapp.ui.theme.AppTheme
 import com.google.android.gms.maps.model.LatLng
@@ -111,7 +111,7 @@ fun DisplayFullSiteDetails(
                     siteTypes = siteTypes,
                     fullAddress = site.getFullAddress(),
                     //Turns both the user location and the site from Latlng objects to Location objects so that we can use the Location.distanceToMethod
-                    metersFromUser = turnLatLongIntoLocation(latitude = userLocation.latitude, userLocation.longitude).distanceTo(turnLatLongIntoLocation(latitude = site.latitude, longitude = site.longitude)),
+                    distanceFromUser = DistanceAwayFromSite.getDistance(userLocation, LatLng(site.latitude, site.longitude)),
                     modifier = Modifier.padding(paddingBetweenItems))
 
                 //Photos
@@ -158,15 +158,6 @@ fun DisplayFullSiteDetails(
         }
     }
 
-}
-
-
-//Helper method that turns lat/long into a location object
-fun turnLatLongIntoLocation(latitude: Double, longitude: Double): Location{
-    val location = Location(LocationManager.GPS_PROVIDER)
-    location.latitude = latitude
-    location.longitude = longitude
-    return location
 }
 
 
