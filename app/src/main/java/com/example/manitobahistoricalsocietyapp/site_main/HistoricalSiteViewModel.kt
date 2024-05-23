@@ -49,6 +49,10 @@ class HistoricalSiteViewModel @Inject internal constructor(
     private val _locationEnabled = MutableStateFlow(false)
     val locationEnabled = _locationEnabled.asStateFlow()
 
+    //Used to check if the camera follows the user location
+    private val _followUserLocation = MutableStateFlow(true)
+    val followUserLocation = _followUserLocation.asStateFlow()
+
     //Default location is the Manitoba Museum
     private val _currentUserLocation = MutableStateFlow(LatLng(49.9000253, -97.1386276))
     val currentUserLocation = _currentUserLocation.asStateFlow()
@@ -88,6 +92,10 @@ class HistoricalSiteViewModel @Inject internal constructor(
     fun updateLocationEnabled(enabled: Boolean)
     {
         _locationEnabled.value = enabled
+    }
+
+    fun updateFollowUserLocation(followUser: Boolean){
+        _followUserLocation.value = followUser
     }
 
     fun updateUserLocation(newLocation: LatLng?){

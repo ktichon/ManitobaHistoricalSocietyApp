@@ -28,7 +28,7 @@ fun DisplaySiteAndMapViewport(
     //Map parameters
     cameraPositionState: CameraPositionState,
     allSites: List<HistoricalSiteClusterItem>,
-    onSiteSelected: (siteClusterItem: HistoricalSiteClusterItem) -> Unit,
+    onSiteSelected: (siteClusterItem: HistoricalSiteClusterItem, searched: Boolean) -> Unit,
     locationEnabled: Boolean = false,
 
     //Site Details parameters
@@ -176,7 +176,7 @@ private fun PreviewSiteAndMap(
                 cameraPositionState = cameraPositionState,
 
                 allSites = emptyList(),
-                onSiteSelected = {},
+                onSiteSelected = { _, _ ->  },
                 /*siteDetailsScrollState = scrollState,
                 photosPagerState = rememberPagerState {
                     allSitePhotos.size

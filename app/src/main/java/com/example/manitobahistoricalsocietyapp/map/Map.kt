@@ -14,7 +14,7 @@ fun DisplayMap(
 
     cameraPositionState: CameraPositionState,
     sites: List<HistoricalSiteClusterItem>,
-    onSiteSelected: (siteClusterItem: HistoricalSiteClusterItem)  -> Unit,
+    onSiteSelected: (siteClusterItem: HistoricalSiteClusterItem, searched: Boolean)  -> Unit,
     locationEnabled: Boolean = false,
     modifier: Modifier = Modifier
 ) {

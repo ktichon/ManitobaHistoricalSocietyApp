@@ -45,7 +45,7 @@ import com.google.maps.android.compose.clustering.rememberClusterRenderer
 @Composable
 fun CustomClusterRenderer(
     sites: List<HistoricalSiteClusterItem>,
-    onSiteSelected: (siteClusterItem: HistoricalSiteClusterItem)  -> Unit,
+    onSiteSelected: (siteClusterItem: HistoricalSiteClusterItem, searched: Boolean)  -> Unit,
     ) {
     val configuration = LocalConfiguration.current
     val screenHeight = configuration.screenHeightDp.dp
@@ -79,7 +79,7 @@ fun CustomClusterRenderer(
     SideEffect {
         clusterManager?: return@SideEffect
         clusterManager.setOnClusterItemClickListener {
-            onSiteSelected(it)
+            onSiteSelected(it, false)
             false
         }
     }

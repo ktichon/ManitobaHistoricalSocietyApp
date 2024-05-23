@@ -17,6 +17,7 @@ import androidx.compose.ui.platform.LocalFocusManager
 import androidx.lifecycle.viewmodel.compose.viewModel
 import com.example.manitobahistoricalsocietyapp.site_ui.LoadingScreen
 import com.example.manitobahistoricalsocietyapp.site_ui.SiteMainPageContent
+import com.example.manitobahistoricalsocietyapp.storage_classes.SiteDisplayState
 import com.google.accompanist.permissions.ExperimentalPermissionsApi
 import com.google.accompanist.permissions.isGranted
 import com.google.accompanist.permissions.rememberMultiplePermissionsState
@@ -46,6 +47,7 @@ fun SiteMainPageScreen(
     val siteSources by viewModel.siteSources.collectAsState()
     val locationEnabled by viewModel.locationEnabled.collectAsState()
     val currentUserLocation by viewModel.currentUserLocation.collectAsState()
+    val followUserLocation by viewModel.followUserLocation.collectAsState()
 
     val allSiteClusterItems by viewModel.allHistoricalSiteClusterItems.collectAsState()
 
@@ -85,10 +87,25 @@ fun SiteMainPageScreen(
 
     //If location enable is set to true
     if (locationEnabled  ){
+
+
         GetUserLocation(
-            onNewLocation = {newLocation -> viewModel.updateUserLocation(newLocation)},
+            onNewLocation = {newLocation ->
+                viewModel.updateUserLocation(newLocation)
+                newLocation?.let{
+                    if (displayState == SiteDisplayState.FullMap && followUserLocation ){
+                        cameraPositionState.position = CameraPosition.fromLatLngZoom(newLocation, cameraPositionState.position.zoom)
+                        viewModel.updateFollowUserLocation(false)
+                    }
+
+            }
+
+
+                /*viewModel.updateFollowUserLocation(false)*/
+                            },
             locationProvider = locationProvider)
     }
+
 
 
 
@@ -98,7 +115,7 @@ fun SiteMainPageScreen(
         LoadingScreen(
             waitOn = { viewModel.getAllHistoricalSites() },
             onCompleted = { showLoadingScreen = false
-                cameraPositionState.position = CameraPosition.fromLatLngZoom(currentUserLocation, 16f)
+                cameraPositionState.position = CameraPosition.fromLatLngZoom(currentUserLocation, 18f)
                           },
             modifier = modifier
         )
@@ -108,8 +125,11 @@ fun SiteMainPageScreen(
         SiteMainPageContent(
             cameraPositionState = cameraPositionState,
             allSites = allSiteClusterItems,
-            onSiteSelected = { siteSelected -> viewModel.newSiteSelected(siteSelected.id)
-                cameraPositionState.position = CameraPosition.fromLatLngZoom(siteSelected.position, cameraPositionState.position.zoom)
+            onSiteSelected = { siteSelected, searched ->
+                viewModel.newSiteSelected(siteSelected.id)
+                //If searched, zoom in to site. Else use the current zoom level
+                val zoomLevel = if(searched) 16f else cameraPositionState.position.zoom
+                cameraPositionState.position = CameraPosition.fromLatLngZoom(siteSelected.position, zoomLevel)
             },
             currentSite = currentSite,
             displayState = displayState,

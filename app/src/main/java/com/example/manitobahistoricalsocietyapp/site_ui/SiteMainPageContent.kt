@@ -42,7 +42,7 @@ import com.google.maps.android.compose.CameraPositionState
 fun SiteMainPageContent(
     cameraPositionState: CameraPositionState,
     allSites: List<HistoricalSiteClusterItem>,
-    onSiteSelected: (siteClusterItem: HistoricalSiteClusterItem)  -> Unit,
+    onSiteSelected: (siteClusterItem: HistoricalSiteClusterItem, searched: Boolean)  -> Unit,
     locationEnabled: Boolean = false,
 
     //Site Details parameters
@@ -147,7 +147,7 @@ fun LoadingScreen(
 @Composable
 fun DisplayAppbarSearchResults(
     searchedSites: List<HistoricalSiteClusterItem>,
-    onSiteSelected: (siteClusterItem: HistoricalSiteClusterItem) -> Unit,
+    onSiteSelected: (siteClusterItem: HistoricalSiteClusterItem, searched: Boolean) -> Unit,
     userLocation: LatLng,
     onActiveChange: (Boolean) -> Unit,
     removeFocus: () -> Unit,
@@ -173,7 +173,7 @@ fun DisplayAppbarSearchResults(
                     )
                     .padding(horizontal = 10.dp, vertical = 5.dp)
                     .clickable {
-                        onSiteSelected(foundSite)
+                        onSiteSelected(foundSite, true)
                         onActiveChange(false)
                         removeFocus()
 
@@ -264,7 +264,7 @@ private fun PreviewHistoricalSiteHomeContent(
                 cameraPositionState = cameraPositionState,
 
                 allSites = emptyList(),
-                onSiteSelected = {},
+                onSiteSelected = { _, _ ->  },
                 /*siteDetailsScrollState = scrollState,
                 photosPagerState = rememberPagerState {
                     allSitePhotos.size
@@ -316,7 +316,7 @@ private fun PreviewAppBarSearchResults() {
             val searchedSites = listOf(siteClusterItem1, siteClusterItem1,siteClusterItem1,siteClusterItem1,siteClusterItem1,siteClusterItem1)
             DisplayAppbarSearchResults(
                 searchedSites = searchedSites,
-                onSiteSelected= {},
+                onSiteSelected= { _, _ ->  },
                 onActiveChange = {},
                 removeFocus = {},
                 userLocation = LatLng(49.8555836, -97.2888901)
