@@ -46,7 +46,7 @@ fun DisplaySiteAndMapViewport(
 
 
 ) {
-    Column(modifier = modifier.background(MaterialTheme.colorScheme.primary)) {
+    Column(modifier = modifier.background(MaterialTheme.colorScheme.background)) {
 
         val siteWeight = if(displayState == SiteDisplayState.FullSite) 99f else 1.4f
        // val animationLengthInMilliSeconds = 200
@@ -123,6 +123,8 @@ class DisplayStateWithMapPreviewParameterProvider : PreviewParameterProvider<Sit
     override val values: Sequence<SiteDisplayState>
         get() = sequenceOf(SiteDisplayState.HalfSite, SiteDisplayState.FullSite, SiteDisplayState.FullMap)
 }
+
+
 
 
 @Preview

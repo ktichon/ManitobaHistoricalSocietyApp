@@ -1,38 +1,38 @@
 package com.example.manitobahistoricalsocietyapp.site_ui
 
-import androidx.compose.animation.animateContentSize
-import androidx.compose.animation.core.tween
 import androidx.compose.foundation.background
+import androidx.compose.foundation.border
+import androidx.compose.foundation.clickable
+import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
-import androidx.compose.foundation.layout.Spacer
+import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.PaddingValues
+import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxSize
+import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
-import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
-import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.automirrored.filled.KeyboardArrowLeft
-import androidx.compose.material3.ExperimentalMaterial3Api
-import androidx.compose.material3.Icon
-import androidx.compose.material3.IconButton
+import androidx.compose.foundation.lazy.LazyColumn
+import androidx.compose.foundation.lazy.items
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
-import androidx.compose.material3.TopAppBar
-import androidx.compose.material3.TopAppBarDefaults.topAppBarColors
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.rememberUpdatedState
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.tooling.preview.PreviewParameter
 import androidx.compose.ui.unit.dp
 import com.example.manitobahistoricalsocietyapp.database.HistoricalSite.HistoricalSite
 import com.example.manitobahistoricalsocietyapp.database.HistoricalSite.HistoricalSiteClusterItem
 import com.example.manitobahistoricalsocietyapp.database.SitePhotos.SitePhotos
+import com.example.manitobahistoricalsocietyapp.helperClasses.DistanceAwayFromSite
 import com.example.manitobahistoricalsocietyapp.storage_classes.SiteDisplayState
 import com.example.manitobahistoricalsocietyapp.ui.theme.AppTheme
 import com.google.android.gms.maps.model.LatLng
@@ -56,6 +56,15 @@ fun SiteMainPageContent(
     newSiteSelected: Boolean = false,
     updateNewSiteSelected: (Boolean) -> Unit,
 
+
+    //Site Search Parameters
+    searchQuery: String,
+    onQueryChange: (String) -> Unit,
+    searchedSites: List<HistoricalSiteClusterItem>,
+    searchActive: Boolean,
+    onActiveChange: (Boolean) -> Unit,
+    onSearchSiteSelected: (Int) -> Unit,
+
     modifier: Modifier = Modifier
 ) {
 
@@ -63,28 +72,98 @@ fun SiteMainPageContent(
         topBar = {
             SiteMainPageTopBar(
                 onClickChangeDisplayState = onClickChangeDisplayState,
-                displayState = displayState)
+                displayState = displayState,
+                searchQuery = searchQuery,
+                onQueryChange = onQueryChange,
+                searchedSites = searchedSites,
+                searchActive = searchActive,
+                onActiveChange = onActiveChange,
+                onSiteSelected = onSearchSiteSelected,
+                userLocation = userLocation,
+
+
+
+            )
         },
         modifier = modifier
     ) {innerPadding ->
+        Box(modifier = Modifier.padding(innerPadding)){
+            DisplaySiteAndMapViewport(
+                cameraPositionState = cameraPositionState,
+                allSites = allSites,
+                onClusterItemClick = onClusterItemClick,
+                currentSite = currentSite,
+                displayState = displayState,
+                onClickChangeDisplayState = onClickChangeDisplayState,
+                currentSiteTypes = currentSiteTypes,
+                userLocation =  userLocation,
+                locationEnabled = locationEnabled,
+                currentSitePhotos = currentSitePhotos,
+                currentSiteSourcesList = currentSiteSourcesList,
+                newSiteSelected = newSiteSelected,
+                updateNewSiteSelected = updateNewSiteSelected,
+                modifier = Modifier.fillMaxSize()
+            )
+            if (searchActive){
+
+                LazyColumn(
+                    verticalArrangement = Arrangement.spacedBy(5.dp),
+                    contentPadding = PaddingValues(5.dp),
+                    modifier = Modifier.background(MaterialTheme.colorScheme.secondaryContainer)
+
+                ) {
+                    items(searchedSites){foundSite ->
+                        Row(
+                            verticalAlignment = Alignment.CenterVertically,
+                            horizontalArrangement = Arrangement.SpaceBetween,
+                            modifier = Modifier
+                                .fillMaxWidth()
+                                .border(
+                                    width = 1.dp,
+                                    color = MaterialTheme.colorScheme.onPrimary,
+                                )
+                                .padding(horizontal = 10.dp, vertical = 5.dp)
+                                .clickable {
+                                    onSearchSiteSelected(foundSite.id)
+                                }
 
 
-        DisplaySiteAndMapViewport(
-            cameraPositionState = cameraPositionState,
-            allSites = allSites,
-            onClusterItemClick = onClusterItemClick,
-            currentSite = currentSite,
-            displayState = displayState,
-            onClickChangeDisplayState = onClickChangeDisplayState,
-            currentSiteTypes = currentSiteTypes,
-            userLocation =  userLocation,
-            locationEnabled = locationEnabled,
-            currentSitePhotos = currentSitePhotos,
-            currentSiteSourcesList = currentSiteSourcesList,
-            newSiteSelected = newSiteSelected,
-            updateNewSiteSelected = updateNewSiteSelected,
-            modifier = Modifier.padding(innerPadding)
-        )
+                        ){
+                            Column (
+                                modifier = Modifier.weight(1f)
+                            ){
+                                Text(
+                                    text = foundSite.name,
+                                    maxLines =  2,
+                                    overflow = TextOverflow.Ellipsis,
+                                    style = MaterialTheme.typography.bodyMedium
+                                )
+                                Text(
+                                    text = foundSite.snippet,
+                                    style = MaterialTheme.typography.bodySmall
+                                )
+                            }
+
+                            Column {
+                                Text(
+                                    text = DistanceAwayFromSite.getDistance(userLocation, LatLng(foundSite.latitude, foundSite.longitude)),
+                                    style = MaterialTheme.typography.bodyLarge
+                                )
+
+                            }
+
+                        }
+
+
+                    }
+
+                }
+            }
+
+        }
+
+
+
 
     }
 
@@ -112,8 +191,6 @@ fun LoadingScreen(
 
     }
 }
-
-
 
 @Preview
 @Composable
@@ -151,6 +228,8 @@ private fun PreviewHistoricalSiteHomeContent(
             val sourcesList = listOf(souce1, souce2, souce3, souce4, souce5, souce6, souce7, souce8, souce9, souce10)
             val cameraPositionState = CameraPositionState()
             //val scrollState = rememberScrollState()
+            val siteClusterItem1 = HistoricalSiteClusterItem(2,2,"Site Number 1", "11 Bowhill Lane", "Winnipeg", 0.0,0.0)
+            val searchedSites = listOf(siteClusterItem1, siteClusterItem1,siteClusterItem1,siteClusterItem1,siteClusterItem1,siteClusterItem1)
             SiteMainPageContent(
                 currentSite = testSite,
                 displayState = displayState,
@@ -170,6 +249,14 @@ private fun PreviewHistoricalSiteHomeContent(
                     allSitePhotos.size
                 },*/
                 updateNewSiteSelected = {},
+
+                searchQuery = "",
+                onQueryChange = {},
+                searchedSites = listOf(siteClusterItem1, siteClusterItem1,siteClusterItem1,siteClusterItem1,siteClusterItem1,siteClusterItem1,siteClusterItem1,siteClusterItem1,siteClusterItem1,siteClusterItem1,siteClusterItem1,siteClusterItem1,siteClusterItem1,siteClusterItem1,siteClusterItem1,siteClusterItem1),
+                searchActive = true,
+                onActiveChange = {},
+                onSearchSiteSelected = {},
+
                 modifier = Modifier
                     .height(1000.dp)
                     .width(500.dp)
@@ -196,17 +283,4 @@ private fun PreviewLoadingScreen() {
             )
         }
     }
-}
-
-@Preview
-@Composable
-private fun PreviewTopBar(
-    @PreviewParameter(DisplayStateWithMapPreviewParameterProvider::class) displayState :SiteDisplayState
-) {
-    AppTheme {
-        Surface {
-            SiteMainPageTopBar({},displayState)
-        }
-    }
-
 }

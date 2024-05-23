@@ -28,4 +28,8 @@ data class HistoricalSiteClusterItem(
     override fun getZIndex(): Float {
         return 0f
     }
+    //Gets the name and the address together for easy searching
+    fun getNameAndAddress(): String{
+        return "$name, $address"
+    }
 }

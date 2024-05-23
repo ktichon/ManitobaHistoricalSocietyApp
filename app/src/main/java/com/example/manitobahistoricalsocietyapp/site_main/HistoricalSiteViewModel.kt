@@ -60,6 +60,16 @@ class HistoricalSiteViewModel @Inject internal constructor(
     val newSiteSelected = _newSiteSelected.asStateFlow()
 
 
+    //Search Variables
+    private val _searchActive = MutableStateFlow(false)
+    val searchActive = _searchActive.asStateFlow()
+
+    private val _searchQuery = MutableStateFlow("")
+    val searchQuery = _searchQuery.asStateFlow()
+
+    private  val _searchedSitesList = MutableStateFlow<List<HistoricalSiteClusterItem>>(emptyList())
+    val searchedSiteList = _searchedSitesList.asStateFlow()
+
 
 
 
@@ -98,5 +108,29 @@ class HistoricalSiteViewModel @Inject internal constructor(
         viewModelScope.launch{sitePhotosRepository.getPhotosForSite(siteId).collect{ _sitePhotos.value = it}}
         viewModelScope.launch {   siteTypeRepository.getTypesForSite(siteId).collect{ _siteTypes.value = it} }
         viewModelScope.launch {   siteSourceRepository.getSourceInfoForSite(siteId).collect{ _siteSources.value = it} }
+    }
+
+
+    //Search
+
+    fun updateSearchActive(searchActive: Boolean){
+        _searchActive.value = searchActive
+
+    }
+
+    fun updateSearchQuery(query: String){
+        _searchQuery.value = query
+        if (_searchQuery.value.isBlank()){
+            _searchedSitesList.value = emptyList()
+        }
+        else{
+            _searchedSitesList.value = _allHistoricalSiteClusterItems.value.filter { site ->
+                site.getNameAndAddress().uppercase().contains(query.trim().uppercase())
+
+            }
+
+        }
+
+
     }
 }

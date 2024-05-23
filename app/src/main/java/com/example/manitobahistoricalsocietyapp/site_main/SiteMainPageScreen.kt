@@ -34,9 +34,8 @@ import com.google.maps.android.compose.rememberCameraPositionState
 fun SiteMainPageScreen(
     viewModel: HistoricalSiteViewModel = viewModel(),
     context: Context = LocalContext.current,
+    modifier: Modifier = Modifier,
 
-
-    modifier: Modifier = Modifier
 ) {
     val displayState by viewModel.displayState.collectAsState()
     val currentSite by viewModel.currentSite.collectAsState()
@@ -51,6 +50,11 @@ fun SiteMainPageScreen(
 
     //Used to let composable know that a new site has been selected, so that we can scroll to top
     val newSiteSelected by viewModel.newSiteSelected.collectAsState()
+
+    //Used for search bar
+    val searchActive by viewModel.searchActive.collectAsState()
+    val searchQuery by viewModel.searchQuery.collectAsState()
+    val searchedSitesList by viewModel.searchedSiteList.collectAsState()
 
 
     var showLoadingScreen by remember { mutableStateOf(true) }
@@ -77,7 +81,7 @@ fun SiteMainPageScreen(
 
     //If location enable is set to true
     if (locationEnabled  ){
-        getUserLocation(
+        GetUserLocation(
             onNewLocation = {newLocation -> viewModel.updateUserLocation(newLocation)},
             locationProvider = locationProvider)
     }
@@ -115,6 +119,17 @@ fun SiteMainPageScreen(
             newSiteSelected = newSiteSelected,
             updateNewSiteSelected = {
                     selected -> viewModel.updateSiteSelected(selected)
+            },
+
+            //Search bar
+            searchQuery = searchQuery,
+            onQueryChange = {query -> viewModel.updateSearchQuery(query) },
+            searchedSites = searchedSitesList,
+            searchActive = searchActive,
+            onActiveChange = { toggle -> viewModel.updateSearchActive(toggle)},
+            onSearchSiteSelected = {
+                id -> viewModel.newSiteSelected(id)
+                cameraPositionState.position = CameraPosition.fromLatLngZoom(currentSite.getPosition(), cameraPositionState.position.zoom)
             },
         )
 
@@ -200,7 +215,7 @@ fun RequestLocationPermission(
 //We check to see if they have permissions earlier
 @Composable
 @SuppressLint("MissingPermission")
-fun getUserLocation(
+fun GetUserLocation(
     onNewLocation: (LatLng?) -> Unit,
     locationProvider: FusedLocationProviderClient,
 ){
