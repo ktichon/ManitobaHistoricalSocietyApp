@@ -128,7 +128,7 @@ fun SiteMainPageScreen(
             onSiteSelected = { siteSelected, searched ->
                 viewModel.newSiteSelected(siteSelected.id)
                 //If searched, zoom in to site. Else use the current zoom level
-                val zoomLevel = if(searched) 16f else cameraPositionState.position.zoom
+                val zoomLevel = if(searched) 18f else cameraPositionState.position.zoom
                 cameraPositionState.position = CameraPosition.fromLatLngZoom(siteSelected.position, zoomLevel)
             },
             currentSite = currentSite,

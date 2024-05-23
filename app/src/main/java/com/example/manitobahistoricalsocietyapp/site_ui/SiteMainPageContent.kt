@@ -15,6 +15,8 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
+import androidx.compose.material3.Divider
+import androidx.compose.material3.HorizontalDivider
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Surface
@@ -156,21 +158,22 @@ fun DisplayAppbarSearchResults(
 
 
     LazyColumn(
-        verticalArrangement = Arrangement.spacedBy(5.dp),
+        //verticalArrangement = Arrangement.spacedBy(5.dp),
         contentPadding = PaddingValues(5.dp),
         modifier = modifier.background(MaterialTheme.colorScheme.secondaryContainer)
 
     ) {
         items(searchedSites){foundSite ->
+
             Row(
                 verticalAlignment = Alignment.CenterVertically,
                 horizontalArrangement = Arrangement.SpaceBetween,
                 modifier = Modifier
                     .fillMaxWidth()
-                    .border(
+                    /*.border(
                         width = 1.dp,
                         color = MaterialTheme.colorScheme.onSecondaryContainer,
-                    )
+                    )*/
                     .padding(horizontal = 10.dp, vertical = 5.dp)
                     .clickable {
                         onSiteSelected(foundSite, true)
@@ -188,15 +191,17 @@ fun DisplayAppbarSearchResults(
                         text = foundSite.name,
                         maxLines =  2,
                         overflow = TextOverflow.Ellipsis,
-                        style = MaterialTheme.typography.bodyMedium
+                        style = MaterialTheme.typography.bodyLarge
                     )
                     Text(
                         text = foundSite.snippet,
-                        style = MaterialTheme.typography.bodySmall
+                        style = MaterialTheme.typography.bodyMedium
                     )
                 }
 
-                Column {
+                Column(
+                    modifier = Modifier.padding(5.dp)
+                ) {
                     Text(
                         text = DistanceAwayFromSite.getDisplayDistance(userLocation, LatLng(foundSite.latitude, foundSite.longitude)),
                         style = MaterialTheme.typography.bodyLarge
@@ -205,6 +210,12 @@ fun DisplayAppbarSearchResults(
                 }
 
             }
+            HorizontalDivider(
+                modifier = Modifier
+                    .height(1.dp)
+                    .fillMaxWidth(),
+                color = MaterialTheme.colorScheme.onSecondaryContainer,
+            )
 
 
         }
