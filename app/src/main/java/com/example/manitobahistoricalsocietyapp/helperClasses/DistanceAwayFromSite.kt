@@ -9,8 +9,8 @@ class DistanceAwayFromSite {
 
 
     companion object{
-        fun getDistance(latLng1: LatLng, latLng2: LatLng): String{
-            val distanceInMeters = turnLatLongIntoLocation(latLng1).distanceTo(turnLatLongIntoLocation(latLng2))
+        fun getDisplayDistance(latLng1: LatLng, latLng2: LatLng): String{
+            val distanceInMeters = getDistanceInMeters(latLng1, latLng2)
 
             val displayDistance = if (distanceInMeters > 100000) (distanceInMeters/1000).roundToInt().toString() + " km"
             //When meters is greater than 10 km
@@ -22,6 +22,10 @@ class DistanceAwayFromSite {
 
             return "$displayDistance away"
 
+        }
+
+        fun getDistanceInMeters(latLng1: LatLng, latLng2: LatLng): Float{
+            return turnLatLongIntoLocation(latLng1).distanceTo(turnLatLongIntoLocation(latLng2))
         }
 
         //Turns latLng into location, so that we can use Location.distanceTo(Location)

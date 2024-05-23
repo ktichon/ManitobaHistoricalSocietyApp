@@ -42,7 +42,7 @@ import com.google.maps.android.compose.CameraPositionState
 fun SiteMainPageContent(
     cameraPositionState: CameraPositionState,
     allSites: List<HistoricalSiteClusterItem>,
-    onClusterItemClick: (id:Int)  -> Unit,
+    onSiteSelected: (siteClusterItem: HistoricalSiteClusterItem)  -> Unit,
     locationEnabled: Boolean = false,
 
     //Site Details parameters
@@ -63,7 +63,7 @@ fun SiteMainPageContent(
     searchedSites: List<HistoricalSiteClusterItem>,
     searchActive: Boolean,
     onActiveChange: (Boolean) -> Unit,
-    onSearchSiteSelected: (Int) -> Unit,
+    removeFocus: () -> Unit,
 
     modifier: Modifier = Modifier
 ) {
@@ -75,11 +75,9 @@ fun SiteMainPageContent(
                 displayState = displayState,
                 searchQuery = searchQuery,
                 onQueryChange = onQueryChange,
-                searchedSites = searchedSites,
                 searchActive = searchActive,
                 onActiveChange = onActiveChange,
-                onSiteSelected = onSearchSiteSelected,
-                userLocation = userLocation,
+                removeFocus = removeFocus
 
 
 
@@ -91,7 +89,7 @@ fun SiteMainPageContent(
             DisplaySiteAndMapViewport(
                 cameraPositionState = cameraPositionState,
                 allSites = allSites,
-                onClusterItemClick = onClusterItemClick,
+                onSiteSelected = onSiteSelected,
                 currentSite = currentSite,
                 displayState = displayState,
                 onClickChangeDisplayState = onClickChangeDisplayState,
@@ -105,65 +103,19 @@ fun SiteMainPageContent(
                 modifier = Modifier.fillMaxSize()
             )
             if (searchActive){
-
-                LazyColumn(
-                    verticalArrangement = Arrangement.spacedBy(5.dp),
-                    contentPadding = PaddingValues(5.dp),
-                    modifier = Modifier.background(MaterialTheme.colorScheme.secondaryContainer)
-
-                ) {
-                    items(searchedSites){foundSite ->
-                        Row(
-                            verticalAlignment = Alignment.CenterVertically,
-                            horizontalArrangement = Arrangement.SpaceBetween,
-                            modifier = Modifier
-                                .fillMaxWidth()
-                                .border(
-                                    width = 1.dp,
-                                    color = MaterialTheme.colorScheme.onPrimary,
-                                )
-                                .padding(horizontal = 10.dp, vertical = 5.dp)
-                                .clickable {
-                                    onSearchSiteSelected(foundSite.id)
-                                }
+                DisplayAppbarSearchResults(
+                    searchedSites = searchedSites,
+                    onSiteSelected = onSiteSelected,
+                    userLocation = userLocation,
+                    onActiveChange = onActiveChange,
+                    removeFocus = removeFocus,
+                    modifier = Modifier.fillMaxSize()
+                )
 
 
-                        ){
-                            Column (
-                                modifier = Modifier.weight(1f)
-                            ){
-                                Text(
-                                    text = foundSite.name,
-                                    maxLines =  2,
-                                    overflow = TextOverflow.Ellipsis,
-                                    style = MaterialTheme.typography.bodyMedium
-                                )
-                                Text(
-                                    text = foundSite.snippet,
-                                    style = MaterialTheme.typography.bodySmall
-                                )
-                            }
-
-                            Column {
-                                Text(
-                                    text = DistanceAwayFromSite.getDistance(userLocation, LatLng(foundSite.latitude, foundSite.longitude)),
-                                    style = MaterialTheme.typography.bodyLarge
-                                )
-
-                            }
-
-                        }
-
-
-                    }
-
-                }
             }
 
         }
-
-
-
 
     }
 
@@ -190,6 +142,75 @@ fun LoadingScreen(
             style = MaterialTheme.typography.titleLarge)
 
     }
+}
+
+@Composable
+fun DisplayAppbarSearchResults(
+    searchedSites: List<HistoricalSiteClusterItem>,
+    onSiteSelected: (siteClusterItem: HistoricalSiteClusterItem) -> Unit,
+    userLocation: LatLng,
+    onActiveChange: (Boolean) -> Unit,
+    removeFocus: () -> Unit,
+
+    modifier: Modifier = Modifier) {
+
+
+    LazyColumn(
+        verticalArrangement = Arrangement.spacedBy(5.dp),
+        contentPadding = PaddingValues(5.dp),
+        modifier = modifier.background(MaterialTheme.colorScheme.secondaryContainer)
+
+    ) {
+        items(searchedSites){foundSite ->
+            Row(
+                verticalAlignment = Alignment.CenterVertically,
+                horizontalArrangement = Arrangement.SpaceBetween,
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .border(
+                        width = 1.dp,
+                        color = MaterialTheme.colorScheme.onSecondaryContainer,
+                    )
+                    .padding(horizontal = 10.dp, vertical = 5.dp)
+                    .clickable {
+                        onSiteSelected(foundSite)
+                        onActiveChange(false)
+                        removeFocus()
+
+                    }
+
+
+            ){
+                Column (
+                    modifier = Modifier.weight(1f)
+                ){
+                    Text(
+                        text = foundSite.name,
+                        maxLines =  2,
+                        overflow = TextOverflow.Ellipsis,
+                        style = MaterialTheme.typography.bodyMedium
+                    )
+                    Text(
+                        text = foundSite.snippet,
+                        style = MaterialTheme.typography.bodySmall
+                    )
+                }
+
+                Column {
+                    Text(
+                        text = DistanceAwayFromSite.getDisplayDistance(userLocation, LatLng(foundSite.latitude, foundSite.longitude)),
+                        style = MaterialTheme.typography.bodyLarge
+                    )
+
+                }
+
+            }
+
+
+        }
+
+    }
+    
 }
 
 @Preview
@@ -243,7 +264,7 @@ private fun PreviewHistoricalSiteHomeContent(
                 cameraPositionState = cameraPositionState,
 
                 allSites = emptyList(),
-                onClusterItemClick = {},
+                onSiteSelected = {},
                 /*siteDetailsScrollState = scrollState,
                 photosPagerState = rememberPagerState {
                     allSitePhotos.size
@@ -252,10 +273,11 @@ private fun PreviewHistoricalSiteHomeContent(
 
                 searchQuery = "",
                 onQueryChange = {},
-                searchedSites = listOf(siteClusterItem1, siteClusterItem1,siteClusterItem1,siteClusterItem1,siteClusterItem1,siteClusterItem1,siteClusterItem1,siteClusterItem1,siteClusterItem1,siteClusterItem1,siteClusterItem1,siteClusterItem1,siteClusterItem1,siteClusterItem1,siteClusterItem1,siteClusterItem1),
-                searchActive = true,
+                searchedSites = searchedSites,
+                searchActive = false,
                 onActiveChange = {},
-                onSearchSiteSelected = {},
+                //onSearchSiteSelected = {},
+                removeFocus = {},
 
                 modifier = Modifier
                     .height(1000.dp)
@@ -283,4 +305,23 @@ private fun PreviewLoadingScreen() {
             )
         }
     }
+}
+
+@Preview
+@Composable
+private fun PreviewAppBarSearchResults() {
+    AppTheme {
+        Surface {
+            val siteClusterItem1 = HistoricalSiteClusterItem(2,2,"Site Number 1", "11 Bowhill Lane", "Winnipeg", 0.0,0.0)
+            val searchedSites = listOf(siteClusterItem1, siteClusterItem1,siteClusterItem1,siteClusterItem1,siteClusterItem1,siteClusterItem1)
+            DisplayAppbarSearchResults(
+                searchedSites = searchedSites,
+                onSiteSelected= {},
+                onActiveChange = {},
+                removeFocus = {},
+                userLocation = LatLng(49.8555836, -97.2888901)
+            )
+        }
+    }
+    
 }

@@ -23,7 +23,7 @@ interface HistoricalSiteDao {
     /*@Query("SELECT * FROM manitobaHistoricalSite  WHERE municipality = 'Winnipeg' LIMIT 100")
      suspend fun getAllSites(): List<HistoricalSite>*/
 
-    @Query("SELECT site_id as id,  main_type as  mainType, name, address, municipality, latitude, longitude FROM manitobaHistoricalSite  ")
+    @Query("SELECT site_id as id,  main_type as  mainType, name, address, municipality, latitude, longitude FROM manitobaHistoricalSite ORDER BY name ASC ")
     suspend fun getAllSiteClusterItems(): List<HistoricalSiteClusterItem>
 
     @Query("SELECT  * FROM manitobaHistoricalSite WHERE site_id = :id ")

@@ -111,7 +111,7 @@ fun DisplayFullSiteDetails(
                     siteTypes = siteTypes,
                     fullAddress = site.getFullAddress(),
                     //Turns both the user location and the site from Latlng objects to Location objects so that we can use the Location.distanceToMethod
-                    distanceFromUser = DistanceAwayFromSite.getDistance(userLocation, LatLng(site.latitude, site.longitude)),
+                    distanceFromUser = DistanceAwayFromSite.getDisplayDistance(userLocation, LatLng(site.latitude, site.longitude)),
                     modifier = Modifier.padding(paddingBetweenItems))
 
                 //Photos

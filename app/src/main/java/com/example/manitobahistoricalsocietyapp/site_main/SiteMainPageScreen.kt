@@ -13,6 +13,7 @@ import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalContext
+import androidx.compose.ui.platform.LocalFocusManager
 import androidx.lifecycle.viewmodel.compose.viewModel
 import com.example.manitobahistoricalsocietyapp.site_ui.LoadingScreen
 import com.example.manitobahistoricalsocietyapp.site_ui.SiteMainPageContent
@@ -63,6 +64,9 @@ fun SiteMainPageScreen(
         mutableStateOf(LocationServices.getFusedLocationProviderClient(context))
     }
 
+    //used to un-focus from search bar
+    val focusManager = LocalFocusManager.current
+
 
 
     val cameraPositionState = rememberCameraPositionState{
@@ -104,13 +108,15 @@ fun SiteMainPageScreen(
         SiteMainPageContent(
             cameraPositionState = cameraPositionState,
             allSites = allSiteClusterItems,
-            onClusterItemClick = { id -> viewModel.newSiteSelected(id)
-                cameraPositionState.position = CameraPosition.fromLatLngZoom(currentSite.getPosition(), cameraPositionState.position.zoom)
+            onSiteSelected = { siteSelected -> viewModel.newSiteSelected(siteSelected.id)
+                cameraPositionState.position = CameraPosition.fromLatLngZoom(siteSelected.position, cameraPositionState.position.zoom)
             },
             currentSite = currentSite,
             displayState = displayState,
             onClickChangeDisplayState = {newState ->
-                viewModel.updateSiteDisplayState(newState) },
+                viewModel.updateSiteDisplayState(newState)
+                focusManager.clearFocus()
+                                        },
             currentSiteTypes = siteTypes,
             userLocation =  currentUserLocation,
             locationEnabled = locationEnabled,
@@ -127,10 +133,8 @@ fun SiteMainPageScreen(
             searchedSites = searchedSitesList,
             searchActive = searchActive,
             onActiveChange = { toggle -> viewModel.updateSearchActive(toggle)},
-            onSearchSiteSelected = {
-                id -> viewModel.newSiteSelected(id)
-                cameraPositionState.position = CameraPosition.fromLatLngZoom(currentSite.getPosition(), cameraPositionState.position.zoom)
-            },
+            removeFocus = {focusManager.clearFocus()}
+
         )
 
     }

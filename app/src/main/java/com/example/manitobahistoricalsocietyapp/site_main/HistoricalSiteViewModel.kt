@@ -9,6 +9,7 @@ import com.example.manitobahistoricalsocietyapp.database.SitePhotos.SitePhotos
 import com.example.manitobahistoricalsocietyapp.database.SitePhotos.SitePhotosRepository
 import com.example.manitobahistoricalsocietyapp.database.SiteSource.SiteSourceRepository
 import com.example.manitobahistoricalsocietyapp.database.SiteTypes.SiteTypeRepository
+import com.example.manitobahistoricalsocietyapp.helperClasses.DistanceAwayFromSite
 import com.example.manitobahistoricalsocietyapp.storage_classes.SiteDisplayState
 import com.google.android.gms.maps.model.LatLng
 import dagger.hilt.android.lifecycle.HiltViewModel
@@ -115,6 +116,13 @@ class HistoricalSiteViewModel @Inject internal constructor(
 
     fun updateSearchActive(searchActive: Boolean){
         _searchActive.value = searchActive
+        if (searchActive && _searchQuery.value.isBlank() ){
+            _searchedSitesList.value = getNearestSites(
+                maxSites = 20,
+                availableSites = _allHistoricalSiteClusterItems.value,
+                userLocation = _currentUserLocation.value
+            )
+        }
 
     }
 
@@ -131,6 +139,29 @@ class HistoricalSiteViewModel @Inject internal constructor(
 
         }
 
+    }
 
+    //Gets the X closes sites to the user
+    private fun getNearestSites(maxSites: Int, availableSites: List<HistoricalSiteClusterItem>, userLocation: LatLng ) : List<HistoricalSiteClusterItem>{
+        val distanceSearchValues = arrayOf(200, 500, 1000, 5000, 10000)
+        val foundSites = mutableListOf<HistoricalSiteClusterItem>()
+        var previousSearchValue = 0
+
+
+        for (searchValue in distanceSearchValues){
+            val numberOfSitesToFind = maxSites - foundSites.size
+            val searchSites = availableSites.filter { site ->
+                DistanceAwayFromSite.getDistanceInMeters(userLocation, site.position)  < searchValue
+                        //this is to ensure that the closest sites appear on the top of the list
+                        && DistanceAwayFromSite.getDistanceInMeters(userLocation, site.position) > previousSearchValue
+            }.take(numberOfSitesToFind)
+            if (searchSites.isNotEmpty()){
+                foundSites.addAll(searchSites.sortedBy { site -> DistanceAwayFromSite.getDistanceInMeters(userLocation, site.position)})
+            }
+            previousSearchValue = searchValue
+            if (foundSites.size >= maxSites)
+                break
+        }
+        return foundSites
     }
 }

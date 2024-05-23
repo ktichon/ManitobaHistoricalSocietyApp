@@ -14,7 +14,7 @@ fun DisplayMap(
 
     cameraPositionState: CameraPositionState,
     sites: List<HistoricalSiteClusterItem>,
-     onClusterItemClick: (id:Int)  -> Unit,
+    onSiteSelected: (siteClusterItem: HistoricalSiteClusterItem)  -> Unit,
     locationEnabled: Boolean = false,
     modifier: Modifier = Modifier
 ) {
@@ -36,7 +36,7 @@ fun DisplayMap(
         ),
         modifier = modifier
     ){
-        CustomClusterRenderer(sites = sites, onClusterItemClick = onClusterItemClick)
+        CustomClusterRenderer(sites = sites, onSiteSelected = onSiteSelected)
     }
 
 }
