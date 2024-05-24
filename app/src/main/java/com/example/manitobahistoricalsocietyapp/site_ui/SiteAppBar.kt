@@ -1,9 +1,14 @@
 package com.example.manitobahistoricalsocietyapp.site_ui
 
 
+import androidx.compose.foundation.interaction.MutableInteractionSource
+import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.PaddingValues
+import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.shape.CircleShape
+import androidx.compose.foundation.text.BasicTextField
 
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.automirrored.filled.KeyboardArrowLeft
@@ -12,18 +17,18 @@ import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
 import androidx.compose.material3.MaterialTheme
+import androidx.compose.material3.OutlinedTextFieldDefaults
 import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
-import androidx.compose.material3.TextField
-import androidx.compose.material3.TextFieldDefaults
 import androidx.compose.material3.TopAppBar
 import androidx.compose.material3.TopAppBarDefaults
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.remember
 
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.focus.onFocusChanged
-import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.vector.ImageVector
+import androidx.compose.ui.text.input.VisualTransformation
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import com.example.manitobahistoricalsocietyapp.storage_classes.SiteDisplayState
@@ -100,7 +105,7 @@ fun SiteMainPageTopBar(
                 searchQuery = searchQuery,
                 onQueryChange = onQueryChange,
                 onActiveChange = onActiveChange,
-                modifier = Modifier.padding(7.dp)
+                modifier = Modifier.padding(5.dp).fillMaxWidth()
             )
 
         },
@@ -130,6 +135,7 @@ fun TopBarNavIcon(
 }
 
 
+@OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun AppBarSearch(
     onActiveChange: (Boolean) -> Unit,
@@ -137,8 +143,62 @@ fun AppBarSearch(
     onQueryChange: (String) -> Unit,
     modifier: Modifier = Modifier,
 ) {
+    val interactionSource = remember { MutableInteractionSource() }
 
-    TextField(
+    Column {
+        /*OutlinedTextField(
+            value = searchQuery,
+            onValueChange = { query -> onQueryChange(query) },
+            singleLine = true,
+            shape = CircleShape, //RoundedCornerShape(20.dp),
+            placeholder = { Text(text = "Search for Historical Sites...") },
+            textStyle = MaterialTheme.typography.bodyLarge,
+            modifier = modifier
+                .onFocusChanged {
+                    //Updates the focus state
+                    onActiveChange(it.isFocused)
+                }
+        )*/
+        //Created my own TextField so that I could set my own content padding
+        BasicTextField(
+            value = searchQuery,
+            onValueChange = { query -> onQueryChange(query) },
+            singleLine = true,
+            interactionSource = interactionSource,
+            textStyle = MaterialTheme.typography.titleLarge.copy(color = MaterialTheme.colorScheme.onSurface),
+            decorationBox = @Composable { innerTextField ->
+                OutlinedTextFieldDefaults.DecorationBox(
+                    value = searchQuery,
+                    innerTextField = innerTextField,
+                    enabled = true,
+                    singleLine = true,
+                    visualTransformation = VisualTransformation.None,
+                    interactionSource = interactionSource,
+                    placeholder = { Text(text = "Search for Historical Sites...") },
+                    colors = OutlinedTextFieldDefaults.colors(),
+                    contentPadding = PaddingValues( horizontal = 15.dp, vertical = 10.dp),//OutlinedTextFieldDefaults.contentPadding(),
+                    container = {
+                        OutlinedTextFieldDefaults.ContainerBox(
+                            enabled = true,
+                            isError = false,
+                            interactionSource = interactionSource,
+                            colors = OutlinedTextFieldDefaults.colors(),
+                            shape = CircleShape)
+                    },
+                )
+            },
+            modifier = modifier
+                .onFocusChanged {
+                    //Updates the focus state
+                    onActiveChange(it.isFocused)
+                }
+        )
+
+    }
+
+
+
+   /* TextField(
         value = searchQuery,
         onValueChange = { query -> onQueryChange(query) },
         singleLine = true,
@@ -150,12 +210,14 @@ fun AppBarSearch(
             unfocusedIndicatorColor = Color.Transparent,
             disabledIndicatorColor = Color.Transparent
         ),
-        modifier = modifier.onFocusChanged {
+        textStyle = MaterialTheme.typography.bodyLarge,
+        modifier = modifier
+            .onFocusChanged {
             //Updates the focus state
             onActiveChange(it.isFocused)
         }
 
-    )
+    )*/
 
     /*SearchBar(
         //Search State parameters
@@ -196,7 +258,7 @@ private fun PreviewBasicSearchBar() {
             SiteMainPageTopBar(
                 displayState = SiteDisplayState.FullSite,
                 onClickChangeDisplayState = {},
-                searchQuery = "",
+                searchQuery = "test search",
                 onQueryChange = {},
               /*  searchedSites = emptyList(),*/
                 searchActive = false,
