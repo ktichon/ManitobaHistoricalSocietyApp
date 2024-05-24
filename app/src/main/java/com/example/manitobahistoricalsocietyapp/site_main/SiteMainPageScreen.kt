@@ -27,6 +27,8 @@ import com.google.android.gms.location.LocationRequest
 import com.google.android.gms.location.LocationResult
 import com.google.android.gms.location.LocationServices
 import com.google.android.gms.location.Priority
+import com.google.android.gms.maps.CameraUpdate
+import com.google.android.gms.maps.CameraUpdateFactory
 import com.google.android.gms.maps.model.CameraPosition
 import com.google.android.gms.maps.model.LatLng
 import com.google.maps.android.compose.rememberCameraPositionState
@@ -69,10 +71,13 @@ fun SiteMainPageScreen(
     //used to un-focus from search bar
     val focusManager = LocalFocusManager.current
 
+    val STARTING_ZOOM_LEVEL = 16f
+    val SEARCH_ZOOM_LEVEL = 18f
+
 
 
     val cameraPositionState = rememberCameraPositionState{
-        position = CameraPosition.fromLatLngZoom(currentUserLocation, 16f)
+        position = CameraPosition.fromLatLngZoom(currentUserLocation, STARTING_ZOOM_LEVEL)
     }
 
 
@@ -94,7 +99,11 @@ fun SiteMainPageScreen(
                 viewModel.updateUserLocation(newLocation)
                 newLocation?.let{
                     if (displayState == SiteDisplayState.FullMap && followUserLocation ){
-                        cameraPositionState.position = CameraPosition.fromLatLngZoom(newLocation, cameraPositionState.position.zoom)
+                        if (showLoadingScreen){
+                            cameraPositionState.position =CameraPosition.fromLatLngZoom(newLocation, STARTING_ZOOM_LEVEL)
+                        } else {
+                            cameraPositionState.move(CameraUpdateFactory.newLatLng(newLocation)) //= CameraPosition.fromLatLngZoom(newLocation, cameraPositionState.position.zoom)
+                        }
                         viewModel.updateFollowUserLocation(false)
                     }
 
@@ -115,7 +124,7 @@ fun SiteMainPageScreen(
         LoadingScreen(
             waitOn = { viewModel.getAllHistoricalSites() },
             onCompleted = { showLoadingScreen = false
-                cameraPositionState.position = CameraPosition.fromLatLngZoom(currentUserLocation, 18f)
+                //cameraPositionState.position = CameraPosition.fromLatLngZoom(currentUserLocation, 18f)
                           },
             modifier = modifier
         )
@@ -128,8 +137,11 @@ fun SiteMainPageScreen(
             onSiteSelected = { siteSelected, searched ->
                 viewModel.newSiteSelected(siteSelected.id)
                 //If searched, zoom in to site. Else use the current zoom level
-                val zoomLevel = if(searched) 18f else cameraPositionState.position.zoom
-                cameraPositionState.position = CameraPosition.fromLatLngZoom(siteSelected.position, zoomLevel)
+                if(searched){
+                    cameraPositionState.position = CameraPosition.fromLatLngZoom(siteSelected.position, SEARCH_ZOOM_LEVEL)
+                } else
+                    cameraPositionState.move(CameraUpdateFactory.newLatLng(siteSelected.position))
+
             },
             currentSite = currentSite,
             displayState = displayState,
