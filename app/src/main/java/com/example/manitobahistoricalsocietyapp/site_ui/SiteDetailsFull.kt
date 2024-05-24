@@ -10,7 +10,6 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.pager.rememberPagerState
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.verticalScroll
-import androidx.compose.material3.CardDefaults
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.OutlinedCard
 import androidx.compose.material3.Surface
@@ -53,35 +52,41 @@ fun DisplayFullSiteDetails(
 
     modifier: Modifier = Modifier
 ) {
+    //Used to allow me to quickly check different colour values
+    val textColour = MaterialTheme.colorScheme.onSurface
+    val linkColor = MaterialTheme.colorScheme.primary
+
     val paddingBetweenItems = 10.dp
     val uriHandler = LocalUriHandler.current
+
+    val photosPagerState = rememberPagerState{allSitePhotos.size}
+    val scrollState = rememberScrollState()
+
+    //Once a site has been selected, make sure to scroll to top and to the first image
+    LaunchedEffect(key1 = newSiteSelected ) {
+        if (newSiteSelected){
+            photosPagerState.scrollToPage(0)
+            scrollState.scrollTo(0)
+            updateNewSiteSelected(false)
+        }
+    }
+
+
+
     Column (
-        modifier = modifier.background(MaterialTheme.colorScheme.primaryContainer)
+        modifier = modifier.background(MaterialTheme.colorScheme.surface)
     ){
 
-        val photosPagerState = rememberPagerState{allSitePhotos.size}
-        val scrollState = rememberScrollState()
-
-        //Once a site has been selected, make sure to scroll to top and to the first image
-        LaunchedEffect(key1 = newSiteSelected ) {
-            if (newSiteSelected){
-                photosPagerState.scrollToPage(0)
-                scrollState.scrollTo(0)
-                updateNewSiteSelected(false)
-            }
-        }
 
 
 
         //Row of info that will not be scrollable
-        Row(
-            //modifier = Modifier.padding(horizontal = paddingBetweenItems)
-        ) {
+        Row{
             OutlinedCard(
-                colors = CardDefaults.cardColors(
-                    containerColor = MaterialTheme.colorScheme.primaryContainer,
-                ),
-                border = BorderStroke(2.dp, MaterialTheme.colorScheme.onPrimaryContainer),
+                /*colors = CardDefaults.cardColors(
+                    containerColor = MaterialTheme.colorScheme.surface,
+                ),*/
+                border = BorderStroke(2.dp, textColour),
 
                 ){
                 DisplaySiteTitle(
@@ -120,11 +125,15 @@ fun DisplayFullSiteDetails(
                         photos = allSitePhotos,
                         uriHandler = uriHandler,
                         pageState = photosPagerState,
+                        textColour = textColour,
+                        linkColor = linkColor,
+
                         modifier = Modifier.padding(paddingBetweenItems))
                 } else {
                     //Display this if there are no photos
                     DisplayNoPhotos(
                         uriHandler = uriHandler,
+                        linkColor = linkColor,
                         modifier = Modifier.padding(paddingBetweenItems)
                     )
                 }
@@ -134,6 +143,8 @@ fun DisplayFullSiteDetails(
                 site.description?.let {
                     DisplaySiteDescription(
                         siteInfo = it,
+                        textColour = textColour,
+                        linkColor = linkColor,
                         modifier = Modifier.padding(paddingBetweenItems)
                     )
                 }
@@ -141,6 +152,8 @@ fun DisplayFullSiteDetails(
                 //Sources
                 DisplaySiteSources(
                     sourcesList = sourcesList,
+                    textColour = textColour,
+                    linkColor = linkColor,
                     modifier = Modifier.padding(paddingBetweenItems)
                 )
 
@@ -148,6 +161,7 @@ fun DisplayFullSiteDetails(
                 DisplaySiteLink(
                     siteUrl = site.siteUrl,
                     uriHandler = uriHandler,
+                    linkColor = linkColor,
                     modifier = Modifier.padding(paddingBetweenItems))
 
 

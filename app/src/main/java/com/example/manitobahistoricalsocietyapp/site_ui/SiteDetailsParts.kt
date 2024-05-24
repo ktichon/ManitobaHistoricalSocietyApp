@@ -17,6 +17,7 @@ import androidx.compose.foundation.pager.HorizontalPager
 import androidx.compose.foundation.pager.PagerState
 import androidx.compose.foundation.pager.rememberPagerState
 import androidx.compose.foundation.text.ClickableText
+import androidx.compose.foundation.text.selection.SelectionContainer
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.KeyboardArrowDown
 import androidx.compose.material.icons.filled.KeyboardArrowUp
@@ -66,16 +67,21 @@ fun DisplaySiteTitle(
         modifier = modifier
             .fillMaxWidth()
     ){
-        Text(
-            text = name,
-            maxLines = if (displayState == SiteDisplayState.HalfSite) 2 else 10,
-            overflow = TextOverflow.Ellipsis,
-            style = MaterialTheme.typography.titleLarge,
-
+        SelectionContainer(
             modifier = Modifier
                 .weight(1f)
                 .padding(horizontal = 2.dp)
-        )
+        ) {
+            Text(
+                text = name,
+                maxLines = if (displayState == SiteDisplayState.HalfSite) 2 else 10,
+                overflow = TextOverflow.Ellipsis,
+                style = MaterialTheme.typography.titleLarge,
+            )
+
+        }
+
+
 
         //Changes the icon, content description, and on click depending on state
         val newDisplayStateOnClick = if(displayState == SiteDisplayState.HalfSite) SiteDisplayState.FullSite else SiteDisplayState.HalfSite
@@ -103,12 +109,15 @@ fun DisplaySiteBasicInfo(
     ) {
     val types = siteTypes.joinToString(separator = "/")
     Row (modifier = modifier) {
-        Column{
-            Text(text = "$types, $distanceFromUser",
-                style = MaterialTheme.typography.bodyLarge,)
-            Text(text = fullAddress,
-                style = MaterialTheme.typography.bodyLarge,)
+        SelectionContainer {
+            Column{
+                Text(text = "$types, $distanceFromUser",
+                    style = MaterialTheme.typography.bodyLarge,)
+                Text(text = fullAddress,
+                    style = MaterialTheme.typography.bodyLarge,)
+            }
         }
+
     }
 
 }
@@ -121,6 +130,8 @@ fun DisplaySitePhoto(
     totalNumberOfPhotos: Int,
     sitePhoto: SitePhotos,
     uriHandler: UriHandler,
+    textColour: Color = MaterialTheme.colorScheme.onSurface,
+    linkColor: Color = MaterialTheme.colorScheme.primary,
     modifier: Modifier = Modifier
 ) {
 
@@ -154,7 +165,8 @@ fun DisplaySitePhoto(
             GetAndroidViewWithStyle(
                 text = sitePhoto.info,
                 textStyle = MaterialTheme.typography.bodyMedium,
-                textColour = MaterialTheme.colorScheme.onSurface,
+                textColour = textColour,
+                linkColor = linkColor,
                 textAlignment = TEXT_ALIGNMENT_CENTER,
                 modifier = modifier
                     .align(Alignment.CenterHorizontally)
@@ -180,15 +192,15 @@ fun DisplaySitePhotos(
     photos: List<SitePhotos>,
     uriHandler: UriHandler,
     pageState: PagerState,
+    textColour: Color = MaterialTheme.colorScheme.onSurface,
+    linkColor: Color = MaterialTheme.colorScheme.primary,
     modifier: Modifier = Modifier
 ) {
 
     Row (
         modifier = modifier
     ){
-        Column(
-
-        ) {
+        Column {
             HorizontalPager(
                 state = pageState,
                 //contentPadding = PaddingValues(10.dp),
@@ -198,7 +210,7 @@ fun DisplaySitePhotos(
             )
             {
                     index ->
-                DisplaySitePhoto(photoIndex = index + 1, totalNumberOfPhotos = photos.size, sitePhoto = photos[index], uriHandler = uriHandler )
+                DisplaySitePhoto(photoIndex = index + 1, totalNumberOfPhotos = photos.size, sitePhoto = photos[index], uriHandler = uriHandler, textColour = textColour, linkColor = linkColor )
             }
         }
     }
@@ -209,10 +221,11 @@ fun DisplaySitePhotos(
 @Composable
 fun DisplayNoPhotos(
     uriHandler: UriHandler,
+    linkColor: Color = MaterialTheme.colorScheme.primary,
     modifier: Modifier = Modifier
 
 ) {
-    //One way to presive a link in a string
+    //One way to preserve a link in a string
     val annotatedString = buildAnnotatedString {
         withStyle(style = SpanStyle(color = MaterialTheme.colorScheme.onSurface)){
             append("We have no photos for this site. If you have one in your personal collection and can provide a copy, please contact us at ")
@@ -220,7 +233,7 @@ fun DisplayNoPhotos(
 
 
         pushStringAnnotation(tag = "photo_email", annotation = "photos@mhs.mb.ca")
-        withStyle(style = SpanStyle(color = MaterialTheme.colorScheme.primary)) {
+        withStyle(style = SpanStyle(color = linkColor)) {
             append("photos@mhs.mb.ca")
         }
         pop()
@@ -230,19 +243,24 @@ fun DisplayNoPhotos(
         horizontalArrangement = Arrangement.Center,
         modifier = modifier
     ){
-        ClickableText(text = annotatedString, style = MaterialTheme.typography.bodyLarge.merge( TextStyle(
-            textAlign = TextAlign.Center)
-        ), onClick = { offset ->
-            annotatedString.getStringAnnotations(tag = "photo_email", start = offset, end = offset).firstOrNull()?.let {
-                uriHandler.openUri(it.item)
-            }
-        },)
+        SelectionContainer {
+            ClickableText(text = annotatedString, style = MaterialTheme.typography.bodyLarge.merge( TextStyle(
+                textAlign = TextAlign.Center)
+            ), onClick = { offset ->
+                annotatedString.getStringAnnotations(tag = "photo_email", start = offset, end = offset).firstOrNull()?.let {
+                    uriHandler.openUri(it.item)
+                }
+            },)
+        }
+
     }
 }
 
 @Composable
 fun DisplaySiteDescription(
     siteInfo:String,
+    textColour: Color = MaterialTheme.colorScheme.onSurface,
+    linkColor: Color = MaterialTheme.colorScheme.primary,
     modifier: Modifier = Modifier
 ) {
     Row(
@@ -250,7 +268,8 @@ fun DisplaySiteDescription(
     ) {
         GetAndroidViewWithStyle(
             textStyle = MaterialTheme.typography.bodyLarge,
-            textColour = MaterialTheme.colorScheme.onSurface,
+            textColour = textColour,
+            linkColor = linkColor,
             text = siteInfo,
             textAlignment = TEXT_ALIGNMENT_TEXT_START)
     }
@@ -266,6 +285,8 @@ fun DisplaySiteDescription(
 @Composable
 fun DisplaySiteSources(
     sourcesList: List<String>,
+    textColour: Color = MaterialTheme.colorScheme.onSurface,
+    linkColor: Color = MaterialTheme.colorScheme.primary,
     modifier: Modifier = Modifier
 ) {
     Row (modifier = modifier){
@@ -284,7 +305,8 @@ fun DisplaySiteSources(
                 sourcesList.forEach {
                     GetAndroidViewWithStyle(
                         textStyle = MaterialTheme.typography.bodyLarge,
-                        textColour = MaterialTheme.colorScheme.onSurface,
+                        textColour = textColour,
+                        linkColor = linkColor,
                         text = it,
                         textAlignment = TEXT_ALIGNMENT_TEXT_START,
                         Modifier.padding(horizontal = 20.dp, vertical = 5.dp)
@@ -298,14 +320,18 @@ fun DisplaySiteSources(
 }
 
 @Composable
-fun DisplaySiteLink(siteUrl: String, uriHandler: UriHandler, modifier: Modifier = Modifier) {
+fun DisplaySiteLink(
+    siteUrl: String,
+    uriHandler: UriHandler,
+    linkColor: Color = MaterialTheme.colorScheme.primary,
+    modifier: Modifier = Modifier) {
     Row(
         modifier = modifier.fillMaxWidth()
     ){
         Text(
             text = "Click here to go to the Manitoba Historical Society webpage for this site!",
             style = MaterialTheme.typography.titleLarge.merge(TextStyle(textDecoration = TextDecoration.Underline)),
-            color = MaterialTheme.colorScheme.primary,
+            color = linkColor,
             textAlign = TextAlign.Center,
             modifier = Modifier.clickable { uriHandler.openUri(siteUrl) }
         )
@@ -321,6 +347,7 @@ fun DisplaySiteLink(siteUrl: String, uriHandler: UriHandler, modifier: Modifier 
 fun GetAndroidViewWithStyle(
     textStyle: TextStyle,
     textColour: Color,
+    linkColor: Color,
     text:String,
     textAlignment: Int,
     modifier: Modifier = Modifier
@@ -334,6 +361,8 @@ fun GetAndroidViewWithStyle(
             it.textSize = textStyle.fontSize.value
             it.textAlignment = textAlignment
             it.setTextColor(textColour.toArgb())
+            it.setTextIsSelectable(true)
+            it.setLinkTextColor(linkColor.toArgb())
             // it.letterSpacing = textStyle.letterSpacing.value
         }
     )
