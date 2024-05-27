@@ -16,8 +16,8 @@ android {
         applicationId = "com.example.manitobahistoricalsocietyapp"
         minSdk = 24
         targetSdk = 34
-        versionCode = 1
-        versionName = "1.0"
+        versionCode = 2
+        versionName = "1.1"
 
         testInstrumentationRunner = "androidx.test.runner.AndroidJUnitRunner"
         vectorDrawables {
@@ -93,15 +93,15 @@ dependencies {
     androidTestImplementation("junit:junit:4.13.2")
     implementation("androidx.activity:activity:1.9.0")
     implementation("androidx.annotation:annotation:1.8.0")
-    implementation("androidx.compose.foundation:foundation-layout:1.7.0-alpha01")
-    implementation("androidx.compose.foundation:foundation:1.7.0-alpha01")
+    implementation("androidx.compose.foundation:foundation-layout:1.7.0-beta01")
+    implementation("androidx.compose.foundation:foundation:1.7.0-beta01")
     implementation("androidx.compose.material:material-icons-core:1.6.7")
-    implementation("androidx.compose.runtime:runtime-saveable:1.7.0-alpha01")
-    implementation("androidx.compose.runtime:runtime:1.7.0-alpha01")
-    implementation("androidx.compose.ui:ui-text:1.7.0-alpha01")
-    implementation("androidx.compose.ui:ui-unit:1.7.0-alpha01")
+    implementation("androidx.compose.runtime:runtime-saveable:1.7.0-beta01")
+    implementation("androidx.compose.runtime:runtime:1.7.0-beta01")
+    implementation("androidx.compose.ui:ui-text:1.7.0-beta01")
+    implementation("androidx.compose.ui:ui-unit:1.7.0-beta01")
     implementation("androidx.core:core:1.13.1")
-    implementation("androidx.fragment:fragment:1.5.1")
+    implementation("androidx.fragment:fragment:1.7.1")
     implementation("androidx.lifecycle:lifecycle-common:2.8.0")
     implementation("androidx.lifecycle:lifecycle-viewmodel-savedstate:2.8.0")
     implementation("androidx.lifecycle:lifecycle-viewmodel:2.8.0")
@@ -109,7 +109,7 @@ dependencies {
     implementation("androidx.sqlite:sqlite:2.4.0")
     implementation("com.google.dagger:dagger:2.51.1")
     implementation("com.google.dagger:hilt-core:2.51.1")
-    implementation("com.google.maps.android:android-maps-utils:3.7.0")
+    implementation("com.google.maps.android:android-maps-utils:3.8.0")
     implementation("io.coil-kt:coil-compose-base:2.6.0")
     implementation("javax.inject:javax.inject:1")
     implementation("org.jetbrains.kotlinx:kotlinx-coroutines-core:1.7.3")

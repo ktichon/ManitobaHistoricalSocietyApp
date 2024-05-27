@@ -41,6 +41,7 @@ fun DisplaySiteAndMapViewport(
     currentSiteSourcesList: List<String>,
     newSiteSelected: Boolean = false,
     updateNewSiteSelected: (Boolean) -> Unit,
+    displayErrorMessage: (String) -> Unit,
 
     modifier: Modifier = Modifier
 
@@ -107,6 +108,7 @@ fun DisplaySiteAndMapViewport(
                 sourcesList = currentSiteSourcesList,
                 newSiteSelected = newSiteSelected,
                 updateNewSiteSelected = updateNewSiteSelected,
+                displayErrorMessage = displayErrorMessage,
                 modifier = Modifier
                     .weight(siteWeight)
                     .fillMaxSize()
@@ -182,6 +184,7 @@ private fun PreviewSiteAndMap(
                     allSitePhotos.size
                 },*/
                 updateNewSiteSelected = {},
+                displayErrorMessage = {},
                 modifier = Modifier
                     .height(1000.dp)
                     .width(500.dp)

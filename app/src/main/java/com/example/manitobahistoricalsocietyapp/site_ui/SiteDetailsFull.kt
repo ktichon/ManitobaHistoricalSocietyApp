@@ -50,6 +50,9 @@ fun DisplayFullSiteDetails(
     newSiteSelected: Boolean,
     updateNewSiteSelected: (Boolean) -> Unit,
 
+    //Used to display error messages as a snackbar
+    displayErrorMessage: (String) -> Unit,
+
     modifier: Modifier = Modifier
 ) {
     //Used to allow me to quickly check different colour values
@@ -132,8 +135,11 @@ fun DisplayFullSiteDetails(
                 } else {
                     //Display this if there are no photos
                     DisplayNoPhotos(
-                        uriHandler = uriHandler,
+                        //uriHandler = uriHandler,
                         linkColor = linkColor,
+                        siteName = site.name,
+                        siteUrl = site.siteUrl,
+                        displayErrorMessage = displayErrorMessage,
                         modifier = Modifier.padding(paddingBetweenItems)
                     )
                 }
@@ -226,6 +232,7 @@ fun PreviewFullSiteDetails(
                 sourcesList = sourcesList,
                 newSiteSelected = false,
                 updateNewSiteSelected = {},
+                displayErrorMessage = {},
                 //scrollState = scrollState,
                 /*photosPagerState = rememberPagerState {
                     allSitePhotos.size

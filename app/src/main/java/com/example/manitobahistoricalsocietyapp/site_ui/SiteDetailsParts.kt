@@ -1,5 +1,7 @@
 package com.example.manitobahistoricalsocietyapp.site_ui
 
+import android.content.ActivityNotFoundException
+import android.content.Intent
 import android.text.method.LinkMovementMethod
 import android.view.View.TEXT_ALIGNMENT_CENTER
 import android.view.View.TEXT_ALIGNMENT_TEXT_START
@@ -32,6 +34,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.toArgb
 import androidx.compose.ui.layout.ContentScale
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.platform.LocalUriHandler
 import androidx.compose.ui.platform.UriHandler
 import androidx.compose.ui.res.painterResource
@@ -220,11 +223,17 @@ fun DisplaySitePhotos(
 //Displays if the are no photos for the site
 @Composable
 fun DisplayNoPhotos(
-    uriHandler: UriHandler,
+    //uriHandler: UriHandler,
     linkColor: Color = MaterialTheme.colorScheme.primary,
+    siteName: String,
+    siteUrl: String,
+    displayErrorMessage: (String) -> Unit,
     modifier: Modifier = Modifier
 
 ) {
+    //Use context to launch email
+    val context = LocalContext.current
+
     //One way to preserve a link in a string
     val annotatedString = buildAnnotatedString {
         withStyle(style = SpanStyle(color = MaterialTheme.colorScheme.onSurface)){
@@ -248,7 +257,25 @@ fun DisplayNoPhotos(
                 textAlign = TextAlign.Center)
             ), onClick = { offset ->
                 annotatedString.getStringAnnotations(tag = "photo_email", start = offset, end = offset).firstOrNull()?.let {
-                    uriHandler.openUri(it.item)
+                    //uriHandler.openUri(it.item)
+
+                    try {
+                        //Creating the intent
+                        val intent = Intent(Intent.ACTION_SEND)
+
+                        // "message/rfc822" is the intent type for email
+                        intent.setType("message/rfc822")
+                        //Putting in the email address. For some reason it was to an array
+                        intent.putExtra(Intent.EXTRA_EMAIL, arrayOf(it.item))
+                        intent.putExtra(Intent.EXTRA_SUBJECT, "Photos for Site $siteName")
+                        intent.putExtra(Intent.EXTRA_TEXT, "The following link is used to the Manitoba Historical Society find the site in question, please do not remove this line in your email. Site URL: $siteUrl \n\n")
+                        context.startActivity(intent)
+                    }catch (e: ActivityNotFoundException) {
+                        displayErrorMessage("No email app available")
+                    } catch (t: Throwable) {
+                        displayErrorMessage("Error opening email app")
+                    }
+
                 }
             },)
         }
@@ -447,7 +474,11 @@ private fun PreviewSitePhotos()
 fun PreviewNoPhotos() {
     AppTheme {
         Surface {
-            DisplayNoPhotos(LocalUriHandler.current)
+            DisplayNoPhotos(
+                //LocalUriHandler.current,
+                siteUrl = "",
+                siteName = "",
+                displayErrorMessage = {})
         }
     }
 }
