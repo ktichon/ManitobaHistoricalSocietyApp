@@ -38,12 +38,14 @@ import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.platform.LocalUriHandler
 import androidx.compose.ui.platform.UriHandler
 import androidx.compose.ui.res.painterResource
+import androidx.compose.ui.text.LinkAnnotation
 import androidx.compose.ui.text.SpanStyle
 import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.buildAnnotatedString
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.text.style.TextDecoration
 import androidx.compose.ui.text.style.TextOverflow
+import androidx.compose.ui.text.withLink
 import androidx.compose.ui.text.withStyle
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
@@ -241,53 +243,41 @@ fun DisplayNoPhotos(
     //Use context to launch email
     val context = LocalContext.current
 
-    //One way to preserve a link in a string
     val annotatedString = buildAnnotatedString {
-        withStyle(style = SpanStyle(color = MaterialTheme.colorScheme.onSurface)){
-            append("We have no photos for this site. If you have one in your personal collection and can provide a copy, please contact us at ")
-        }
-
-
-        pushStringAnnotation(tag = "photo_email", annotation = "photos@mhs.mb.ca")
+        append("We have no photos for this site. If you have one in your personal collection and can provide a copy, please contact us at ")
         withStyle(style = SpanStyle(color = linkColor)) {
             append("photos@mhs.mb.ca")
         }
-        pop()
     }
     Row(
         verticalAlignment = Alignment.CenterVertically,
         horizontalArrangement = Arrangement.Center,
         modifier = modifier
     ){
-        SelectionContainer {
-            //Text(annotatedString)
-            ClickableText(text = annotatedString, style = MaterialTheme.typography.bodyLarge.merge( TextStyle(
-                textAlign = TextAlign.Center)
-            ), onClick = { offset ->
-                annotatedString.getStringAnnotations(tag = "photo_email", start = offset, end = offset).firstOrNull()?.let {
-                    //uriHandler.openUri(it.item)
+        Text(
+            annotatedString,
+            textAlign =  TextAlign.Center,
+            //On click, open the users email app
+            modifier = Modifier.clickable{
+                try {
+                    //Creating the intent
+                    val intent = Intent(Intent.ACTION_SEND)
 
-                    try {
-                        //Creating the intent
-                        val intent = Intent(Intent.ACTION_SEND)
-
-                        // "message/rfc822" is the intent type for email
-                        intent.setType("message/rfc822")
-                        //Putting in the email address. For some reason it was to an array
-                        intent.putExtra(Intent.EXTRA_EMAIL, arrayOf(it.item))
-                        intent.putExtra(Intent.EXTRA_SUBJECT, "Photos for Site $siteName")
-                        intent.putExtra(Intent.EXTRA_TEXT, "The following link is used to the Manitoba Historical Society find the site in question, please do not remove this line in your email. Site URL: $siteUrl \n\n")
-                        context.startActivity(intent)
-                    }catch (e: ActivityNotFoundException) {
-                        displayErrorMessage("No email app available")
-                    } catch (t: Throwable) {
-                        displayErrorMessage("Error opening email app")
-                    }
-
+                    // "message/rfc822" is the intent type for email
+                    intent.setType("message/rfc822")
+                    //Putting in the email address. For some reason it was to an array
+                    intent.putExtra(Intent.EXTRA_EMAIL, arrayOf("photos@mhs.mb.ca"))
+                    intent.putExtra(Intent.EXTRA_SUBJECT, "Photos for Site $siteName")
+                    intent.putExtra(Intent.EXTRA_TEXT, "The following link is used to the Manitoba Historical Society find the site in question, please do not remove this line in your email. Site URL: $siteUrl \n\n")
+                    context.startActivity(intent)
+                }catch (e: ActivityNotFoundException) {
+                    displayErrorMessage("No email app available")
+                } catch (t: Throwable) {
+                    displayErrorMessage("Error opening email app")
                 }
-            },)
-        }
 
+            }
+        )
     }
 }
 
