@@ -64,42 +64,49 @@ fun DisplaySiteTitle(
     modifier: Modifier = Modifier
 ) {
 
-    Row (
-        verticalAlignment = Alignment.CenterVertically,
-        horizontalArrangement = Arrangement.SpaceBetween,
-        modifier = modifier
-            .fillMaxWidth()
-    ){
-        SelectionContainer(
-            modifier = Modifier
-                .weight(1f)
-                .padding(horizontal = 2.dp)
-        ) {
+    SelectionContainer(
+
+    ) {
+        Row (
+            verticalAlignment = Alignment.CenterVertically,
+            horizontalArrangement = Arrangement.SpaceBetween,
+            modifier = modifier
+                .fillMaxWidth()
+        ){
+            //Changes the icon, content description, and on click depending on state
+            val newDisplayStateOnClick = if(displayState == SiteDisplayState.HalfSite) SiteDisplayState.FullSite else SiteDisplayState.HalfSite
+            val icon =  if(displayState == SiteDisplayState.HalfSite) Icons.Default.KeyboardArrowUp else Icons.Default.KeyboardArrowDown
+            val contentDescription = if(displayState == SiteDisplayState.HalfSite) "Show More Info" else "Show Less Info"
+
+
+
+
             Text(
                 text = name,
                 maxLines = if (displayState == SiteDisplayState.HalfSite) 2 else 10,
                 overflow = TextOverflow.Ellipsis,
                 style = MaterialTheme.typography.titleLarge,
+                modifier = Modifier
+                    .weight(1f)
+                    .padding(horizontal = 2.dp)
             )
 
-        }
 
 
 
-        //Changes the icon, content description, and on click depending on state
-        val newDisplayStateOnClick = if(displayState == SiteDisplayState.HalfSite) SiteDisplayState.FullSite else SiteDisplayState.HalfSite
-        val icon =  if(displayState == SiteDisplayState.HalfSite) Icons.Default.KeyboardArrowUp else Icons.Default.KeyboardArrowDown
-        val contentDescription = if(displayState == SiteDisplayState.HalfSite) "Show More Info" else "Show Less Info"
 
 
-        IconButton(onClick = { onClickChangeDisplayState(newDisplayStateOnClick) },
-            modifier =  Modifier.align(Alignment.Top)
-        ) {
-            Icon(imageVector = icon,
-                contentDescription = contentDescription,
-                modifier = Modifier.size(50.dp))
+            IconButton(onClick = { onClickChangeDisplayState(newDisplayStateOnClick) },
+                modifier =  Modifier.align(Alignment.Top)
+            ) {
+                Icon(imageVector = icon,
+                    contentDescription = contentDescription,
+                    modifier = Modifier.size(50.dp))
+            }
         }
     }
+
+
 
 }
 
@@ -253,6 +260,7 @@ fun DisplayNoPhotos(
         modifier = modifier
     ){
         SelectionContainer {
+            //Text(annotatedString)
             ClickableText(text = annotatedString, style = MaterialTheme.typography.bodyLarge.merge( TextStyle(
                 textAlign = TextAlign.Center)
             ), onClick = { offset ->

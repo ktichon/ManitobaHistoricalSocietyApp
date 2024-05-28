@@ -1,18 +1,24 @@
-package com.example.manitobahistoricalsocietyapp.site_ui
+package com.example.manitobahistoricalsocietyapp.site_scaffolding
 
 
+import androidx.compose.foundation.BorderStroke
 import androidx.compose.foundation.interaction.MutableInteractionSource
+import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.PaddingValues
+import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
+import androidx.compose.foundation.lazy.grid.GridCells
+import androidx.compose.foundation.lazy.grid.LazyVerticalGrid
+import androidx.compose.foundation.lazy.grid.items
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.text.BasicTextField
-
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.automirrored.filled.KeyboardArrowLeft
 import androidx.compose.material.icons.filled.Search
+import androidx.compose.material3.Card
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
@@ -24,7 +30,7 @@ import androidx.compose.material3.TopAppBar
 import androidx.compose.material3.TopAppBarDefaults
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.remember
-
+import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.focus.onFocusChanged
 import androidx.compose.ui.graphics.SolidColor
@@ -32,6 +38,8 @@ import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.text.input.VisualTransformation
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
+import com.example.manitobahistoricalsocietyapp.helperClasses.GetTypeValues
+import com.example.manitobahistoricalsocietyapp.map.ClusterItemContent
 import com.example.manitobahistoricalsocietyapp.storage_classes.SiteDisplayState
 import com.example.manitobahistoricalsocietyapp.ui.theme.AppTheme
 
@@ -106,7 +114,9 @@ fun SiteMainPageTopBar(
                 searchQuery = searchQuery,
                 onQueryChange = onQueryChange,
                 onActiveChange = onActiveChange,
-                modifier = Modifier.padding(5.dp).fillMaxWidth()
+                modifier = Modifier
+                    .padding(5.dp)
+                    .fillMaxWidth()
             )
 
         },
@@ -252,6 +262,69 @@ fun AppBarSearch(
     
 }
 
+@Composable
+fun DisplayLegendCard(
+    onCardClick : () -> Unit,
+
+    modifier: Modifier = Modifier) {
+    Card(
+        onClick = onCardClick,
+        border = BorderStroke(1.dp, color = MaterialTheme.colorScheme.onSurface),
+        modifier = modifier
+    ) {
+        Text(
+            text = "Legend",
+            style = MaterialTheme.typography.titleLarge,
+            modifier = Modifier.padding(10.dp)
+        )
+
+    }
+    
+}
+
+@Composable
+fun LegendBottomSheet(
+   /* fullyExpanded: Boolean,
+    updateExpandedState: (Boolean) -> Unit,*/
+    modifier: Modifier = Modifier
+) {
+    val siteTypes = arrayOf(2,3,4,5,6,7)
+    Column(modifier = modifier) {
+        Row (
+            verticalAlignment = Alignment.CenterVertically,
+            horizontalArrangement = Arrangement.Center,
+            modifier = Modifier
+                .fillMaxWidth()
+        ) {
+            Text(
+                text = "Legend",
+                //textAlign = TextAlign.Center,
+                style = MaterialTheme.typography.titleLarge,
+                modifier = Modifier
+            )
+        }
+        LazyVerticalGrid(
+            columns = GridCells.Fixed(2),
+            verticalArrangement = Arrangement.spacedBy(5.dp),
+            horizontalArrangement = Arrangement.spacedBy(5.dp)
+
+
+        ) {
+            items(siteTypes){siteType ->
+                Row(
+                    verticalAlignment = Alignment.CenterVertically
+                ) {
+                    ClusterItemContent(typeId = siteType)
+                    Text(text = GetTypeValues.getTypeName(siteType))
+                }
+
+            }
+        }
+
+
+    }
+}
+
 
 @Preview
 @Composable
@@ -298,5 +371,27 @@ private fun PreviewAppBar() {
             )
         }
     }
+}
+
+@Preview
+@Composable
+private fun PreviewLegendBottomSheet() {
+    AppTheme {
+        Surface {
+            LegendBottomSheet()
+        }
+    }
+
+}
+
+@Preview
+@Composable
+private fun PreviewDisplayLegendCard() {
+    AppTheme {
+        Surface {
+            DisplayLegendCard({})
+        }
+    }
+    
 }
 

@@ -1,5 +1,6 @@
 package com.example.manitobahistoricalsocietyapp.site_main
 
+
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.example.manitobahistoricalsocietyapp.database.HistoricalSite.HistoricalSite
@@ -24,7 +25,7 @@ class HistoricalSiteViewModel @Inject internal constructor(
     private val  historicalSiteRepository: HistoricalSiteRepository,
     private val siteTypeRepository: SiteTypeRepository,
     private val sitePhotosRepository: SitePhotosRepository,
-    private val siteSourceRepository: SiteSourceRepository
+    private val siteSourceRepository: SiteSourceRepository,
 ) : ViewModel(){
 
 
@@ -33,7 +34,7 @@ class HistoricalSiteViewModel @Inject internal constructor(
 
 
     //Initialize with a blank site
-    private val _currentSite:MutableStateFlow<HistoricalSite>  = MutableStateFlow(HistoricalSite(0, "","", 1, 0.0, 0.0, "", "", "", "https://www.mhs.ca/", "", ""))
+    private val _currentSite:MutableStateFlow<HistoricalSite>  = MutableStateFlow(HistoricalSite(0, "","", 1, 49.9000253, -97.1386276, "", "", "", "https://www.mhs.ca/", "", ""))
     val currentSite = _currentSite.asStateFlow()
 
     private val _siteTypes = MutableStateFlow<List<String>>(emptyList())
@@ -61,8 +62,8 @@ class HistoricalSiteViewModel @Inject internal constructor(
     val allHistoricalSiteClusterItems = _allHistoricalSiteClusterItems.asStateFlow()
 
     //Used to notify the scrollState to scroll to top when a new site is selected
-    private val _newSiteSelected = MutableStateFlow(false)
-    val newSiteSelected = _newSiteSelected.asStateFlow()
+    private val _renderNewSite = MutableStateFlow(false)
+    val renderNewSite = _renderNewSite.asStateFlow()
 
 
     //Search Variables
@@ -76,6 +77,10 @@ class HistoricalSiteViewModel @Inject internal constructor(
     val searchedSiteList = _searchedSitesList.asStateFlow()
 
 
+    //Map padding variables
+    //lets the app know that new map padding has been added
+    private  val _newMapPadding = MutableStateFlow(false)
+    val newMapPadding = _newMapPadding.asStateFlow()
 
 
 
@@ -86,7 +91,10 @@ class HistoricalSiteViewModel @Inject internal constructor(
     }
 
     fun updateSiteDisplayState(newState: SiteDisplayState){
+        if (newState != _displayState.value)
+            updateNewMapPadding(true)
         _displayState.value = newState
+
     }
 
     fun updateLocationEnabled(enabled: Boolean)
@@ -103,21 +111,30 @@ class HistoricalSiteViewModel @Inject internal constructor(
 
     }
 
-    fun updateSiteSelected(selected: Boolean)
+    fun updateRenderNewSite(newRender: Boolean)
     {
-        _newSiteSelected.value = selected
+        _renderNewSite.value = newRender
     }
 
     fun newSiteSelected(siteId: Int){
         viewModelScope.launch {
             historicalSiteRepository.getHistoricalSite(siteId).collect{ _currentSite.value = it}
         }
-        updateSiteSelected(true)
+
+        updateRenderNewSite(true)
         updateSiteDisplayState(SiteDisplayState.HalfSite)
+
         viewModelScope.launch{sitePhotosRepository.getPhotosForSite(siteId).collect{ _sitePhotos.value = it}}
         viewModelScope.launch {   siteTypeRepository.getTypesForSite(siteId).collect{ _siteTypes.value = it} }
         viewModelScope.launch {   siteSourceRepository.getSourceInfoForSite(siteId).collect{ _siteSources.value = it} }
     }
+
+
+    fun updateNewMapPadding(newMapPadding: Boolean){
+        _newMapPadding.value = newMapPadding
+    }
+
+
 
 
     //Search

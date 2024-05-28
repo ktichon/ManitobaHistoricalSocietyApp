@@ -1,7 +1,12 @@
 package com.example.manitobahistoricalsocietyapp.map
 
 import androidx.compose.foundation.isSystemInDarkTheme
+import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
 import androidx.compose.ui.Modifier
 import com.example.manitobahistoricalsocietyapp.database.HistoricalSite.HistoricalSiteClusterItem
 import com.google.android.gms.maps.model.MapStyleOptions
@@ -15,30 +20,43 @@ fun DisplayMap(
     cameraPositionState: CameraPositionState,
     sites: List<HistoricalSiteClusterItem>,
     onSiteSelected: (siteClusterItem: HistoricalSiteClusterItem, searched: Boolean)  -> Unit,
-    locationEnabled: Boolean = false,
+    locationEnabled: Boolean,
+    mapPadding: PaddingValues,
+    newMapPadding: Boolean,
+    centerCamera: () -> Unit,
     modifier: Modifier = Modifier
 ) {
     //If the system is in dark mode, use dark map. Else use light map
-    /*val mapProperties by remember {
+    val mapStyleOptions = MapStyleOptions(if (isSystemInDarkTheme()) mapStylingNight else mapStylingDay)
+    val mapProperties by remember {
         mutableStateOf(MapProperties(
             isMyLocationEnabled = locationEnabled,
-            mapStyleOptions = MapStyleOptions(if (isSystemInDarkTheme()) mapStylingNight else mapStylingDay)
+            mapStyleOptions = mapStyleOptions
         ))
-    }*/
+    }
 
 
     GoogleMap(
         cameraPositionState = cameraPositionState,
-        properties = MapProperties(
+        properties = mapProperties,
+        /*MapProperties(
             isMyLocationEnabled = locationEnabled,
             //If the system is in dark mode, use dark map. Else use light map
             mapStyleOptions = MapStyleOptions(if (isSystemInDarkTheme()) mapStylingNight else mapStylingDay)
-        ),
+        ),*/
+        contentPadding = mapPadding,
         modifier = modifier
     ){
         CustomClusterRenderer(sites = sites, onSiteSelected = onSiteSelected)
     }
 
+    //Calls back to center camera if there is new padding
+    LaunchedEffect(key1 = newMapPadding)  {
+        if(newMapPadding){
+            centerCamera()
+        }
+
+    }
 }
 
 

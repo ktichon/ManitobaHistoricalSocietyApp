@@ -2,7 +2,6 @@ package com.example.manitobahistoricalsocietyapp.site_ui
 
 
 import androidx.compose.foundation.BorderStroke
-import androidx.compose.foundation.ExperimentalFoundationApi
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
@@ -28,7 +27,6 @@ import com.example.manitobahistoricalsocietyapp.storage_classes.SiteDisplayState
 import com.example.manitobahistoricalsocietyapp.ui.theme.AppTheme
 import com.google.android.gms.maps.model.LatLng
 
-@OptIn(ExperimentalFoundationApi::class)
 @Composable
 fun DisplayFullSiteDetails(
     //Necessary for Title
@@ -47,8 +45,8 @@ fun DisplayFullSiteDetails(
     sourcesList: List<String>,
 
     //Used to check if this site has been newly selected
-    newSiteSelected: Boolean,
-    updateNewSiteSelected: (Boolean) -> Unit,
+    renderNewSite: Boolean,
+    updateRenderNewSite: (Boolean) -> Unit,
 
     //Used to display error messages as a snackbar
     displayErrorMessage: (String) -> Unit,
@@ -66,11 +64,11 @@ fun DisplayFullSiteDetails(
     val scrollState = rememberScrollState()
 
     //Once a site has been selected, make sure to scroll to top and to the first image
-    LaunchedEffect(key1 = newSiteSelected ) {
-        if (newSiteSelected){
+    LaunchedEffect(key1 = renderNewSite ) {
+        if (renderNewSite){
             photosPagerState.scrollToPage(0)
             scrollState.scrollTo(0)
-            updateNewSiteSelected(false)
+            updateRenderNewSite(false)
         }
     }
 
@@ -230,8 +228,8 @@ fun PreviewFullSiteDetails(
                 allSitePhotos = allSitePhotos,
                 //uriHandler = uriHandler,
                 sourcesList = sourcesList,
-                newSiteSelected = false,
-                updateNewSiteSelected = {},
+                renderNewSite = false,
+                updateRenderNewSite = {},
                 displayErrorMessage = {},
                 //scrollState = scrollState,
                 /*photosPagerState = rememberPagerState {

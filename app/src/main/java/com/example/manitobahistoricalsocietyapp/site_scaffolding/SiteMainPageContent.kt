@@ -1,4 +1,4 @@
-package com.example.manitobahistoricalsocietyapp.site_ui
+package com.example.manitobahistoricalsocietyapp.site_scaffolding
 
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
@@ -14,14 +14,17 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
+import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.HorizontalDivider
 import androidx.compose.material3.MaterialTheme
+import androidx.compose.material3.ModalBottomSheet
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.SnackbarDuration
 import androidx.compose.material3.SnackbarHost
 import androidx.compose.material3.SnackbarHostState
 import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
+import androidx.compose.material3.rememberModalBottomSheetState
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
@@ -30,26 +33,32 @@ import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.runtime.rememberUpdatedState
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.platform.LocalConfiguration
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.tooling.preview.PreviewParameter
+import androidx.compose.ui.tooling.preview.PreviewParameterProvider
 import androidx.compose.ui.unit.dp
 import com.example.manitobahistoricalsocietyapp.database.HistoricalSite.HistoricalSite
 import com.example.manitobahistoricalsocietyapp.database.HistoricalSite.HistoricalSiteClusterItem
 import com.example.manitobahistoricalsocietyapp.database.SitePhotos.SitePhotos
 import com.example.manitobahistoricalsocietyapp.helperClasses.DistanceAwayFromSite
+import com.example.manitobahistoricalsocietyapp.helperClasses.FormatSize
+import com.example.manitobahistoricalsocietyapp.map.DisplayMap
+import com.example.manitobahistoricalsocietyapp.site_ui.DisplayFullSiteDetails
 import com.example.manitobahistoricalsocietyapp.storage_classes.SiteDisplayState
 import com.example.manitobahistoricalsocietyapp.ui.theme.AppTheme
 import com.google.android.gms.maps.model.LatLng
 import com.google.maps.android.compose.CameraPositionState
 import kotlinx.coroutines.launch
 
+@OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun SiteMainPageContent(
     cameraPositionState: CameraPositionState,
     allSites: List<HistoricalSiteClusterItem>,
     onSiteSelected: (siteClusterItem: HistoricalSiteClusterItem, searched: Boolean)  -> Unit,
-    locationEnabled: Boolean = false,
+    locationEnabled: Boolean,
 
     //Site Details parameters
     currentSite: HistoricalSite,
@@ -59,8 +68,8 @@ fun SiteMainPageContent(
     userLocation: LatLng,
     currentSitePhotos: List<SitePhotos>,
     currentSiteSourcesList: List<String>,
-    newSiteSelected: Boolean = false,
-    updateNewSiteSelected: (Boolean) -> Unit,
+    renderNewSite: Boolean,
+    updateRenderNewSite: (Boolean) -> Unit,
 
 
     //Site Search Parameters
@@ -71,10 +80,27 @@ fun SiteMainPageContent(
     onActiveChange: (Boolean) -> Unit,
     removeFocus: () -> Unit,
 
+
+    //MapPadding
+    newMapPadding: Boolean,
+    centerCamera: () -> Unit,
+
+
     modifier: Modifier = Modifier
 ) {
     val scope = rememberCoroutineScope()
     val snackbarHostState = remember {SnackbarHostState()}
+    val legendState = rememberModalBottomSheetState(skipPartiallyExpanded = true)
+    val screenHeightDp = LocalConfiguration.current.screenHeightDp
+    val displayedItemSize = FormatSize.getDpFromPercent(displayState.mapBottomPaddingPercent, screenHeightDp).dp
+
+  /*  var showLegend by remember { mutableStateOf(false) }*/
+
+
+
+
+
+
 
     Scaffold(
         topBar = {
@@ -95,31 +121,105 @@ fun SiteMainPageContent(
         },
         modifier = modifier
     ) {innerPadding ->
-        Box(modifier = Modifier.padding(innerPadding)){
-            DisplaySiteAndMapViewport(
+        Box(modifier = Modifier
+            .padding(innerPadding)
+            .fillMaxSize()
+
+        ){
+            DisplayMap(
                 cameraPositionState = cameraPositionState,
-                allSites = allSites,
+                sites = allSites,
                 onSiteSelected = onSiteSelected,
-                currentSite = currentSite,
-                displayState = displayState,
-                onClickChangeDisplayState = onClickChangeDisplayState,
-                currentSiteTypes = currentSiteTypes,
-                userLocation =  userLocation,
                 locationEnabled = locationEnabled,
-                currentSitePhotos = currentSitePhotos,
-                currentSiteSourcesList = currentSiteSourcesList,
-                newSiteSelected = newSiteSelected,
-                updateNewSiteSelected = updateNewSiteSelected,
-                displayErrorMessage = {message ->
-                                      scope.launch {
-                                          snackbarHostState.showSnackbar(
-                                              message = message,
-                                              duration = SnackbarDuration.Short
-                                          )
-                                      }
-                },
-                modifier = Modifier.fillMaxSize()
+                mapPadding = PaddingValues(bottom = displayedItemSize),
+                newMapPadding = newMapPadding,
+                centerCamera = centerCamera,
+                modifier = Modifier
+                    .fillMaxSize()
+                //The background colour just makes it more visible on preview.
+                //.background(Color.Cyan)
             )
+
+            if (displayState == SiteDisplayState.HalfSite || displayState == SiteDisplayState.FullSite )
+            {
+                DisplayFullSiteDetails(
+                    site = currentSite,
+                    displayState = displayState,
+                    onClickChangeDisplayState = onClickChangeDisplayState,
+                    siteTypes = currentSiteTypes,
+                    userLocation = userLocation,
+                    allSitePhotos = currentSitePhotos,
+                    sourcesList = currentSiteSourcesList,
+                    renderNewSite = renderNewSite,
+                    updateRenderNewSite = updateRenderNewSite,
+                    displayErrorMessage = {message ->
+                        scope.launch {
+                            snackbarHostState.showSnackbar(
+                                message = message,
+                                duration = SnackbarDuration.Short
+                            )
+                        }},
+                    modifier = Modifier
+                        .height(
+                            displayedItemSize
+                        )
+                        .fillMaxWidth()
+                        .align(Alignment.BottomEnd)
+
+                )
+            }
+
+            /*AnimatedVisibility(
+            visible = (displayState == SiteDisplayState.HalfSite || displayState == SiteDisplayState.FullSite) and (currentSite != null),
+            modifier = Modifier.weight(siteWeight),
+            enter = slideInVertically (
+                //slide in from bottom
+                initialOffsetY = {
+                    it / 2
+                },
+                animationSpec = tween(durationMillis = animationLengthInMilliSeconds, easing = LinearOutSlowInEasing)
+            ),
+             //slide out from bottom
+            exit = slideOutVertically(
+                targetOffsetY = {
+                    it / 2
+                },
+                animationSpec = tween(durationMillis = animationLengthInMilliSeconds, easing = LinearOutSlowInEasing)
+            ),
+
+        ) {
+
+        }*/
+
+
+            //Display legend text
+            if ( displayState == SiteDisplayState.FullMap){
+                DisplayLegendCard(
+                    onCardClick = {
+                        onClickChangeDisplayState(SiteDisplayState.MapWithLegend)
+                                  },
+                    modifier = Modifier.align(Alignment.BottomCenter)
+
+                )
+            }
+
+            if (displayState == SiteDisplayState.MapWithLegend){
+                ModalBottomSheet(
+                    onDismissRequest = {
+                        onClickChangeDisplayState(SiteDisplayState.FullMap)
+
+                    },
+                    sheetState = legendState,
+                    modifier = Modifier.height(displayedItemSize)
+                )
+                {
+                    LegendBottomSheet(
+                        modifier = Modifier.fillMaxSize()
+                    )
+                }
+
+            }
+
             if (searchActive){
                 DisplayAppbarSearchResults(
                     searchedSites = searchedSites,
@@ -240,6 +340,11 @@ fun DisplayAppbarSearchResults(
     
 }
 
+
+class DisplayStateWithMapPreviewParameterProvider : PreviewParameterProvider<SiteDisplayState> {
+    override val values: Sequence<SiteDisplayState>
+        get() = sequenceOf(SiteDisplayState.HalfSite, SiteDisplayState.FullSite, SiteDisplayState.FullMap)
+}
 @Preview
 @Composable
 private fun PreviewHistoricalSiteHomeContent(
@@ -278,6 +383,8 @@ private fun PreviewHistoricalSiteHomeContent(
             //val scrollState = rememberScrollState()
             val siteClusterItem1 = HistoricalSiteClusterItem(2,2,"Site Number 1", "11 Bowhill Lane", "Winnipeg", 0.0,0.0)
             val searchedSites = listOf(siteClusterItem1, siteClusterItem1,siteClusterItem1,siteClusterItem1,siteClusterItem1,siteClusterItem1)
+
+           // val legendState = rememberModalBottomSheetState()
             SiteMainPageContent(
                 currentSite = testSite,
                 displayState = displayState,
@@ -296,7 +403,7 @@ private fun PreviewHistoricalSiteHomeContent(
                 photosPagerState = rememberPagerState {
                     allSitePhotos.size
                 },*/
-                updateNewSiteSelected = {},
+                updateRenderNewSite = {},
 
                 searchQuery = "",
                 onQueryChange = {},
@@ -305,7 +412,13 @@ private fun PreviewHistoricalSiteHomeContent(
                 onActiveChange = {},
                 //onSearchSiteSelected = {},
                 removeFocus = {},
-
+                /*mapPadding = PaddingValues(40.dp),
+                //updateMapPadding = {},
+                screenHeightDp = LocalConfiguration.current.screenHeightDp,*/
+                centerCamera = {},
+                newMapPadding = false,
+                locationEnabled = false,
+                renderNewSite = false,
                 modifier = Modifier
                     .height(1000.dp)
                     .width(500.dp)
@@ -350,5 +463,6 @@ private fun PreviewAppBarSearchResults() {
             )
         }
     }
-    
 }
+
+

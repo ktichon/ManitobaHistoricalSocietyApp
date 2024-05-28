@@ -15,8 +15,8 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.platform.LocalFocusManager
 import androidx.lifecycle.viewmodel.compose.viewModel
-import com.example.manitobahistoricalsocietyapp.site_ui.LoadingScreen
-import com.example.manitobahistoricalsocietyapp.site_ui.SiteMainPageContent
+import com.example.manitobahistoricalsocietyapp.site_scaffolding.LoadingScreen
+import com.example.manitobahistoricalsocietyapp.site_scaffolding.SiteMainPageContent
 import com.example.manitobahistoricalsocietyapp.storage_classes.SiteDisplayState
 import com.google.accompanist.permissions.ExperimentalPermissionsApi
 import com.google.accompanist.permissions.isGranted
@@ -31,6 +31,7 @@ import com.google.android.gms.maps.CameraUpdateFactory
 import com.google.android.gms.maps.model.CameraPosition
 import com.google.android.gms.maps.model.LatLng
 import com.google.maps.android.compose.rememberCameraPositionState
+
 
 
 @Composable
@@ -53,12 +54,17 @@ fun SiteMainPageScreen(
     val allSiteClusterItems by viewModel.allHistoricalSiteClusterItems.collectAsState()
 
     //Used to let composable know that a new site has been selected, so that we can scroll to top
-    val newSiteSelected by viewModel.newSiteSelected.collectAsState()
+    val renderNewSite by viewModel.renderNewSite.collectAsState()
 
     //Used for search bar
     val searchActive by viewModel.searchActive.collectAsState()
     val searchQuery by viewModel.searchQuery.collectAsState()
     val searchedSitesList by viewModel.searchedSiteList.collectAsState()
+
+    val newMapPadding by viewModel.newMapPadding.collectAsState()
+
+
+
 
 
     var showLoadingScreen by remember { mutableStateOf(true) }
@@ -75,9 +81,13 @@ fun SiteMainPageScreen(
 
 
 
+
+
     val cameraPositionState = rememberCameraPositionState{
         position = CameraPosition.fromLatLngZoom(currentUserLocation, startingZoomLevel)
     }
+
+
 
 
 
@@ -129,17 +139,29 @@ fun SiteMainPageScreen(
         )
     } else {
 
-
         SiteMainPageContent(
             cameraPositionState = cameraPositionState,
             allSites = allSiteClusterItems,
             onSiteSelected = { siteSelected, searched ->
+                //al beforeSiteDisplayState = displayState
                 viewModel.newSiteSelected(siteSelected.id)
+
                 //If searched, zoom in to site. Else use the current zoom level
                 if(searched){
                     cameraPositionState.position = CameraPosition.fromLatLngZoom(siteSelected.position, searchZoomLevel)
-                } else
+                } else{
                     cameraPositionState.move(CameraUpdateFactory.newLatLng(siteSelected.position))
+                }
+                /*if (beforeSiteDisplayState == SiteDisplayState.FullSite){
+                    coroutineScope.launch {
+                        delay(5)
+                        cameraPositionState.animate(CameraUpdateFactory.newLatLng(siteSelected.position), 250)
+
+                    }
+                }*/
+
+
+
 
             },
             currentSite = currentSite,
@@ -147,15 +169,16 @@ fun SiteMainPageScreen(
             onClickChangeDisplayState = {newState ->
                 viewModel.updateSiteDisplayState(newState)
                 focusManager.clearFocus()
+                //cameraPositionState.move(CameraUpdateFactory.newCameraPosition(cameraPositionState.position))
                                         },
             currentSiteTypes = siteTypes,
             userLocation =  currentUserLocation,
             locationEnabled = locationEnabled,
             currentSitePhotos = sitePhotos,
             currentSiteSourcesList = siteSources,
-            newSiteSelected = newSiteSelected,
-            updateNewSiteSelected = {
-                    selected -> viewModel.updateSiteSelected(selected)
+            renderNewSite = renderNewSite,
+            updateRenderNewSite = {
+                    newRender -> viewModel.updateRenderNewSite(newRender)
             },
 
             //Search bar
@@ -164,8 +187,16 @@ fun SiteMainPageScreen(
             searchedSites = searchedSitesList,
             searchActive = searchActive,
             onActiveChange = { toggle -> viewModel.updateSearchActive(toggle)},
-            removeFocus = {focusManager.clearFocus()}
+            removeFocus = {focusManager.clearFocus()},
 
+
+            //Map Padding
+            newMapPadding = newMapPadding,
+            centerCamera = {
+                //When the padding on the map changes, this will center the map onto the new smaller display port
+                cameraPositionState.move(CameraUpdateFactory.newCameraPosition(cameraPositionState.position))
+                viewModel.updateNewMapPadding(false)
+            },
         )
 
     }

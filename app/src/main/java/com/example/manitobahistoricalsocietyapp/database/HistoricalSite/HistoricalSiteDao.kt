@@ -29,6 +29,4 @@ interface HistoricalSiteDao {
     @Query("SELECT  * FROM manitobaHistoricalSite WHERE site_id = :id ")
     fun getHistoricalSite(id: Int): Flow<HistoricalSite>
 
-
-
 }
