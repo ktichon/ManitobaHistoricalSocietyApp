@@ -68,6 +68,7 @@ fun SiteMainPageScreen(
 
 
     var showLoadingScreen by remember { mutableStateOf(true) }
+    var askedForPermission by remember { mutableStateOf(false) }
 
     val locationProvider by remember {
         mutableStateOf(LocationServices.getFusedLocationProviderClient(context))
@@ -91,13 +92,25 @@ fun SiteMainPageScreen(
 
 
 
-    //Request location permissions, and storing the value in currentSiteState
-    RequestLocationPermission(
-        onPermissionGranted = {
-            viewModel.updateLocationEnabled(true)
-                              },
-        onPermissionDenied = {viewModel.updateLocationEnabled(false)}
-    )
+
+    //Keeps checking if permissions are granted until they are either granted or denied.
+    if (!askedForPermission){
+        //Request location permissions, and storing the value in currentSiteState
+        RequestLocationPermission(
+            onPermissionGranted = {
+                viewModel.updateLocationEnabled(true)
+                askedForPermission = true
+            },
+            onPermissionDenied = {viewModel.updateLocationEnabled(false)
+                askedForPermission = true
+            },
+            onPermissionsRevoked = {
+                askedForPermission = false
+            }
+        )
+
+    }
+
 
     //If location enable is set to true
     if (locationEnabled  ){
@@ -139,6 +152,7 @@ fun SiteMainPageScreen(
         )
     } else {
 
+
         SiteMainPageContent(
             cameraPositionState = cameraPositionState,
             allSites = allSiteClusterItems,
@@ -152,24 +166,13 @@ fun SiteMainPageScreen(
                 } else{
                     cameraPositionState.move(CameraUpdateFactory.newLatLng(siteSelected.position))
                 }
-                /*if (beforeSiteDisplayState == SiteDisplayState.FullSite){
-                    coroutineScope.launch {
-                        delay(5)
-                        cameraPositionState.animate(CameraUpdateFactory.newLatLng(siteSelected.position), 250)
-
-                    }
-                }*/
-
-
-
-
             },
+
             currentSite = currentSite,
             displayState = displayState,
             onClickChangeDisplayState = {newState ->
                 viewModel.updateSiteDisplayState(newState)
                 focusManager.clearFocus()
-                //cameraPositionState.move(CameraUpdateFactory.newCameraPosition(cameraPositionState.position))
                                         },
             currentSiteTypes = siteTypes,
             userLocation =  currentUserLocation,
@@ -240,7 +243,7 @@ fun RequestPermissionAlert(
 fun RequestLocationPermission(
     onPermissionGranted:  () -> Unit,
     onPermissionDenied: () -> Unit,
-    //onPermissionsRevoked: () -> Unit
+    onPermissionsRevoked: () -> Unit
 ) {
     // Initialize the state for managing multiple location permissions.
     val permissionState = rememberMultiplePermissionsState(
@@ -262,11 +265,12 @@ fun RequestLocationPermission(
         }
 
         // If there are permissions to request, launch the permission request.
-        if (permissionsToRequest.isNotEmpty()) permissionState.launchMultiplePermissionRequest()
+        if (permissionsToRequest.isNotEmpty())
+            permissionState.launchMultiplePermissionRequest()
 
         // Execute callbacks based on permission status.
         if (allPermissionsRevoked) {
-            onPermissionDenied()
+            onPermissionsRevoked()
         } else {
             if (permissionState.allPermissionsGranted) {
                 onPermissionGranted()
@@ -275,6 +279,9 @@ fun RequestLocationPermission(
             }
         }
     }
+    // Fall back to ensure that if all permissions are granted, call on permission granted
+    if (permissionState.allPermissionsGranted)
+        onPermissionGranted()
 }
 
 

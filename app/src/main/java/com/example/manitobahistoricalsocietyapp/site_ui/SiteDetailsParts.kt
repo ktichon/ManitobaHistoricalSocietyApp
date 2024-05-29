@@ -12,13 +12,13 @@ import androidx.compose.foundation.combinedClickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
+import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.pager.HorizontalPager
 import androidx.compose.foundation.pager.PagerState
 import androidx.compose.foundation.pager.rememberPagerState
-import androidx.compose.foundation.text.ClickableText
 import androidx.compose.foundation.text.selection.SelectionContainer
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.KeyboardArrowDown
@@ -38,14 +38,12 @@ import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.platform.LocalUriHandler
 import androidx.compose.ui.platform.UriHandler
 import androidx.compose.ui.res.painterResource
-import androidx.compose.ui.text.LinkAnnotation
 import androidx.compose.ui.text.SpanStyle
 import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.buildAnnotatedString
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.text.style.TextDecoration
 import androidx.compose.ui.text.style.TextOverflow
-import androidx.compose.ui.text.withLink
 import androidx.compose.ui.text.withStyle
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
@@ -66,9 +64,7 @@ fun DisplaySiteTitle(
     modifier: Modifier = Modifier
 ) {
 
-    SelectionContainer(
-
-    ) {
+    SelectionContainer {
         Row (
             verticalAlignment = Alignment.CenterVertically,
             horizontalArrangement = Arrangement.SpaceBetween,
@@ -99,11 +95,12 @@ fun DisplaySiteTitle(
 
 
             IconButton(onClick = { onClickChangeDisplayState(newDisplayStateOnClick) },
-                modifier =  Modifier.align(Alignment.Top)
+                modifier =  Modifier.align(Alignment.Top).size(70.dp)
             ) {
                 Icon(imageVector = icon,
                     contentDescription = contentDescription,
-                    modifier = Modifier.size(50.dp))
+                    modifier = Modifier.fillMaxSize()
+                )
             }
         }
     }
@@ -198,7 +195,7 @@ fun DisplaySitePhoto(
 
 
 
-@OptIn(ExperimentalFoundationApi::class)
+
 @Composable
 fun DisplaySitePhotos(
     photos: List<SitePhotos>,
@@ -447,7 +444,6 @@ private fun PreviewSitePhoto()
     }
 }
 
-@OptIn(ExperimentalFoundationApi::class)
 @Preview
 @Composable
 private fun PreviewSitePhotos()

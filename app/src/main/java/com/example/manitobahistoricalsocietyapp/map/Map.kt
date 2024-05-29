@@ -35,6 +35,12 @@ fun DisplayMap(
         ))
     }
 
+    /*val mapProperties = MapProperties(
+        isMyLocationEnabled = locationEnabled,
+        //If the system is in dark mode, use dark map. Else use light map
+        mapStyleOptions = MapStyleOptions(if (isSystemInDarkTheme()) mapStylingNight else mapStylingDay)
+    )*/
+
 
     GoogleMap(
         cameraPositionState = cameraPositionState,

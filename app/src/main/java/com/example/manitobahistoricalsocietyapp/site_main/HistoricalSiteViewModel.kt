@@ -91,8 +91,6 @@ class HistoricalSiteViewModel @Inject internal constructor(
     }
 
     fun updateSiteDisplayState(newState: SiteDisplayState){
-        if (newState != _displayState.value)
-            updateNewMapPadding(true)
         _displayState.value = newState
 
     }
@@ -121,6 +119,8 @@ class HistoricalSiteViewModel @Inject internal constructor(
             historicalSiteRepository.getHistoricalSite(siteId).collect{ _currentSite.value = it}
         }
 
+        if (_displayState.value != SiteDisplayState.HalfSite)
+            updateNewMapPadding(true)
         updateRenderNewSite(true)
         updateSiteDisplayState(SiteDisplayState.HalfSite)
 

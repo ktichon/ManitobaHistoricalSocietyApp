@@ -77,7 +77,7 @@ fun SiteMainPageTopBar(
                     })
             }
             //On click show full map, only available if displayState is not FullMap
-            else if (displayState != SiteDisplayState.FullMap){
+            else if (!(displayState == SiteDisplayState.FullMap || displayState == SiteDisplayState.MapWithLegend)){
                 TopBarNavIcon(
                     imageVector = Icons.AutoMirrored.Filled.KeyboardArrowLeft,
                     contentDescription = "Back to Map",
@@ -174,6 +174,7 @@ fun AppBarSearch(
         BasicTextField(
             value = searchQuery,
             onValueChange = { query -> onQueryChange(query) },
+            maxLines = 1,
             singleLine = true,
             interactionSource = interactionSource,
             textStyle = MaterialTheme.typography.titleLarge.copy(color = MaterialTheme.colorScheme.onSurface),
@@ -270,12 +271,13 @@ fun DisplayLegendCard(
     Card(
         onClick = onCardClick,
         border = BorderStroke(1.dp, color = MaterialTheme.colorScheme.onSurface),
+        shape = CircleShape,
         modifier = modifier
     ) {
         Text(
             text = "Legend",
             style = MaterialTheme.typography.titleLarge,
-            modifier = Modifier.padding(10.dp)
+            modifier = Modifier.padding(vertical = 5.dp, horizontal = 10.dp)
         )
 
     }
