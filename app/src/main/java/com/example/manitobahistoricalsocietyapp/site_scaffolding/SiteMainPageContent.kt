@@ -14,6 +14,7 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
+import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.HorizontalDivider
 import androidx.compose.material3.MaterialTheme
@@ -248,7 +249,11 @@ fun LoadingScreen(
     onCompleted: () -> Unit,
     modifier: Modifier = Modifier
 ) {
-    Box(modifier = modifier.fillMaxSize(), contentAlignment = Alignment.Center){
+    Column(
+        horizontalAlignment = Alignment.CenterHorizontally,
+        verticalArrangement = Arrangement.Center,
+        modifier = modifier.fillMaxSize(),
+        ){
         val currentOnCompeted by rememberUpdatedState( onCompleted)
 
         LaunchedEffect(Unit) {
@@ -256,8 +261,20 @@ fun LoadingScreen(
             currentOnCompeted()
         }
 
-        Text(text = "Loading App Data ...",
+
+        Text(text = "Loading Manitoba Historical Sites",
             style = MaterialTheme.typography.titleLarge)
+        CircularProgressIndicator(
+
+            color = MaterialTheme.colorScheme.secondary,
+            trackColor = MaterialTheme.colorScheme.surfaceVariant,
+            strokeWidth = 5.dp,
+            modifier = Modifier.width(100.dp).padding(10.dp),
+        )
+
+
+
+
 
     }
 }
