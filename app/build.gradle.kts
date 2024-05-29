@@ -16,8 +16,8 @@ android {
         applicationId = "com.example.manitobahistoricalsocietyapp"
         minSdk = 24
         targetSdk = 34
-        versionCode = 2
-        versionName = "1.1"
+        versionCode = 3
+        versionName = "3.2"
 
         testInstrumentationRunner = "androidx.test.runner.AndroidJUnitRunner"
         vectorDrawables {
@@ -80,8 +80,8 @@ dependencies {
     implementation("androidx.compose.ui:ui-graphics")
     implementation("androidx.compose.ui:ui-tooling-preview")
     implementation("androidx.compose.material3:material3")
-    implementation("com.google.android.gms:play-services-location:21.2.0")
-    implementation("androidx.lifecycle:lifecycle-runtime-compose-android:2.8.0")
+    implementation("com.google.android.gms:play-services-location:21.3.0")
+    implementation("androidx.lifecycle:lifecycle-runtime-compose-android:2.8.1")
     testImplementation("junit:junit:4.13.2")
 
     androidTestImplementation(platform("androidx.compose:compose-bom:2024.05.00"))
@@ -91,22 +91,22 @@ dependencies {
 
     androidTestImplementation("androidx.test:monitor:1.6.1")
     androidTestImplementation("junit:junit:4.13.2")
-    implementation("androidx.activity:activity:1.9.0")
+    implementation("androidx.activity:activity-ktx:1.9.0")
     implementation("androidx.annotation:annotation:1.8.0")
-    implementation("androidx.compose.foundation:foundation-layout:1.7.0-beta01")
-    implementation("androidx.compose.foundation:foundation:1.7.0-beta01")
+    implementation("androidx.compose.foundation:foundation-layout:1.7.0-beta02")
+    implementation("androidx.compose.foundation:foundation:1.7.0-beta02")
     implementation("androidx.compose.material:material-icons-core:1.6.7")
-    implementation("androidx.compose.runtime:runtime-saveable:1.7.0-beta01")
-    implementation("androidx.compose.runtime:runtime:1.7.0-beta01")
-    implementation("androidx.compose.ui:ui-text:1.7.0-beta01")
-    implementation("androidx.compose.ui:ui-unit:1.7.0-beta01")
-    implementation("androidx.core:core:1.13.1")
-    implementation("androidx.fragment:fragment:1.7.1")
-    implementation("androidx.lifecycle:lifecycle-common:2.8.0")
-    implementation("androidx.lifecycle:lifecycle-viewmodel-savedstate:2.8.0")
-    implementation("androidx.lifecycle:lifecycle-viewmodel:2.8.0")
+    implementation("androidx.compose.runtime:runtime-saveable:1.7.0-beta02")
+    implementation("androidx.compose.runtime:runtime:1.7.0-beta02")
+    implementation("androidx.compose.ui:ui-text:1.7.0-beta02")
+    implementation("androidx.compose.ui:ui-unit:1.7.0-beta02")
+    implementation("androidx.core:core-ktx:1.13.1")
+    implementation("androidx.fragment:fragment-ktx:1.7.1")
+    implementation("androidx.lifecycle:lifecycle-common:2.8.1")
+    implementation("androidx.lifecycle:lifecycle-viewmodel-savedstate:2.8.1")
+    implementation("androidx.lifecycle:lifecycle-viewmodel-ktx:2.8.1")
     implementation("androidx.room:room-common:2.6.1")
-    implementation("androidx.sqlite:sqlite:2.4.0")
+    implementation("androidx.sqlite:sqlite-ktx:2.4.0")
     implementation("com.google.dagger:dagger:2.51.1")
     implementation("com.google.dagger:hilt-core:2.51.1")
     implementation("com.google.maps.android:android-maps-utils:3.8.0")
@@ -146,7 +146,7 @@ dependencies {
 
     implementation("com.google.accompanist:accompanist-permissions:0.35.0-alpha")
 
-    implementation("androidx.lifecycle:lifecycle-viewmodel-compose:2.8.0")
+    implementation("androidx.lifecycle:lifecycle-viewmodel-compose:2.8.1")
 
     implementation("com.google.dagger:hilt-android:2.51.1")
     kapt ("com.google.dagger:hilt-compiler:2.51.1")

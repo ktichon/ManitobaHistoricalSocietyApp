@@ -41,59 +41,71 @@ fun SiteMainPageScreen(
     modifier: Modifier = Modifier,
 
 ) {
+
+    //Display state of screen
+    //Controls the size the DisplayMap, DisplayFullSiteDetails, and Legend Composables, and other less drastic changes
     val displayState by viewModel.displayState.collectAsState()
-    val currentSite by viewModel.currentSite.collectAsState()
-
-    val siteTypes by viewModel.siteTypes.collectAsState()
-    val sitePhotos by viewModel.sitePhotos.collectAsState()
-    val siteSources by viewModel.siteSources.collectAsState()
-    val locationEnabled by viewModel.locationEnabled.collectAsState()
-    val currentUserLocation by viewModel.currentUserLocation.collectAsState()
-    val followUserLocation by viewModel.followUserLocation.collectAsState()
-
-    val allSiteClusterItems by viewModel.allHistoricalSiteClusterItems.collectAsState()
-
-    //Used to let composable know that a new site has been selected, so that we can scroll to top
-    val renderNewSite by viewModel.renderNewSite.collectAsState()
-
-    //Used for search bar
-    val searchActive by viewModel.searchActive.collectAsState()
-    val searchQuery by viewModel.searchQuery.collectAsState()
-    val searchedSitesList by viewModel.searchedSiteList.collectAsState()
-
+    //Used to let the camera know that a new padding has been added to the map, and so center the camera
     val newMapPadding by viewModel.newMapPadding.collectAsState()
 
 
+    //All site clusterItems that should be displayed on the map
+    val allSiteClusterItems by viewModel.allHistoricalSiteClusterItems.collectAsState()
 
 
+    //Current Site
+    //Used to let DisplayFullSiteDetails know that a new site has been selected, so that it can ensure that all of its scrollable are scrolled to the top
+    val renderNewSite by viewModel.renderNewSite.collectAsState()
+    //The currently selected site
+    val currentSite by viewModel.currentSite.collectAsState()
+    //Other info about the selected site
+    val siteTypes by viewModel.siteTypes.collectAsState()
+    val sitePhotos by viewModel.sitePhotos.collectAsState()
+    val siteSources by viewModel.siteSources.collectAsState()
 
-    var showLoadingScreen by remember { mutableStateOf(true) }
-    var askedForPermission by remember { mutableStateOf(false) }
 
+    //User Location
+    //Whether the user has allowed the app access to their location
+    val locationEnabled by viewModel.locationEnabled.collectAsState()
+    //Current user location
+    val currentUserLocation by viewModel.currentUserLocation.collectAsState()
+    //Controls if the camera should follow the user location. Currently only used to center the camera on the user on app load
+    val followUserLocation by viewModel.followUserLocation.collectAsState()
+    //Location Provider, used to get user location
     val locationProvider by remember {
         mutableStateOf(LocationServices.getFusedLocationProviderClient(context))
     }
 
+
+    //Search Bar
+    //Stores if the search bar is active or not
+    val searchActive by viewModel.searchActive.collectAsState()
+    //The text used to search
+    val searchQuery by viewModel.searchQuery.collectAsState()
+    //All sites where either the name or address contains the searchQuery
+    val searchedSitesList by viewModel.searchedSiteList.collectAsState()
     //used to un-focus from search bar
     val focusManager = LocalFocusManager.current
 
+
+    //Stores if the loading should be visible or not
+    var showLoadingScreen by remember { mutableStateOf(true) }
+
+    //Camera
+    //Camera zoom level on map load
     val startingZoomLevel = 16f
+    //Camera zoom level when a site is searched. Since searching on a site doesn't trigger a onMarkerClick event, we want zoom in close enough that it is obvious which site is the result
     val searchZoomLevel = 18f
-
-
-
-
-
+    //Controls the camera position state
     val cameraPositionState = rememberCameraPositionState{
         position = CameraPosition.fromLatLngZoom(currentUserLocation, startingZoomLevel)
     }
 
 
-
-
-
-
-    //Keeps checking if permissions are granted until they are either granted or denied.
+    //Requesting Location Permissions
+    //used to make sure it keeps checking if permissions are granted until they are either granted or denied.
+    //It allows us to avoid having to close the app completely and reopening it after enabling permissions
+    var askedForPermission by remember { mutableStateOf(false) }
     if (!askedForPermission){
         //Request location permissions, and storing the value in currentSiteState
         RequestLocationPermission(
@@ -112,10 +124,8 @@ fun SiteMainPageScreen(
     }
 
 
-    //If location enable is set to true
+    //If location enable is set to true, continually get and update user location
     if (locationEnabled  ){
-
-
         GetUserLocation(
             onNewLocation = {newLocation ->
                 viewModel.updateUserLocation(newLocation)

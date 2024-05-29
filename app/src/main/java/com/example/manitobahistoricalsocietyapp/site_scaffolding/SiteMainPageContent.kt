@@ -35,6 +35,7 @@ import androidx.compose.runtime.rememberUpdatedState
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalConfiguration
+import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.tooling.preview.PreviewParameter
@@ -199,7 +200,7 @@ fun SiteMainPageContent(
                     onCardClick = {
                         onClickChangeDisplayState(SiteDisplayState.MapWithLegend)
                                   },
-                    modifier = Modifier.align(Alignment.BottomCenter)
+                    modifier = Modifier.align(Alignment.BottomCenter).padding(5.dp)
 
                 )
             }
@@ -263,7 +264,10 @@ fun LoadingScreen(
 
 
         Text(text = "Loading Manitoba Historical Sites",
-            style = MaterialTheme.typography.titleLarge)
+            style = MaterialTheme.typography.titleLarge,
+            textAlign = TextAlign.Center,
+            modifier = Modifier.fillMaxWidth().padding(10.dp)
+        )
         CircularProgressIndicator(
 
             color = MaterialTheme.colorScheme.secondary,
