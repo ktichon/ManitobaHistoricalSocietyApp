@@ -92,6 +92,8 @@ class HistoricalSiteViewModel @Inject internal constructor(
 
     fun updateSiteDisplayState(newState: SiteDisplayState){
         _displayState.value = newState
+        //Let the map know that we have updated the padding, to make sure we properly center the camera
+        updateNewMapPadding(true)
 
     }
 
@@ -119,10 +121,10 @@ class HistoricalSiteViewModel @Inject internal constructor(
             historicalSiteRepository.getHistoricalSite(siteId).collect{ _currentSite.value = it}
         }
 
-        if (_displayState.value != SiteDisplayState.HalfSite)
-            updateNewMapPadding(true)
         updateRenderNewSite(true)
-        updateSiteDisplayState(SiteDisplayState.HalfSite)
+        //If the displayState isn't already HalfSite, set it to HalfSite
+        if (_displayState.value != SiteDisplayState.HalfSite)
+            updateSiteDisplayState(SiteDisplayState.HalfSite)
 
         viewModelScope.launch{sitePhotosRepository.getPhotosForSite(siteId).collect{ _sitePhotos.value = it}}
         viewModelScope.launch {   siteTypeRepository.getTypesForSite(siteId).collect{ _siteTypes.value = it} }
@@ -152,9 +154,13 @@ class HistoricalSiteViewModel @Inject internal constructor(
     }
 
     fun updateSearchQuery(query: String){
-        _searchQuery.value = query
+        _searchQuery.value = query.trim()
         if (_searchQuery.value.isBlank()){
-            _searchedSitesList.value = emptyList()
+            _searchedSitesList.value = getNearestSites(
+                maxSites = 20,
+                availableSites = _allHistoricalSiteClusterItems.value,
+                userLocation = _currentUserLocation.value
+            )
         }
         else{
             _searchedSitesList.value = _allHistoricalSiteClusterItems.value.filter { site ->
@@ -168,7 +174,7 @@ class HistoricalSiteViewModel @Inject internal constructor(
 
     //Gets the X closes sites to the user
     private fun getNearestSites(maxSites: Int, availableSites: List<HistoricalSiteClusterItem>, userLocation: LatLng ) : List<HistoricalSiteClusterItem>{
-        val distanceSearchValues = arrayOf(200, 500, 1000, 5000, 10000)
+        val distanceSearchValues = arrayOf(200, 500, 1000, 5000, 10000, 20000)
         val foundSites = mutableListOf<HistoricalSiteClusterItem>()
         var previousSearchValue = 0
 
