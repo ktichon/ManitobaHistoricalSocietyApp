@@ -10,6 +10,7 @@ import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
+import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalContext
@@ -31,7 +32,7 @@ import com.google.android.gms.maps.CameraUpdateFactory
 import com.google.android.gms.maps.model.CameraPosition
 import com.google.android.gms.maps.model.LatLng
 import com.google.maps.android.compose.rememberCameraPositionState
-
+import kotlinx.coroutines.launch
 
 
 @Composable
@@ -46,7 +47,9 @@ fun SiteMainPageScreen(
     //Controls the size the DisplayMap, DisplayFullSiteDetails, and Legend Composables, and other less drastic changes
     val displayState by viewModel.displayState.collectAsState()
     //Used to let the camera know that a new padding has been added to the map, and so center the camera
-    val newMapPadding by viewModel.newMapPadding.collectAsState()
+    val newMapUpdate by viewModel.newMapUpdate.collectAsState()
+    //Used to center the camera at location without waiting for the current site data to load
+    val lastSelectedClusterItem by viewModel.lastSelectedClusterItem.collectAsState()
 
 
     //All site clusterItems that should be displayed on the map
@@ -84,6 +87,8 @@ fun SiteMainPageScreen(
     val searchQuery by viewModel.searchQuery.collectAsState()
     //All sites where either the name or address contains the searchQuery
     val searchedSitesList by viewModel.searchedSiteList.collectAsState()
+    //Used to let the camera know if the site was selected by searchbar (if so then zoom) or not
+    val siteSelectedFromSearch by viewModel.siteSelectedFromSearch.collectAsState()
     //used to un-focus from search bar
     val focusManager = LocalFocusManager.current
 
@@ -96,10 +101,15 @@ fun SiteMainPageScreen(
     val startingZoomLevel = 16f
     //Camera zoom level when a site is searched. Since searching on a site doesn't trigger a onMarkerClick event, we want zoom in close enough that it is obvious which site is the result
     val searchZoomLevel = 18f
+    //Camera animation time
+    val cameraAnimationDurationMs = 500
+    //coroutineScope used to launch animations
+    val coroutineScope = rememberCoroutineScope()
     //Controls the camera position state
     val cameraPositionState = rememberCameraPositionState{
         position = CameraPosition.fromLatLngZoom(currentUserLocation, startingZoomLevel)
     }
+
 
 
     //Requesting Location Permissions
@@ -167,15 +177,9 @@ fun SiteMainPageScreen(
             cameraPositionState = cameraPositionState,
             allSites = allSiteClusterItems,
             onSiteSelected = { siteSelected, searched ->
-                //al beforeSiteDisplayState = displayState
+                viewModel.updateLastSelectedClusterItem(siteSelected)
+                viewModel.updateSiteSelectedFromSearch(searched)
                 viewModel.newSiteSelected(siteSelected.id)
-
-                //If searched, zoom in to site. Else use the current zoom level
-                if(searched){
-                    cameraPositionState.position = CameraPosition.fromLatLngZoom(siteSelected.position, searchZoomLevel)
-                } else{
-                    cameraPositionState.move(CameraUpdateFactory.newLatLng(siteSelected.position))
-                }
             },
 
             currentSite = currentSite,
@@ -204,11 +208,32 @@ fun SiteMainPageScreen(
 
 
             //Map Padding
-            newMapPadding = newMapPadding,
+            newMapUpdate = newMapUpdate,
             centerCamera = {
                 //When the padding on the map changes, this will center the map onto the new smaller display port
-                cameraPositionState.move(CameraUpdateFactory.newCameraPosition(cameraPositionState.position))
-                viewModel.updateNewMapPadding(false)
+
+                //When going from FullMap to HalfSite, no animation. We just want the map centered around the new site
+                if (displayState == SiteDisplayState.HalfSite){
+                    //If searched, zoom in to site. Else use the current zoom level
+                    if(siteSelectedFromSearch){
+                        cameraPositionState.position = CameraPosition.fromLatLngZoom(lastSelectedClusterItem.position, searchZoomLevel)
+                    } else{
+                        coroutineScope.launch {
+                            cameraPositionState.animate(CameraUpdateFactory.newLatLng(lastSelectedClusterItem.position), cameraAnimationDurationMs)
+                        }
+
+                    }
+                }
+                //When going from HalfSite or FullSite to FullMap, animate the move to center
+                else if (displayState == SiteDisplayState.FullMap) {
+                    coroutineScope.launch{
+                        cameraPositionState.animate(CameraUpdateFactory.newCameraPosition(cameraPositionState.position), cameraAnimationDurationMs)
+                    }
+
+                }
+
+
+                viewModel.updateNewMapUpdate(false)
             },
         )
 

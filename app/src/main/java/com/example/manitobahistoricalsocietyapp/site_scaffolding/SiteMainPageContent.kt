@@ -84,7 +84,7 @@ fun SiteMainPageContent(
 
 
     //MapPadding
-    newMapPadding: Boolean,
+    newMapUpdate: Boolean,
     centerCamera: () -> Unit,
 
 
@@ -134,7 +134,7 @@ fun SiteMainPageContent(
                 onSiteSelected = onSiteSelected,
                 locationEnabled = locationEnabled,
                 mapPadding = PaddingValues(bottom = displayedItemSize),
-                newMapPadding = newMapPadding,
+                newMapUpdate = newMapUpdate,
                 centerCamera = centerCamera,
                 modifier = Modifier
                     .fillMaxSize()
@@ -437,7 +437,7 @@ private fun PreviewHistoricalSiteHomeContent(
                 //updateMapPadding = {},
                 screenHeightDp = LocalConfiguration.current.screenHeightDp,*/
                 centerCamera = {},
-                newMapPadding = false,
+                newMapUpdate = false,
                 locationEnabled = false,
                 renderNewSite = false,
                 modifier = Modifier

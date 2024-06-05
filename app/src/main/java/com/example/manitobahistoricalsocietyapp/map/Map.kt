@@ -22,7 +22,7 @@ fun DisplayMap(
     onSiteSelected: (siteClusterItem: HistoricalSiteClusterItem, searched: Boolean)  -> Unit,
     locationEnabled: Boolean,
     mapPadding: PaddingValues,
-    newMapPadding: Boolean,
+    newMapUpdate: Boolean,
     centerCamera: () -> Unit,
     modifier: Modifier = Modifier
 ) {
@@ -56,9 +56,9 @@ fun DisplayMap(
         CustomClusterRenderer(sites = sites, onSiteSelected = onSiteSelected)
     }
 
-    //Calls back to center camera if there is new padding
-    LaunchedEffect(key1 = newMapPadding)  {
-        if(newMapPadding){
+    //Calls back to center camera if there is a newMapUpdate
+    LaunchedEffect(key1 = newMapUpdate)  {
+        if(newMapUpdate){
             centerCamera()
         }
 

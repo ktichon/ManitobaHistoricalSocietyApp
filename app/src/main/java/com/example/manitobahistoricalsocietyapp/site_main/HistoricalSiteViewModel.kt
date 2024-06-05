@@ -75,12 +75,22 @@ class HistoricalSiteViewModel @Inject internal constructor(
 
     private  val _searchedSitesList = MutableStateFlow<List<HistoricalSiteClusterItem>>(emptyList())
     val searchedSiteList = _searchedSitesList.asStateFlow()
+    //Lets the camera know if this was selected from search results or not
+    private val _siteSelectedFromSearch = MutableStateFlow(false)
+    val siteSelectedFromSearch = _siteSelectedFromSearch.asStateFlow()
 
 
     //Map padding variables
     //lets the app know that new map padding has been added
-    private  val _newMapPadding = MutableStateFlow(false)
-    val newMapPadding = _newMapPadding.asStateFlow()
+    private  val _newMapUpdate = MutableStateFlow(false)
+    val newMapUpdate = _newMapUpdate.asStateFlow()
+
+    //Stores the clusterItem so that the map can move to location without waiting for me to fetch the current item
+    private val _lastSelectedClusterItem:MutableStateFlow<HistoricalSiteClusterItem>  = MutableStateFlow(
+        HistoricalSiteClusterItem(0, 1,"", "", "", 49.9000253, -97.1386276)
+    )
+    val lastSelectedClusterItem = _lastSelectedClusterItem.asStateFlow()
+
 
 
 
@@ -92,8 +102,9 @@ class HistoricalSiteViewModel @Inject internal constructor(
 
     fun updateSiteDisplayState(newState: SiteDisplayState){
         _displayState.value = newState
-        //Let the map know that we have updated the padding, to make sure we properly center the camera
-        updateNewMapPadding(true)
+        //Let the map know that we have updated the padding, to make sure we properly center the camera when state is changed to HalfSite or FullMap
+        if (_displayState.value == SiteDisplayState.HalfSite || _displayState.value == SiteDisplayState.FullMap)
+            updateNewMapUpdate(true)
 
     }
 
@@ -122,9 +133,8 @@ class HistoricalSiteViewModel @Inject internal constructor(
         }
 
         updateRenderNewSite(true)
-        //If the displayState isn't already HalfSite, set it to HalfSite
-        if (_displayState.value != SiteDisplayState.HalfSite)
-            updateSiteDisplayState(SiteDisplayState.HalfSite)
+        //Set the display to HalfSite
+        updateSiteDisplayState(SiteDisplayState.HalfSite)
 
         viewModelScope.launch{sitePhotosRepository.getPhotosForSite(siteId).collect{ _sitePhotos.value = it}}
         viewModelScope.launch {   siteTypeRepository.getTypesForSite(siteId).collect{ _siteTypes.value = it} }
@@ -132,8 +142,16 @@ class HistoricalSiteViewModel @Inject internal constructor(
     }
 
 
-    fun updateNewMapPadding(newMapPadding: Boolean){
-        _newMapPadding.value = newMapPadding
+    fun updateNewMapUpdate(newMapUpdate: Boolean){
+        _newMapUpdate.value = newMapUpdate
+    }
+
+    fun updateSiteSelectedFromSearch(siteSelectedFromSearch: Boolean){
+        _siteSelectedFromSearch.value = siteSelectedFromSearch
+    }
+
+    fun updateLastSelectedClusterItem(clusterItem: HistoricalSiteClusterItem){
+        _lastSelectedClusterItem.value = clusterItem
     }
 
 
