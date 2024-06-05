@@ -86,7 +86,7 @@ fun DisplaySiteTitle(
                 style = MaterialTheme.typography.titleLarge,
                 modifier = Modifier
                     .weight(1f)
-                    .padding(horizontal = 2.dp)
+                    .padding(horizontal = 5.dp)
             )
 
 
