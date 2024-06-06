@@ -86,10 +86,10 @@ class HistoricalSiteViewModel @Inject internal constructor(
     val newMapUpdate = _newMapUpdate.asStateFlow()
 
     //Stores the clusterItem so that the map can move to location without waiting for me to fetch the current item
-    private val _lastSelectedClusterItem:MutableStateFlow<HistoricalSiteClusterItem>  = MutableStateFlow(
-        HistoricalSiteClusterItem(0, 1,"", "", "", 49.9000253, -97.1386276)
+    private val _currentlySelectedClusterItem:MutableStateFlow<HistoricalSiteClusterItem>  = MutableStateFlow(
+        HistoricalSiteClusterItem(0, "",  "", 1,  49.9000253, -97.1386276,"")
     )
-    val lastSelectedClusterItem = _lastSelectedClusterItem.asStateFlow()
+    val currentlySelectedClusterItem = _currentlySelectedClusterItem.asStateFlow()
 
 
 
@@ -150,8 +150,8 @@ class HistoricalSiteViewModel @Inject internal constructor(
         _siteSelectedFromSearch.value = siteSelectedFromSearch
     }
 
-    fun updateLastSelectedClusterItem(clusterItem: HistoricalSiteClusterItem){
-        _lastSelectedClusterItem.value = clusterItem
+    fun updateCurrentlySelectedClusterItem(clusterItem: HistoricalSiteClusterItem){
+        _currentlySelectedClusterItem.value = clusterItem
     }
 
 

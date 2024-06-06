@@ -48,8 +48,8 @@ fun SiteMainPageScreen(
     val displayState by viewModel.displayState.collectAsState()
     //Used to let the camera know that a new padding has been added to the map, and so center the camera
     val newMapUpdate by viewModel.newMapUpdate.collectAsState()
-    //Used to center the camera at location without waiting for the current site data to load
-    val lastSelectedClusterItem by viewModel.lastSelectedClusterItem.collectAsState()
+    //Used to center the camera at location without waiting for the current site data to load, and display name if it is the first site selected and the current site hasn't loaded yet
+    val currentlySelectedClusterItem by viewModel.currentlySelectedClusterItem.collectAsState()
 
 
     //All site clusterItems that should be displayed on the map
@@ -177,7 +177,7 @@ fun SiteMainPageScreen(
             cameraPositionState = cameraPositionState,
             allSites = allSiteClusterItems,
             onSiteSelected = { siteSelected, searched ->
-                viewModel.updateLastSelectedClusterItem(siteSelected)
+                viewModel.updateCurrentlySelectedClusterItem(siteSelected)
                 viewModel.updateSiteSelectedFromSearch(searched)
                 viewModel.newSiteSelected(siteSelected.id)
             },
@@ -206,9 +206,9 @@ fun SiteMainPageScreen(
             onActiveChange = { toggle -> viewModel.updateSearchActive(toggle)},
             removeFocus = {focusManager.clearFocus()},
 
-
             //Map Padding
             newMapUpdate = newMapUpdate,
+            currentlySelectedClusterItem = currentlySelectedClusterItem,
             centerCamera = {
                 //When the padding on the map changes, this will center the map onto the new smaller display port
 
@@ -216,13 +216,14 @@ fun SiteMainPageScreen(
                 if (displayState == SiteDisplayState.HalfSite){
                     //If searched, zoom in to site. Else use the current zoom level
                     if(siteSelectedFromSearch){
-                        cameraPositionState.position = CameraPosition.fromLatLngZoom(lastSelectedClusterItem.position, searchZoomLevel)
+                        cameraPositionState.position = CameraPosition.fromLatLngZoom(currentlySelectedClusterItem.position, searchZoomLevel)
                     } else{
                         coroutineScope.launch {
-                            cameraPositionState.animate(CameraUpdateFactory.newLatLng(lastSelectedClusterItem.position), cameraAnimationDurationMs)
+                            cameraPositionState.animate(CameraUpdateFactory.newLatLng(currentlySelectedClusterItem.position), cameraAnimationDurationMs)
                         }
 
                     }
+
                 }
                 //When going from HalfSite or FullSite to FullMap, animate the move to center
                 else if (displayState == SiteDisplayState.FullMap) {

@@ -64,6 +64,7 @@ fun SiteMainPageContent(
 
     //Site Details parameters
     currentSite: HistoricalSite,
+    currentlySelectedClusterItem: HistoricalSiteClusterItem,
     displayState: SiteDisplayState,
     onClickChangeDisplayState: (SiteDisplayState) -> Unit,
     currentSiteTypes: List<String>,
@@ -146,6 +147,7 @@ fun SiteMainPageContent(
             {
                 DisplayFullSiteDetails(
                     site = currentSite,
+                    currentlySelectedClusterItem = currentlySelectedClusterItem,
                     displayState = displayState,
                     onClickChangeDisplayState = onClickChangeDisplayState,
                     siteTypes = currentSiteTypes,
@@ -374,9 +376,11 @@ private fun PreviewHistoricalSiteHomeContent(
     AppTheme {
         Surface {
 
-            val testSite = HistoricalSite(3817, "Odd Fellows Home","4025 Roblin Boulevard", 3, 49.86902, -97.26729, "MB", "Winnipeg", "By June 1916, the <a href=\"http://www.mhs.mb.ca/docs/organization/ioof.shtml\">Independent Order of Odd Fellows</a> began searching in the greater <a href=\"http://www.mhs.mb.ca/docs/municipalities/winnipeg.shtml\">Winnipeg</a> area for property on which to built a home for elderly members and their spouses, as well as orphaned children of deceased members. These large grounds in the <a href=\"http://www.mhs.mb.ca/docs/municipalities/charleswood.shtml\">Rural Municipality of Charleswood</a> were selected and a contest was held for the design plans. The winning entry was drawn up by Winnipeg architect <a href=\"http://www.mhs.mb.ca/docs/people/russell_jhg.shtml\">John Hamilton Gordon Russell</a>. It called for a structure measuring 120 feet by 66 feet, costing \$30,000 to \$40,000, with capacity for around 40 beds. Excavation was to begin by the fall of 1917. However, construction did not proceed and, over the following years, additional funds were raised to build a larger facility.<br><br>Construction on the present building began in 1922, with site preparation and excavation work underway by the spring. A cornerstone-laying ceremony officiated by Grand Secretary <a href=\"http://www.mhs.mb.ca/docs/people/deering_bd.shtml\">Benjamin Draper Deering</a> was held on 15 July. It was to be the second IOOF Home in Canada (the first being located in Toronto) and one of 57 such Homes across North America. Once completed, it would measure 140 feet by 30 feet, with two south wings (each 24 feet by 30 feet), and a joint dining room and kitchen (measuring 33 feet by 56 feet). Accomodation was provided for 70 people with additional undeveloped capacity for orphans in the attic. The two-storey structure cost around \$125,000 with another \$25,000 in furnishings and equipment. In the basement, in addition to the steam heating plant, there were two large playrooms for orphans along with two corresponding rear (north side) entrances to the building labeled “Girls” and “Boys.” A school was later operated at the site.<br><br>The facility was opened officially on 13 March 1923 at a ceremony attended by some 850 people. It was dedicated by Lucian J. Eastin (IOOF Grand Sire of St. Joseph, Missouri) and Lieutenant-Governor <a href=\"http://www.mhs.mb.ca/docs/people/aikins_jam.shtml\">James Albert Manning Aikins</a> addressed the crowd.<br><br>In 1997, the facility was closed following withdrawal of government funding. The building was given a \$2 million renovation, resulting in seven studio apartments and 25 single bedroom suites. In April 2001, it reopened as an assisted living facility known as Assiniboine Links. A private residential subdivision was later constructed between the building and the Assiniboine River.<br><br>The building became a <a href=\"http://www.mhs.mb.ca/docs/sites/municipal.shtml\">municipally-designated heritage site</a> in January 2023.<br><br>", "http://www.mhs.mb.ca/docs/sites/oddfellowshome.shtml", "Charleswood, year=1923, arc=Russell, mat=bricks, oddfellows, photo=2020, des=2023", "2024-05-06 14:35:26")
+            val testSite = HistoricalSite(3817, "Odd Fellows Home","4025 Roblin Boulevard", 3, 49.86902, -97.26729, "Winnipeg","MB",  "By June 1916, the <a href=\"http://www.mhs.mb.ca/docs/organization/ioof.shtml\">Independent Order of Odd Fellows</a> began searching in the greater <a href=\"http://www.mhs.mb.ca/docs/municipalities/winnipeg.shtml\">Winnipeg</a> area for property on which to built a home for elderly members and their spouses, as well as orphaned children of deceased members. These large grounds in the <a href=\"http://www.mhs.mb.ca/docs/municipalities/charleswood.shtml\">Rural Municipality of Charleswood</a> were selected and a contest was held for the design plans. The winning entry was drawn up by Winnipeg architect <a href=\"http://www.mhs.mb.ca/docs/people/russell_jhg.shtml\">John Hamilton Gordon Russell</a>. It called for a structure measuring 120 feet by 66 feet, costing \$30,000 to \$40,000, with capacity for around 40 beds. Excavation was to begin by the fall of 1917. However, construction did not proceed and, over the following years, additional funds were raised to build a larger facility.<br><br>Construction on the present building began in 1922, with site preparation and excavation work underway by the spring. A cornerstone-laying ceremony officiated by Grand Secretary <a href=\"http://www.mhs.mb.ca/docs/people/deering_bd.shtml\">Benjamin Draper Deering</a> was held on 15 July. It was to be the second IOOF Home in Canada (the first being located in Toronto) and one of 57 such Homes across North America. Once completed, it would measure 140 feet by 30 feet, with two south wings (each 24 feet by 30 feet), and a joint dining room and kitchen (measuring 33 feet by 56 feet). Accomodation was provided for 70 people with additional undeveloped capacity for orphans in the attic. The two-storey structure cost around \$125,000 with another \$25,000 in furnishings and equipment. In the basement, in addition to the steam heating plant, there were two large playrooms for orphans along with two corresponding rear (north side) entrances to the building labeled “Girls” and “Boys.” A school was later operated at the site.<br><br>The facility was opened officially on 13 March 1923 at a ceremony attended by some 850 people. It was dedicated by Lucian J. Eastin (IOOF Grand Sire of St. Joseph, Missouri) and Lieutenant-Governor <a href=\"http://www.mhs.mb.ca/docs/people/aikins_jam.shtml\">James Albert Manning Aikins</a> addressed the crowd.<br><br>In 1997, the facility was closed following withdrawal of government funding. The building was given a \$2 million renovation, resulting in seven studio apartments and 25 single bedroom suites. In April 2001, it reopened as an assisted living facility known as Assiniboine Links. A private residential subdivision was later constructed between the building and the Assiniboine River.<br><br>The building became a <a href=\"http://www.mhs.mb.ca/docs/sites/municipal.shtml\">municipally-designated heritage site</a> in January 2023.<br><br>", "http://www.mhs.mb.ca/docs/sites/oddfellowshome.shtml", "Charleswood, year=1923, arc=Russell, mat=bricks, oddfellows, photo=2020, des=2023", "2024-05-06 14:35:26")
             val siteTypes = listOf("Building", "Museum or Archives")
             val userLocation = LatLng(49.8555836, -97.2888901)
+
+            val clusterItem =  HistoricalSiteClusterItem(3817, "Odd Fellows Home","4025 Roblin Boulevard", 3, 49.86902, -97.26729, "Winnipeg")
 
             val photo1 = SitePhotos(140229,3817,  "3817_oddfellowshome2_1715023463.jpg", 600, 422,"http://www.mhs.mb.ca/docs/sites/images/oddfellowshome2.jpg", "<strong>Architect’s drawing of the Odd Fellows Home</strong> (1922)<br/><a href=\"http://www.mhs.mb.ca/docs/business/freepress.shtml\">Manitoba Free Press</a>, 15 July 1922, page 48.", "2024-05-06 14:24:23"  )
             val photo2 = SitePhotos(140229,3817,  "3817_oddfellowshome4_1715023463.jpg", 600, 250,"http://www.mhs.mb.ca/docs/sites/images/oddfellowshome4.jpg", "<strong>Odd Fellows Home</strong> (1923)<br/><a href=\"http://www.mhs.mb.ca/docs/business/tribune.shtml\">Winnipeg Tribune</a>, 13 March 1923, page 2.","2024-05-06 14:24:23"  )
@@ -389,21 +393,20 @@ private fun PreviewHistoricalSiteHomeContent(
             val allSitePhotos = listOf(photo1, photo2, photo3, photo4, photo5, photo6, photo7, photo8)
             //val uriHandler = LocalUriHandler.current
 
-            val souce1 = "“Tenders wanted,” <a href=\"http://www.mhs.mb.ca/docs/business/freepress.shtml\"><em>Manitoba Free Press</em></a>, 7 June 1916, page 2."
-            val souce2 = "“Fraternal notes,” <a href=\"http://www.mhs.mb.ca/docs/business/tribune.shtml\"><em>Winnipeg Tribune</em></a>, 1 July 1916, page 13. "
-            val souce3 = "“500 Odd Fellows at anniversary service,” <a href=\"http://www.mhs.mb.ca/docs/business/tribune.shtml\"><em>Winnipeg Tribune</em></a>, 30 April 1917, page 5."
-            val souce4 = "“Tenders called for Odd Fellows Home,” <a href=\"http://www.mhs.mb.ca/docs/business/freepress.shtml\"><em>Manitoba Free Press</em></a>, 10 September 1917, page 8."
-            val souce5 = "“Lodge News [Independent order of Odd Fellows],” <a href=\"http://www.mhs.mb.ca/docs/business/tribune.shtml\"><em>Winnipeg Tribune</em></a>, 19 January 1918, page 23."
-            val souce6 = "“Tenders,” <a href=\"http://www.mhs.mb.ca/docs/business/tribune.shtml\"><em>Winnipeg Tribune</em></a>, 28 February 1921, page 2. "
-            val souce7 = "“News of bazaars,” <a href=\"http://www.mhs.mb.ca/docs/business/freepress.shtml\"><em>Manitoba Free Press</em></a>, 19 November 1921, page 9. "
-            val souce8 = "“Odd Fellows’ Grand Lodge installation,” <a href=\"http://www.mhs.mb.ca/docs/business/freepress.shtml\"><em>Manitoba Free Press</em></a>, 10 March 1922, page 7."
-            val souce9 = "“Plans for a \$100,000 Odd Fellows Home,” <a href=\"http://www.mhs.mb.ca/docs/business/freepress.shtml\"><em>Manitoba Free Press</em></a>, 5 April 1922, page 8."
-            val souce10 = "“Proposed Odd Fellows’ Home for Charleswood,” <a href=\"http://www.mhs.mb.ca/docs/business/freepress.shtml\"><em>Manitoba Free Press</em></a>, 5 March 1921, page 18."
-            val sourcesList = listOf(souce1, souce2, souce3, souce4, souce5, souce6, souce7, souce8, souce9, souce10)
+            val source1 = "“Tenders wanted,” <a href=\"http://www.mhs.mb.ca/docs/business/freepress.shtml\"><em>Manitoba Free Press</em></a>, 7 June 1916, page 2."
+            val source2 = "“Fraternal notes,” <a href=\"http://www.mhs.mb.ca/docs/business/tribune.shtml\"><em>Winnipeg Tribune</em></a>, 1 July 1916, page 13. "
+            val source3 = "“500 Odd Fellows at anniversary service,” <a href=\"http://www.mhs.mb.ca/docs/business/tribune.shtml\"><em>Winnipeg Tribune</em></a>, 30 April 1917, page 5."
+            val source4 = "“Tenders called for Odd Fellows Home,” <a href=\"http://www.mhs.mb.ca/docs/business/freepress.shtml\"><em>Manitoba Free Press</em></a>, 10 September 1917, page 8."
+            val source5 = "“Lodge News [Independent order of Odd Fellows],” <a href=\"http://www.mhs.mb.ca/docs/business/tribune.shtml\"><em>Winnipeg Tribune</em></a>, 19 January 1918, page 23."
+            val source6 = "“Tenders,” <a href=\"http://www.mhs.mb.ca/docs/business/tribune.shtml\"><em>Winnipeg Tribune</em></a>, 28 February 1921, page 2. "
+            val source7 = "“News of bazaars,” <a href=\"http://www.mhs.mb.ca/docs/business/freepress.shtml\"><em>Manitoba Free Press</em></a>, 19 November 1921, page 9. "
+            val source8 = "“Odd Fellows’ Grand Lodge installation,” <a href=\"http://www.mhs.mb.ca/docs/business/freepress.shtml\"><em>Manitoba Free Press</em></a>, 10 March 1922, page 7."
+            val source9 = "“Plans for a \$100,000 Odd Fellows Home,” <a href=\"http://www.mhs.mb.ca/docs/business/freepress.shtml\"><em>Manitoba Free Press</em></a>, 5 April 1922, page 8."
+            val source10 = "“Proposed Odd Fellows’ Home for Charleswood,” <a href=\"http://www.mhs.mb.ca/docs/business/freepress.shtml\"><em>Manitoba Free Press</em></a>, 5 March 1921, page 18."
+            val sourcesList = listOf(source1, source2, source3, source4, source5, source6, source7, source8, source9, source10)
             val cameraPositionState = CameraPositionState()
             //val scrollState = rememberScrollState()
-            val siteClusterItem1 = HistoricalSiteClusterItem(2,2,"Site Number 1", "11 Bowhill Lane", "Winnipeg", 0.0,0.0)
-            val searchedSites = listOf(siteClusterItem1, siteClusterItem1,siteClusterItem1,siteClusterItem1,siteClusterItem1,siteClusterItem1)
+            val searchedSites = listOf(clusterItem, clusterItem,clusterItem,clusterItem,clusterItem,clusterItem)
 
            // val legendState = rememberModalBottomSheetState()
             SiteMainPageContent(
@@ -440,6 +443,7 @@ private fun PreviewHistoricalSiteHomeContent(
                 newMapUpdate = false,
                 locationEnabled = false,
                 renderNewSite = false,
+                currentlySelectedClusterItem = clusterItem,
                 modifier = Modifier
                     .height(1000.dp)
                     .width(500.dp)
@@ -473,8 +477,9 @@ private fun PreviewLoadingScreen() {
 private fun PreviewAppBarSearchResults() {
     AppTheme {
         Surface {
-            val siteClusterItem1 = HistoricalSiteClusterItem(2,2,"Site Number 1", "11 Bowhill Lane", "Winnipeg", 0.0,0.0)
-            val searchedSites = listOf(siteClusterItem1, siteClusterItem1,siteClusterItem1,siteClusterItem1,siteClusterItem1,siteClusterItem1)
+            val clusterItem =  HistoricalSiteClusterItem(3817, "Odd Fellows Home","4025 Roblin Boulevard", 3, 49.86902, -97.26729, "Winnipeg")
+
+            val searchedSites = listOf(clusterItem, clusterItem,clusterItem,clusterItem,clusterItem,clusterItem)
             DisplayAppbarSearchResults(
                 searchedSites = searchedSites,
                 onSiteSelected= { _, _ ->  },

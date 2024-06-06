@@ -20,8 +20,8 @@ data class HistoricalSite (
     val latitude: Double,
     val longitude: Double,
 
-    val province: String?,
     val municipality: String?,
+    val province: String?,
     val description: String?,
 
     @ColumnInfo(name = "site_url")

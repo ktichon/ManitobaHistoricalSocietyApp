@@ -5,13 +5,12 @@ import com.google.maps.android.clustering.ClusterItem
 
 data class HistoricalSiteClusterItem(
     val id: Int,
-    val mainType: Int,
     val name: String,
-
     val address: String?,
-    val municipality: String?,
+    val mainType: Int,
     val latitude: Double,
     val longitude: Double,
+    val municipality: String?,
 ) :ClusterItem {
     override fun getPosition(): LatLng {
         return LatLng(latitude, longitude)
