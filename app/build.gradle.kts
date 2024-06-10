@@ -16,8 +16,8 @@ android {
         applicationId = "com.example.manitobahistoricalsocietyapp"
         minSdk = 24
         targetSdk = 34
-        versionCode = 3
-        versionName = "3.2"
+        versionCode = 5
+        versionName = "3.4"
 
         testInstrumentationRunner = "androidx.test.runner.AndroidJUnitRunner"
         vectorDrawables {
@@ -112,7 +112,7 @@ dependencies {
     implementation("com.google.maps.android:android-maps-utils:3.8.0")
     implementation("io.coil-kt:coil-compose-base:2.6.0")
     implementation("javax.inject:javax.inject:1")
-    implementation("org.jetbrains.kotlinx:kotlinx-coroutines-core:1.7.3")
+    implementation("org.jetbrains.kotlinx:kotlinx-coroutines-core:1.8.0")
     kapt("com.google.dagger:dagger-compiler:2.51.1")
 
 

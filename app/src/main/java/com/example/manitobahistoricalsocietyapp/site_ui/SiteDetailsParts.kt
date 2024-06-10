@@ -8,7 +8,6 @@ import android.view.View.TEXT_ALIGNMENT_TEXT_START
 import android.widget.TextView
 import androidx.compose.foundation.ExperimentalFoundationApi
 import androidx.compose.foundation.clickable
-import androidx.compose.foundation.combinedClickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
@@ -160,13 +159,17 @@ fun DisplaySitePhoto(
             modifier = Modifier
                 .size(height = (sitePhoto.height / 2).dp, width = (sitePhoto.width / 2).dp)
                 .padding(5.dp)
-                .combinedClickable(
+                .clickable(
+                    onClick = {uriHandler.openUri(sitePhoto.url)},
+                    onClickLabel = sitePhoto.url
+                )
+                /*.combinedClickable(
                     onClick = { },
                     onLongClick = {
                         uriHandler.openUri(sitePhoto.url)
                     },
                     onLongClickLabel = sitePhoto.url
-                )
+                )*/
 
         )
 

@@ -202,7 +202,9 @@ fun SiteMainPageContent(
                     onCardClick = {
                         onClickChangeDisplayState(SiteDisplayState.MapWithLegend)
                                   },
-                    modifier = Modifier.align(Alignment.BottomCenter).padding(5.dp)
+                    modifier = Modifier
+                        .align(Alignment.BottomCenter)
+                        .padding(5.dp)
 
                 )
             }
@@ -268,14 +270,18 @@ fun LoadingScreen(
         Text(text = "Loading Manitoba Historical Sites",
             style = MaterialTheme.typography.titleLarge,
             textAlign = TextAlign.Center,
-            modifier = Modifier.fillMaxWidth().padding(10.dp)
+            modifier = Modifier
+                .fillMaxWidth()
+                .padding(10.dp)
         )
         CircularProgressIndicator(
 
             color = MaterialTheme.colorScheme.secondary,
             trackColor = MaterialTheme.colorScheme.surfaceVariant,
             strokeWidth = 5.dp,
-            modifier = Modifier.width(100.dp).padding(10.dp),
+            modifier = Modifier
+                .width(100.dp)
+                .padding(10.dp),
         )
 
 
@@ -295,13 +301,15 @@ fun DisplayAppbarSearchResults(
 
     modifier: Modifier = Modifier) {
 
-
     LazyColumn(
         //verticalArrangement = Arrangement.spacedBy(5.dp),
         contentPadding = PaddingValues(5.dp),
         modifier = modifier.background(MaterialTheme.colorScheme.secondaryContainer)
 
     ) {
+
+
+
         items(searchedSites){foundSite ->
 
             Row(

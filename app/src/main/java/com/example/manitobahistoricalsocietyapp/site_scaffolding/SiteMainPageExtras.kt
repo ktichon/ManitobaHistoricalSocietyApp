@@ -15,9 +15,7 @@ import androidx.compose.foundation.lazy.grid.LazyVerticalGrid
 import androidx.compose.foundation.lazy.grid.items
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.text.BasicTextField
-import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.automirrored.filled.KeyboardArrowLeft
-import androidx.compose.material.icons.filled.Search
+
 import androidx.compose.material3.Card
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Icon
@@ -34,10 +32,12 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.focus.onFocusChanged
 import androidx.compose.ui.graphics.SolidColor
-import androidx.compose.ui.graphics.vector.ImageVector
+import androidx.compose.ui.graphics.painter.Painter
+import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.input.VisualTransformation
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
+import com.example.manitobahistoricalsocietyapp.R
 import com.example.manitobahistoricalsocietyapp.helperClasses.GetTypeValues
 import com.example.manitobahistoricalsocietyapp.map.ClusterItemContent
 import com.example.manitobahistoricalsocietyapp.storage_classes.SiteDisplayState
@@ -64,42 +64,33 @@ fun SiteMainPageTopBar(
     TopAppBar(
         navigationIcon = {
 
-            //Close search if its active
-            if (searchActive){
-                TopBarNavIcon(imageVector = Icons.AutoMirrored.Filled.KeyboardArrowLeft,
-                    contentDescription = "Close Search",
-                    //Clearing the focus should cause AppBarSearch to set call onActiveChange(false)
+            if(searchActive || !(displayState == SiteDisplayState.FullMap || displayState == SiteDisplayState.MapWithLegend)){
+                TopBarNavIcon(
+                    painter = painterResource(id = R.drawable.arrow_back_ios),
+                    contentDescription = "Back",
                     onClick = {
-                        //Clearing the focus should cause AppBarSearch to set call onActiveChange(false)
-                        removeFocus()
-                        //Clear the search bar
-                        onQueryChange("")
-                    })
+                        //Close search if its active
+                        if(searchActive){
+                            //Clearing the focus should cause AppBarSearch to set call onActiveChange(false)
+                            removeFocus()
+                            //Clear the search bar
+                            onQueryChange("")
+                        }
+                        else{
+                            //Change the display state back to map
+                            onClickChangeDisplayState(SiteDisplayState.FullMap)
+                        }}
+                    , modifier = Modifier.size(50.dp).padding(start = 5.dp)
+                )
             }
-            //On click show full map, only available if displayState is not FullMap
-            else if (!(displayState == SiteDisplayState.FullMap || displayState == SiteDisplayState.MapWithLegend)){
-                TopBarNavIcon(
-                    imageVector = Icons.AutoMirrored.Filled.KeyboardArrowLeft,
-                    contentDescription = "Back to Map",
-                    onClick = { onClickChangeDisplayState(SiteDisplayState.FullMap)})
-            }
-            //Default to a Search icon
+
             else{
-                IconButton(onClick = {  }) {
-
-                    Icon(
-                        imageVector = Icons.Default.Search,
-                        contentDescription = "Search",
-                        tint = MaterialTheme.colorScheme.onSurface,
-                        modifier = Modifier.size(40.dp)
-
-
-                    )
-                }
                 TopBarNavIcon(
-                    imageVector = Icons.Default.Search,
+                    painter = painterResource(id = R.drawable.search),
                     contentDescription = null,
-                    onClick = {})
+                    onClick = {},
+                    modifier = Modifier.size(50.dp)
+                )
 
             }
 
@@ -128,7 +119,7 @@ fun SiteMainPageTopBar(
 //Used to ensure consistency with the Icons on the top left of the app
 @Composable
 fun TopBarNavIcon(
-    imageVector: ImageVector,
+    painter: Painter,
     contentDescription: String?,
     onClick: () -> Unit,
     modifier: Modifier = Modifier
@@ -136,10 +127,10 @@ fun TopBarNavIcon(
     IconButton(onClick = { onClick()  }) {
 
         Icon(
-            imageVector = imageVector,
+            painter = painter,
             contentDescription = contentDescription,
             tint = MaterialTheme.colorScheme.onSurface,
-            modifier = modifier.size(40.dp)
+            modifier = modifier
         )
     }
 
@@ -302,7 +293,7 @@ fun LegendBottomSheet(
                 text = "Legend",
                 //textAlign = TextAlign.Center,
                 style = MaterialTheme.typography.titleLarge,
-                modifier = Modifier
+                modifier = Modifier.padding(bottom = 20.dp)
             )
         }
         LazyVerticalGrid(
@@ -334,7 +325,7 @@ private fun PreviewBasicSearchBar() {
     AppTheme {
         Surface {
             SiteMainPageTopBar(
-                displayState = SiteDisplayState.FullSite,
+                displayState = SiteDisplayState.FullMap,
                 onClickChangeDisplayState = {},
                 searchQuery = "test search",
                 onQueryChange = {},
@@ -344,6 +335,29 @@ private fun PreviewBasicSearchBar() {
                 removeFocus = {},
               /*  onSiteSelected = {},
                 userLocation = LatLng(49.9000253, -97.1386276),*/
+
+            )
+        }
+    }
+
+}
+
+@Preview
+@Composable
+private fun PreviewBasicSearchBarBack() {
+    AppTheme {
+        Surface {
+            SiteMainPageTopBar(
+                displayState = SiteDisplayState.FullSite,
+                onClickChangeDisplayState = {},
+                searchQuery = "test search",
+                onQueryChange = {},
+                /*  searchedSites = emptyList(),*/
+                searchActive = false,
+                onActiveChange = {},
+                removeFocus = {},
+                /*  onSiteSelected = {},
+                  userLocation = LatLng(49.9000253, -97.1386276),*/
 
             )
         }

@@ -102,7 +102,7 @@ fun SiteMainPageScreen(
     //Camera zoom level when a site is searched. Since searching on a site doesn't trigger a onMarkerClick event, we want zoom in close enough that it is obvious which site is the result
     val searchZoomLevel = 18f
     //Camera animation time
-    val cameraAnimationDurationMs = 500
+    val cameraAnimationDurationMs = 400
     //coroutineScope used to launch animations
     val coroutineScope = rememberCoroutineScope()
     //Controls the camera position state

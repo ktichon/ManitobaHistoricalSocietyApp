@@ -172,8 +172,8 @@ class HistoricalSiteViewModel @Inject internal constructor(
     }
 
     fun updateSearchQuery(query: String){
-        _searchQuery.value = query.trim()
-        if (_searchQuery.value.isBlank()){
+        _searchQuery.value = query
+        if (_searchQuery.value.trim().isBlank()){
             _searchedSitesList.value = getNearestSites(
                 maxSites = 20,
                 availableSites = _allHistoricalSiteClusterItems.value,

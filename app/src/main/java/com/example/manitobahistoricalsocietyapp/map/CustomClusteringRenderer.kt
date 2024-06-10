@@ -65,11 +65,12 @@ fun CustomClusterRenderer(
         clusterContent ={cluster ->
                         ClusterCircleContent(
                             numOfItems = cluster.size,
-                            baseSize = 41)
+                            baseSize = 60)
         } ,
         clusterItemContent = {
                              ClusterItemContent(
                                  typeId = it.mainType,
+                                 modifier = Modifier.size(55.dp),
                                  )
         },
         clusterManager = clusterManager
@@ -135,12 +136,12 @@ fun ClusterCircleContent(
         shape = CircleShape,
         color = colour,
         contentColor = Color.White,
-        border = BorderStroke(1.dp, Color.White)
+        border = BorderStroke(2.dp, Color.White)
     ) {
         Box(contentAlignment = Alignment.Center) {
             Text(
                 "%,d".format(numOfItems),
-                fontSize = 16.sp,
+                fontSize = 20.sp,
                 fontWeight = FontWeight.Black,
                 textAlign = TextAlign.Center,
 
@@ -181,7 +182,7 @@ private fun PreviewClusterCircle(
     AppTheme {
         ClusterCircleContent(
             numOfItems = numOfItems,
-            baseSize = 41
+            baseSize = 50
             //modifier = Modifier.size(50.dp)
         )
     }
@@ -197,6 +198,6 @@ private fun PreviewClusterItem(
     @PreviewParameter(ClusterItemWithSiteTypesPreviewProvider::class) siteTypeId : Int
 ) {
     ClusterItemContent(siteTypeId,
-        Modifier.size(40.dp))
+        Modifier.size(45.dp))
 
 }
