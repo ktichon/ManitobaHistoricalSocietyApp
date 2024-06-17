@@ -386,7 +386,9 @@ fun GetAndroidViewWithStyle(
             it.textSize = textStyle.fontSize.value
             it.textAlignment = textAlignment
             it.setTextColor(textColour.toArgb())
-            it.setTextIsSelectable(true)
+            //Have the text be selectable is causing interference with opening links preserved in the HTML.
+            //I believe that its more important that the urls consistently work than for the text to be selectable, so it set to false
+            it.setTextIsSelectable(false)
             it.setLinkTextColor(linkColor.toArgb())
             // it.letterSpacing = textStyle.letterSpacing.value
         }
