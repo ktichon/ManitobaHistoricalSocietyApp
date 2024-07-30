@@ -170,7 +170,7 @@ fun SiteMainPageScreen(
                           },
             modifier = modifier
         )
-    } else {
+    } else if (askedForPermission){
 
 
         SiteMainPageContent(
