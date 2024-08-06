@@ -9,6 +9,7 @@ import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.ui.Modifier
 import com.example.manitobahistoricalsocietyapp.database.HistoricalSite.HistoricalSiteClusterItem
+import com.google.android.gms.maps.model.LatLng
 import com.google.android.gms.maps.model.MapStyleOptions
 import com.google.maps.android.compose.CameraPositionState
 import com.google.maps.android.compose.GoogleMap
@@ -20,6 +21,7 @@ fun DisplayMap(
     cameraPositionState: CameraPositionState,
     sites: List<HistoricalSiteClusterItem>,
     onSiteSelected: (siteClusterItem: HistoricalSiteClusterItem, searched: Boolean)  -> Unit,
+    onClusterClicked: (LatLng) -> Unit,
     locationEnabled: Boolean,
     mapPadding: PaddingValues,
     newMapUpdate: Boolean,
@@ -53,7 +55,7 @@ fun DisplayMap(
         contentPadding = mapPadding,
         modifier = modifier
     ){
-        CustomClusterRenderer(sites = sites, onSiteSelected = onSiteSelected)
+        CustomClusterRenderer(sites = sites, onSiteSelected = onSiteSelected, onClusterClicked = onClusterClicked)
     }
 
     //Calls back to center camera if there is a newMapUpdate

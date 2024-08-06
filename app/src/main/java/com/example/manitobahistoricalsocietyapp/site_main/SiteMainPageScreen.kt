@@ -209,6 +209,11 @@ fun SiteMainPageScreen(
             //Map Padding
             newMapUpdate = newMapUpdate,
             currentlySelectedClusterItem = currentlySelectedClusterItem,
+            onClusterClicked = {
+                coroutineScope.launch{
+                    cameraPositionState.animate(CameraUpdateFactory.newLatLngZoom(it, cameraPositionState.position.zoom + 1), cameraAnimationDurationMs)
+                }
+            },
             centerCamera = {
                 //When the padding on the map changes, this will center the map onto the new smaller display port
 

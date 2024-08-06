@@ -35,6 +35,7 @@ import com.example.manitobahistoricalsocietyapp.ui.theme.ClusterLessThan500
 import com.example.manitobahistoricalsocietyapp.ui.theme.ClusterMax
 import com.example.manitobahistoricalsocietyapp.ui.theme.AppTheme
 import com.example.manitobahistoricalsocietyapp.helperClasses.GetTypeValues
+import com.google.android.gms.maps.model.LatLng
 import com.google.maps.android.clustering.algo.NonHierarchicalViewBasedAlgorithm
 import com.google.maps.android.compose.MapsComposeExperimentalApi
 import com.google.maps.android.compose.clustering.Clustering
@@ -46,6 +47,7 @@ import com.google.maps.android.compose.clustering.rememberClusterRenderer
 fun CustomClusterRenderer(
     sites: List<HistoricalSiteClusterItem>,
     onSiteSelected: (siteClusterItem: HistoricalSiteClusterItem, searched: Boolean)  -> Unit,
+    onClusterClicked: (LatLng) -> Unit,
     ) {
     val configuration = LocalConfiguration.current
     val screenHeight = configuration.screenHeightDp.dp
@@ -81,6 +83,15 @@ fun CustomClusterRenderer(
         clusterManager?: return@SideEffect
         clusterManager.setOnClusterItemClickListener {
             onSiteSelected(it, false)
+            false
+        }
+    }
+
+    //Use SideEffect to set on cluster click zoom
+    SideEffect {
+        clusterManager?: return@SideEffect
+        clusterManager.setOnClusterClickListener {
+            onClusterClicked(it.position)
             false
         }
     }

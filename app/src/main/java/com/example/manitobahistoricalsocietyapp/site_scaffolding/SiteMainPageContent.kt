@@ -60,6 +60,7 @@ fun SiteMainPageContent(
     cameraPositionState: CameraPositionState,
     allSites: List<HistoricalSiteClusterItem>,
     onSiteSelected: (siteClusterItem: HistoricalSiteClusterItem, searched: Boolean)  -> Unit,
+    onClusterClicked: (LatLng) -> Unit,
     locationEnabled: Boolean,
 
     //Site Details parameters
@@ -133,6 +134,7 @@ fun SiteMainPageContent(
                 cameraPositionState = cameraPositionState,
                 sites = allSites,
                 onSiteSelected = onSiteSelected,
+                onClusterClicked = onClusterClicked,
                 locationEnabled = locationEnabled,
                 mapPadding = PaddingValues(bottom = displayedItemSize),
                 newMapUpdate = newMapUpdate,
@@ -452,6 +454,7 @@ private fun PreviewHistoricalSiteHomeContent(
                 locationEnabled = false,
                 renderNewSite = false,
                 currentlySelectedClusterItem = clusterItem,
+                onClusterClicked = {},
                 modifier = Modifier
                     .height(1000.dp)
                     .width(500.dp)
