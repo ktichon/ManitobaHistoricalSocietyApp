@@ -29,6 +29,7 @@ import com.example.manitobahistoricalsocietyapp.storage_classes.SiteDisplayState
 import com.example.manitobahistoricalsocietyapp.ui.theme.AppTheme
 import com.google.android.gms.maps.model.LatLng
 
+
 @Composable
 fun DisplayFullSiteDetails(
     //Necessary for Title
@@ -69,12 +70,16 @@ fun DisplayFullSiteDetails(
     val photosPagerState = rememberPagerState{allSitePhotos.size}
     val scrollState = rememberScrollState()
 
+
+
     //Once a site has been selected, make sure to scroll to top and to the first image
     LaunchedEffect(key1 = renderNewSite ) {
         if (renderNewSite){
             photosPagerState.scrollToPage(0)
             scrollState.scrollTo(0)
             updateRenderNewSite(false)
+
+
         }
     }
 

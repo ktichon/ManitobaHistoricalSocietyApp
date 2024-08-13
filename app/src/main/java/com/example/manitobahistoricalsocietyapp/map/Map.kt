@@ -21,6 +21,7 @@ fun DisplayMap(
     cameraPositionState: CameraPositionState,
     sites: List<HistoricalSiteClusterItem>,
     onSiteSelected: (siteClusterItem: HistoricalSiteClusterItem, searched: Boolean)  -> Unit,
+   //currentlySelectedClusterItem: HistoricalSiteClusterItem,
     onClusterClicked: (LatLng) -> Unit,
     locationEnabled: Boolean,
     mapPadding: PaddingValues,
@@ -55,7 +56,7 @@ fun DisplayMap(
         contentPadding = mapPadding,
         modifier = modifier
     ){
-        CustomClusterRenderer(sites = sites, onSiteSelected = onSiteSelected, onClusterClicked = onClusterClicked)
+        CustomClusterRenderer(sites = sites, onSiteSelected = onSiteSelected, onClusterClicked = onClusterClicked)//, currentlySelectedClusterItem = currentlySelectedClusterItem)
     }
 
     //Calls back to center camera if there is a newMapUpdate

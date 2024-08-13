@@ -135,6 +135,7 @@ fun SiteMainPageContent(
                 sites = allSites,
                 onSiteSelected = onSiteSelected,
                 onClusterClicked = onClusterClicked,
+                //currentlySelectedClusterItem = currentlySelectedClusterItem,
                 locationEnabled = locationEnabled,
                 mapPadding = PaddingValues(bottom = displayedItemSize),
                 newMapUpdate = newMapUpdate,

@@ -15,9 +15,9 @@ android {
     defaultConfig {
         applicationId = "com.example.manitobahistoricalsocietyapp"
         minSdk = 24
-        targetSdk = 34
-        versionCode = 6
-        versionName = "3.5"
+        targetSdk = 35
+        versionCode = 7
+        versionName = "3.6"
 
         testInstrumentationRunner = "androidx.test.runner.AndroidJUnitRunner"
         vectorDrawables {
@@ -74,37 +74,37 @@ dependencies {
 
 
 
-    implementation("androidx.activity:activity-compose:1.9.0")
-    implementation(platform("androidx.compose:compose-bom:2024.05.00"))
+    implementation("androidx.activity:activity-compose:1.9.1")
+    implementation(platform("androidx.compose:compose-bom:2024.06.00"))
     implementation("androidx.compose.ui:ui")
     implementation("androidx.compose.ui:ui-graphics")
     implementation("androidx.compose.ui:ui-tooling-preview")
     implementation("androidx.compose.material3:material3")
     implementation("com.google.android.gms:play-services-location:21.3.0")
-    implementation("androidx.lifecycle:lifecycle-runtime-compose-android:2.8.1")
+    implementation("androidx.lifecycle:lifecycle-runtime-compose-android:2.8.4")
     testImplementation("junit:junit:4.13.2")
 
-    androidTestImplementation(platform("androidx.compose:compose-bom:2024.05.00"))
+    androidTestImplementation(platform("androidx.compose:compose-bom:2024.06.00"))
     androidTestImplementation("androidx.compose.ui:ui-test-junit4")
     debugImplementation("androidx.compose.ui:ui-tooling")
     debugImplementation("androidx.compose.ui:ui-test-manifest")
 
-    androidTestImplementation("androidx.test:monitor:1.6.1")
+    androidTestImplementation("androidx.test:monitor:1.7.1")
     androidTestImplementation("junit:junit:4.13.2")
-    implementation("androidx.activity:activity-ktx:1.9.0")
-    implementation("androidx.annotation:annotation:1.8.0")
-    implementation("androidx.compose.foundation:foundation-layout:1.7.0-beta02")
-    implementation("androidx.compose.foundation:foundation:1.7.0-beta02")
-    implementation("androidx.compose.material:material-icons-core:1.6.7")
-    implementation("androidx.compose.runtime:runtime-saveable:1.7.0-beta02")
-    implementation("androidx.compose.runtime:runtime:1.7.0-beta02")
-    implementation("androidx.compose.ui:ui-text:1.7.0-beta02")
-    implementation("androidx.compose.ui:ui-unit:1.7.0-beta02")
+    implementation("androidx.activity:activity-ktx:1.9.1")
+    implementation("androidx.annotation:annotation:1.8.2")
+    implementation("androidx.compose.foundation:foundation-layout:1.7.0-beta07")
+    implementation("androidx.compose.foundation:foundation:1.7.0-beta07")
+    implementation("androidx.compose.material:material-icons-core:1.6.8")
+    implementation("androidx.compose.runtime:runtime-saveable:1.7.0-beta07")
+    implementation("androidx.compose.runtime:runtime:1.7.0-beta07")
+    implementation("androidx.compose.ui:ui-text:1.7.0-beta07")
+    implementation("androidx.compose.ui:ui-unit:1.7.0-beta07")
     implementation("androidx.core:core-ktx:1.13.1")
-    implementation("androidx.fragment:fragment-ktx:1.7.1")
-    implementation("androidx.lifecycle:lifecycle-common:2.8.1")
-    implementation("androidx.lifecycle:lifecycle-viewmodel-savedstate:2.8.1")
-    implementation("androidx.lifecycle:lifecycle-viewmodel-ktx:2.8.1")
+    implementation("androidx.fragment:fragment-ktx:1.8.2")
+    implementation("androidx.lifecycle:lifecycle-common:2.8.4")
+    implementation("androidx.lifecycle:lifecycle-viewmodel-savedstate:2.8.4")
+    implementation("androidx.lifecycle:lifecycle-viewmodel-ktx:2.8.4")
     implementation("androidx.room:room-common:2.6.1")
     implementation("androidx.sqlite:sqlite-ktx:2.4.0")
     implementation("com.google.dagger:dagger:2.51.1")
@@ -136,7 +136,7 @@ dependencies {
     implementation("io.coil-kt:coil-compose:2.6.0")
 
     // Android Maps Compose composables for the Maps SDK for Android
-    implementation ("com.google.android.gms:play-services-maps:18.2.0")
+    implementation ("com.google.android.gms:play-services-maps:19.0.0")
 
     implementation("com.google.maps.android:maps-compose:5.0.1")
 
@@ -146,7 +146,7 @@ dependencies {
 
     implementation("com.google.accompanist:accompanist-permissions:0.35.0-alpha")
 
-    implementation("androidx.lifecycle:lifecycle-viewmodel-compose:2.8.1")
+    implementation("androidx.lifecycle:lifecycle-viewmodel-compose:2.8.4")
 
     implementation("com.google.dagger:hilt-android:2.51.1")
     kapt ("com.google.dagger:hilt-compiler:2.51.1")

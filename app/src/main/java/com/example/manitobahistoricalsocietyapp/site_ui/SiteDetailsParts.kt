@@ -131,7 +131,6 @@ fun DisplaySiteBasicInfo(
 }
 
 
-@OptIn(ExperimentalFoundationApi::class)
 @Composable
 fun DisplaySitePhoto(
     photoIndex: Int,
