@@ -33,9 +33,6 @@ data class HistoricalSite (
     val importDate: String,
 ){
 
-    fun getFullAddress():String{
-       return (if (address.isNullOrBlank()) "" else "$address, ") + municipality
-    }
     fun getPosition(): LatLng {
         return LatLng(latitude, longitude)
     }

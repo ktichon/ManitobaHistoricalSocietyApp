@@ -45,6 +45,7 @@ import com.example.manitobahistoricalsocietyapp.database.HistoricalSite.Historic
 import com.example.manitobahistoricalsocietyapp.database.HistoricalSite.HistoricalSiteClusterItem
 import com.example.manitobahistoricalsocietyapp.database.SitePhotos.SitePhotos
 import com.example.manitobahistoricalsocietyapp.helperClasses.DistanceAwayFromSite
+import com.example.manitobahistoricalsocietyapp.helperClasses.FormatSite
 import com.example.manitobahistoricalsocietyapp.helperClasses.FormatSize
 import com.example.manitobahistoricalsocietyapp.map.DisplayMap
 import com.example.manitobahistoricalsocietyapp.site_ui.DisplayFullSiteDetails
@@ -344,7 +345,7 @@ fun DisplayAppbarSearchResults(
                         style = MaterialTheme.typography.bodyLarge
                     )
                     Text(
-                        text = foundSite.snippet,
+                        text = FormatSite.formatAddress(foundSite),
                         style = MaterialTheme.typography.bodyMedium
                     )
                 }
