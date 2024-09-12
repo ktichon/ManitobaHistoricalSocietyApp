@@ -24,6 +24,7 @@ import com.example.manitobahistoricalsocietyapp.database.HistoricalSite.Historic
 import com.example.manitobahistoricalsocietyapp.database.HistoricalSite.HistoricalSiteClusterItem
 import com.example.manitobahistoricalsocietyapp.database.SitePhotos.SitePhotos
 import com.example.manitobahistoricalsocietyapp.helperClasses.DistanceAwayFromSite
+import com.example.manitobahistoricalsocietyapp.helperClasses.FormatSite
 import com.example.manitobahistoricalsocietyapp.helperClasses.GetTypeValues
 import com.example.manitobahistoricalsocietyapp.storage_classes.SiteDisplayState
 import com.example.manitobahistoricalsocietyapp.ui.theme.AppTheme
@@ -125,7 +126,7 @@ fun DisplayFullSiteDetails(
                 //Site types, address, and distance from user
                 DisplaySiteBasicInfo(
                     siteTypes = siteTypes.ifEmpty { listOf( GetTypeValues.getTypeName(currentlySelectedClusterItem.mainType)) },
-                    fullAddress = if (currentlySelectedClusterItem.id != site.id) currentlySelectedClusterItem.snippet else site.getFullAddress(),
+                    fullAddress = if (currentlySelectedClusterItem.id != site.id) FormatSite.formatAddress(currentlySelectedClusterItem) else FormatSite.formatAddress(site),
                     //Turns both the user location and the site from Latlng objects to Location objects so that we can use the Location.distanceToMethod
                     distanceFromUser = DistanceAwayFromSite.getDisplayDistance(userLocation,  if (currentlySelectedClusterItem.id != site.id) currentlySelectedClusterItem.position else site.getPosition()),
                     modifier = Modifier.padding(paddingBetweenItems))
