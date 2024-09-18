@@ -17,6 +17,8 @@ import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.text.BasicTextField
 
 import androidx.compose.material3.Card
+import androidx.compose.material3.DropdownMenu
+import androidx.compose.material3.DropdownMenuItem
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
@@ -27,7 +29,10 @@ import androidx.compose.material3.Text
 import androidx.compose.material3.TopAppBar
 import androidx.compose.material3.TopAppBarDefaults
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
+import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.focus.onFocusChanged
@@ -40,10 +45,10 @@ import androidx.compose.ui.unit.dp
 import com.example.manitobahistoricalsocietyapp.R
 import com.example.manitobahistoricalsocietyapp.helperClasses.GetTypeValues
 import com.example.manitobahistoricalsocietyapp.map.ClusterItemContent
+import com.example.manitobahistoricalsocietyapp.navigation.AboutDestination
 import com.example.manitobahistoricalsocietyapp.storage_classes.SiteDisplayState
 import com.example.manitobahistoricalsocietyapp.ui.theme.AppTheme
 
-@OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun SiteMainPageTopBar(
     //Parameters for closing a site
@@ -56,14 +61,14 @@ fun SiteMainPageTopBar(
     searchActive: Boolean,
     onActiveChange: (Boolean) -> Unit,
     removeFocus: () -> Unit,
+    navigateToRoute: (String) -> Unit,
 
 
     modifier: Modifier = Modifier
 ) {
 
-    TopAppBar(
-        navigationIcon = {
-
+    DisplayTopAppBar(
+        topLeftIcon = {
             if(searchActive || !(displayState == SiteDisplayState.FullMap || displayState == SiteDisplayState.MapWithLegend)){
                 TopBarNavIcon(
                     painter = painterResource(id = R.drawable.arrow_back_ios),
@@ -80,7 +85,9 @@ fun SiteMainPageTopBar(
                             //Change the display state back to map
                             onClickChangeDisplayState(SiteDisplayState.FullMap)
                         }}
-                    , modifier = Modifier.size(50.dp).padding(start = 5.dp)
+                    , modifier = Modifier
+                        .size(50.dp)
+                        .padding(start = 5.dp)
                 )
             }
 
@@ -93,26 +100,18 @@ fun SiteMainPageTopBar(
                 )
 
             }
-
         },
-        colors = TopAppBarDefaults.topAppBarColors(
-            containerColor = MaterialTheme.colorScheme.surface,
-            titleContentColor = MaterialTheme.colorScheme.onSurface,
-        ),
-        title = {
-
+        title = @Composable {
             AppBarSearch(
-                searchQuery = searchQuery,
-                onQueryChange = onQueryChange,
-                onActiveChange = onActiveChange,
-                modifier = Modifier
-                    .padding(5.dp)
-                    .fillMaxWidth()
-            )
-
-        },
-        modifier = modifier
-    )
+            searchQuery = searchQuery,
+            onQueryChange = onQueryChange,
+            onActiveChange = onActiveChange,
+            modifier = Modifier
+                .padding(5.dp)
+                .fillMaxWidth()
+        )},
+        navigateToRoute = navigateToRoute,
+        modifier = modifier)
 
 }
 
@@ -254,6 +253,49 @@ fun AppBarSearch(
     
 }
 
+@OptIn(ExperimentalMaterial3Api::class)
+@Composable
+fun DisplayTopAppBar(
+    topLeftIcon: @Composable () -> Unit,
+    title: @Composable () -> Unit,
+    navigateToRoute: (String) -> Unit,
+    modifier: Modifier
+) {
+
+    var showMenu by remember { mutableStateOf(false) }
+    Surface(shadowElevation = 10.dp){
+        TopAppBar(
+            navigationIcon = topLeftIcon,
+            title = title,
+            colors = TopAppBarDefaults.topAppBarColors(
+                containerColor = MaterialTheme.colorScheme.surface,
+                titleContentColor = MaterialTheme.colorScheme.onSurface,
+            ),
+            actions = {
+                TopBarNavIcon(
+                    painter = painterResource(id = R.drawable.more_vert),
+                    contentDescription = "More Items",
+                    onClick = { showMenu = !showMenu })
+                DropdownMenu(
+                    expanded = showMenu,
+                    onDismissRequest = { showMenu = false }
+                ) {
+                    DropdownMenuItem(
+                        onClick = { navigateToRoute(AboutDestination.route) },
+                        text = { Text(text = AboutDestination.title) })
+
+
+                }
+            },
+            modifier = modifier
+        )
+
+    }
+    
+
+    
+}
+
 @Composable
 fun DisplayLegendCard(
     onCardClick : () -> Unit,
@@ -318,6 +360,36 @@ fun LegendBottomSheet(
     }
 }
 
+@Preview
+@Composable
+private fun PreviewGenericAppBar() {
+    AppTheme {
+        Surface {
+            DisplayTopAppBar(
+                topLeftIcon = {TopBarNavIcon(
+                    painter = painterResource(id = R.drawable.search),
+                    contentDescription = null,
+                    onClick = {},
+                    modifier = Modifier.size(50.dp)
+                )},
+                title = {  AppBarSearch(
+                    searchQuery = "",
+                    onQueryChange = {},
+                    /*searchedSites = listOf(siteClusterItem1, siteClusterItem2, siteClusterItem3, siteClusterItem4, siteClusterItem5),
+                    searchActive = true,*/
+                    onActiveChange = {},
+                    /*onSiteSelected = {},
+                    userLocation = LatLng(49.9000253, -97.1386276),*/
+                    modifier = Modifier
+                        .padding(5.dp)
+                        .fillMaxWidth()
+                ) },
+                navigateToRoute = {},
+                modifier = Modifier)
+        }
+    }
+    
+}
 
 @Preview
 @Composable
@@ -333,6 +405,8 @@ private fun PreviewBasicSearchBar() {
                 searchActive = false,
                 onActiveChange = {},
                 removeFocus = {},
+                navigateToRoute = {},
+                modifier = Modifier
               /*  onSiteSelected = {},
                 userLocation = LatLng(49.9000253, -97.1386276),*/
 
@@ -358,6 +432,7 @@ private fun PreviewBasicSearchBarBack() {
                 removeFocus = {},
                 /*  onSiteSelected = {},
                   userLocation = LatLng(49.9000253, -97.1386276),*/
+                navigateToRoute = {}
 
             )
         }

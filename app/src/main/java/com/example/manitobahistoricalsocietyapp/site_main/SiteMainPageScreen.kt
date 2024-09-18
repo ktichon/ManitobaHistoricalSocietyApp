@@ -16,6 +16,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.platform.LocalFocusManager
 import androidx.lifecycle.viewmodel.compose.viewModel
+import androidx.navigation.compose.rememberNavController
 import com.example.manitobahistoricalsocietyapp.site_scaffolding.LoadingScreen
 import com.example.manitobahistoricalsocietyapp.site_scaffolding.SiteMainPageContent
 import com.example.manitobahistoricalsocietyapp.storage_classes.SiteDisplayState
@@ -42,6 +43,8 @@ fun SiteMainPageScreen(
     modifier: Modifier = Modifier,
 
 ) {
+
+    val navController = rememberNavController()
 
     //Display state of screen
     //Controls the size the DisplayMap, DisplayFullSiteDetails, and Legend Composables, and other less drastic changes
@@ -174,6 +177,7 @@ fun SiteMainPageScreen(
 
 
         SiteMainPageContent(
+            navController = navController,
             cameraPositionState = cameraPositionState,
             allSites = allSiteClusterItems,
             onSiteSelected = { siteSelected, searched ->
