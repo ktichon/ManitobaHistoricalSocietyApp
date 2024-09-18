@@ -41,13 +41,22 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.tooling.preview.PreviewParameter
 import androidx.compose.ui.tooling.preview.PreviewParameterProvider
 import androidx.compose.ui.unit.dp
+import androidx.navigation.NavGraph.Companion.findStartDestination
+
+import androidx.navigation.NavHostController
+import androidx.navigation.compose.NavHost
+import androidx.navigation.compose.composable
+import androidx.navigation.compose.rememberNavController
 import com.example.manitobahistoricalsocietyapp.database.HistoricalSite.HistoricalSite
 import com.example.manitobahistoricalsocietyapp.database.HistoricalSite.HistoricalSiteClusterItem
 import com.example.manitobahistoricalsocietyapp.database.SitePhotos.SitePhotos
 import com.example.manitobahistoricalsocietyapp.helperClasses.DistanceAwayFromSite
 import com.example.manitobahistoricalsocietyapp.helperClasses.FormatSite
 import com.example.manitobahistoricalsocietyapp.helperClasses.FormatSize
+import com.example.manitobahistoricalsocietyapp.info_pages.AboutPage
 import com.example.manitobahistoricalsocietyapp.map.DisplayMap
+import com.example.manitobahistoricalsocietyapp.navigation.AboutDestination
+import com.example.manitobahistoricalsocietyapp.navigation.MapDestination
 import com.example.manitobahistoricalsocietyapp.site_ui.DisplayFullSiteDetails
 import com.example.manitobahistoricalsocietyapp.storage_classes.SiteDisplayState
 import com.example.manitobahistoricalsocietyapp.ui.theme.AppTheme
@@ -58,6 +67,7 @@ import kotlinx.coroutines.launch
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun SiteMainPageContent(
+    navController: NavHostController,
     cameraPositionState: CameraPositionState,
     allSites: List<HistoricalSiteClusterItem>,
     onSiteSelected: (siteClusterItem: HistoricalSiteClusterItem, searched: Boolean)  -> Unit,
@@ -101,151 +111,176 @@ fun SiteMainPageContent(
 
   /*  var showLegend by remember { mutableStateOf(false) }*/
 
+    NavHost(navController = navController, startDestination = MapDestination.route) {
 
-
-
-
-
-
-    Scaffold(
-        topBar = {
-            Surface(shadowElevation = 10.dp) {
-                SiteMainPageTopBar(
-                    onClickChangeDisplayState = onClickChangeDisplayState,
-                    displayState = displayState,
-                    searchQuery = searchQuery,
-                    onQueryChange = onQueryChange,
-                    searchActive = searchActive,
-                    onActiveChange = onActiveChange,
-                    removeFocus = removeFocus
-                )
-            }
-        },
-        snackbarHost = {
-                       SnackbarHost(hostState = snackbarHostState)
-        },
-        modifier = modifier
-    ) {innerPadding ->
-        Box(modifier = Modifier
-            .padding(innerPadding)
-            .fillMaxSize()
-
-        ){
-            DisplayMap(
-                cameraPositionState = cameraPositionState,
-                sites = allSites,
-                onSiteSelected = onSiteSelected,
-                onClusterClicked = onClusterClicked,
-                //currentlySelectedClusterItem = currentlySelectedClusterItem,
-                locationEnabled = locationEnabled,
-                mapPadding = PaddingValues(bottom = displayedItemSize),
-                newMapUpdate = newMapUpdate,
-                centerCamera = centerCamera,
-                modifier = Modifier
-                    .fillMaxSize()
-                //The background colour just makes it more visible on preview.
-                //.background(Color.Cyan)
-            )
-
-            if (displayState == SiteDisplayState.HalfSite || displayState == SiteDisplayState.FullSite )
-            {
-                DisplayFullSiteDetails(
-                    site = currentSite,
-                    currentlySelectedClusterItem = currentlySelectedClusterItem,
-                    displayState = displayState,
-                    onClickChangeDisplayState = onClickChangeDisplayState,
-                    siteTypes = currentSiteTypes,
-                    userLocation = userLocation,
-                    allSitePhotos = currentSitePhotos,
-                    sourcesList = currentSiteSourcesList,
-                    renderNewSite = renderNewSite,
-                    updateRenderNewSite = updateRenderNewSite,
-                    displayErrorMessage = {message ->
-                        scope.launch {
-                            snackbarHostState.showSnackbar(
-                                message = message,
-                                duration = SnackbarDuration.Short
-                            )
-                        }},
-                    modifier = Modifier
-                        .height(
-                            displayedItemSize
-                        )
-                        .fillMaxWidth()
-                        .align(Alignment.BottomEnd)
-
-                )
-            }
-
-            /*AnimatedVisibility(
-            visible = (displayState == SiteDisplayState.HalfSite || displayState == SiteDisplayState.FullSite) and (currentSite != null),
-            modifier = Modifier.weight(siteWeight),
-            enter = slideInVertically (
-                //slide in from bottom
-                initialOffsetY = {
-                    it / 2
-                },
-                animationSpec = tween(durationMillis = animationLengthInMilliSeconds, easing = LinearOutSlowInEasing)
-            ),
-             //slide out from bottom
-            exit = slideOutVertically(
-                targetOffsetY = {
-                    it / 2
-                },
-                animationSpec = tween(durationMillis = animationLengthInMilliSeconds, easing = LinearOutSlowInEasing)
-            ),
-
-        ) {
-
-        }*/
-
-
-            //Display legend text
-            if ( displayState == SiteDisplayState.FullMap){
-                DisplayLegendCard(
-                    onCardClick = {
-                        onClickChangeDisplayState(SiteDisplayState.MapWithLegend)
-                                  },
-                    modifier = Modifier
-                        .align(Alignment.BottomCenter)
-                        .padding(5.dp)
-
-                )
-            }
-
-            if (displayState == SiteDisplayState.MapWithLegend){
-                ModalBottomSheet(
-                    onDismissRequest = {
-                        onClickChangeDisplayState(SiteDisplayState.FullMap)
-
-                    },
-                    sheetState = legendState,
-                    modifier = Modifier.height(displayedItemSize)
-                )
-                {
-                    LegendBottomSheet(
-                        modifier = Modifier.fillMaxSize()
-                    )
+        composable(route = AboutDestination.route){
+            AboutPage(
+                navigateToRoute = {route ->
+                navController.navigateSingleTopTo(route)
+            },
+                onBackClick = {
+                    navController.popBackStack()
                 }
-
-            }
-
-            if (searchActive){
-                DisplayAppbarSearchResults(
-                    searchedSites = searchedSites,
-                    onSiteSelected = onSiteSelected,
-                    userLocation = userLocation,
-                    onActiveChange = onActiveChange,
-                    removeFocus = removeFocus,
-                    modifier = Modifier.fillMaxSize()
                 )
 
+
+        }
+
+        composable(route = MapDestination.route){
+            Scaffold(
+                topBar = {
+                    Surface(shadowElevation = 10.dp) {
+                        SiteMainPageTopBar(
+                            onClickChangeDisplayState = onClickChangeDisplayState,
+                            displayState = displayState,
+                            searchQuery = searchQuery,
+                            onQueryChange = onQueryChange,
+                            searchActive = searchActive,
+                            onActiveChange = onActiveChange,
+                            removeFocus = removeFocus,
+                            navigateToRoute = {route ->
+                                navController.navigateSingleTopTo(route)
+                            }
+                        )
+                    }
+                },
+                snackbarHost = {
+                    SnackbarHost(hostState = snackbarHostState)
+                },
+                modifier = modifier
+            ) {innerPadding ->
+                Box(modifier = Modifier
+                    .padding(innerPadding)
+                    .fillMaxSize()
+
+                ){
+                    DisplayMap(
+                        cameraPositionState = cameraPositionState,
+                        sites = allSites,
+                        onSiteSelected = onSiteSelected,
+                        onClusterClicked = onClusterClicked,
+                        //currentlySelectedClusterItem = currentlySelectedClusterItem,
+                        locationEnabled = locationEnabled,
+                        mapPadding = PaddingValues(bottom = displayedItemSize),
+                        newMapUpdate = newMapUpdate,
+                        centerCamera = centerCamera,
+                        modifier = Modifier
+                            .fillMaxSize()
+                        //The background colour just makes it more visible on preview.
+                        //.background(Color.Cyan)
+                    )
+
+                    if (displayState == SiteDisplayState.HalfSite || displayState == SiteDisplayState.FullSite )
+                    {
+                        DisplayFullSiteDetails(
+                            site = currentSite,
+                            currentlySelectedClusterItem = currentlySelectedClusterItem,
+                            displayState = displayState,
+                            onClickChangeDisplayState = onClickChangeDisplayState,
+                            siteTypes = currentSiteTypes,
+                            userLocation = userLocation,
+                            allSitePhotos = currentSitePhotos,
+                            sourcesList = currentSiteSourcesList,
+                            renderNewSite = renderNewSite,
+                            updateRenderNewSite = updateRenderNewSite,
+                            displayErrorMessage = {message ->
+                                scope.launch {
+                                    snackbarHostState.showSnackbar(
+                                        message = message,
+                                        duration = SnackbarDuration.Short
+                                    )
+                                }},
+                            modifier = Modifier
+                                .height(
+                                    displayedItemSize
+                                )
+                                .fillMaxWidth()
+                                .align(Alignment.BottomEnd)
+
+                        )
+                    }
+
+                    /*AnimatedVisibility(
+                    visible = (displayState == SiteDisplayState.HalfSite || displayState == SiteDisplayState.FullSite) and (currentSite != null),
+                    modifier = Modifier.weight(siteWeight),
+                    enter = slideInVertically (
+                        //slide in from bottom
+                        initialOffsetY = {
+                            it / 2
+                        },
+                        animationSpec = tween(durationMillis = animationLengthInMilliSeconds, easing = LinearOutSlowInEasing)
+                    ),
+                     //slide out from bottom
+                    exit = slideOutVertically(
+                        targetOffsetY = {
+                            it / 2
+                        },
+                        animationSpec = tween(durationMillis = animationLengthInMilliSeconds, easing = LinearOutSlowInEasing)
+                    ),
+
+                ) {
+
+                }*/
+
+
+                    //Display legend text
+                    if ( displayState == SiteDisplayState.FullMap){
+                        DisplayLegendCard(
+                            onCardClick = {
+                                onClickChangeDisplayState(SiteDisplayState.MapWithLegend)
+                            },
+                            modifier = Modifier
+                                .align(Alignment.BottomCenter)
+                                .padding(5.dp)
+
+                        )
+                    }
+
+                    if (displayState == SiteDisplayState.MapWithLegend){
+                        ModalBottomSheet(
+                            onDismissRequest = {
+                                onClickChangeDisplayState(SiteDisplayState.FullMap)
+
+                            },
+                            sheetState = legendState,
+                            modifier = Modifier.height(displayedItemSize)
+                        )
+                        {
+                            LegendBottomSheet(
+                                modifier = Modifier.fillMaxSize()
+                            )
+                        }
+
+                    }
+
+                    if (searchActive){
+                        DisplayAppbarSearchResults(
+                            searchedSites = searchedSites,
+                            onSiteSelected = onSiteSelected,
+                            userLocation = userLocation,
+                            onActiveChange = onActiveChange,
+                            removeFocus = removeFocus,
+                            modifier = Modifier.fillMaxSize()
+                        )
+
+
+                    }
+
+                }
 
             }
 
         }
 
     }
+
+
+
+
+
+
+
+
 
 }
 
@@ -375,6 +410,28 @@ fun DisplayAppbarSearchResults(
     
 }
 
+//LaunchSingleTop ensures that only one copy of a given destination will be on top of the backstack.
+//Stops from creating multiple copies of the same if the user clicks the button multiple times
+//Adding it as a helper method to the NavController so that we don't need to do
+//navController.navigate(route) { launchSingleTop = true }
+//everytime
+fun NavHostController.navigateSingleTopTo(route: String) =
+    this.navigate(route){
+        //Pop up to the start destination of the graph to avoid building large stack on backstack
+        popUpTo(
+            this@navigateSingleTopTo.graph.findStartDestination().id
+        ){
+            saveState = true
+        }
+
+
+        //Only one copy of destination
+        launchSingleTop = true
+
+        //restores state that was previously saved by popUpTo (with ID)
+        restoreState = true
+    }
+
 
 class DisplayStateWithMapPreviewParameterProvider : PreviewParameterProvider<SiteDisplayState> {
     override val values: Sequence<SiteDisplayState>
@@ -420,8 +477,10 @@ private fun PreviewHistoricalSiteHomeContent(
             //val scrollState = rememberScrollState()
             val searchedSites = listOf(clusterItem, clusterItem,clusterItem,clusterItem,clusterItem,clusterItem)
 
+            val navController = rememberNavController()
            // val legendState = rememberModalBottomSheetState()
             SiteMainPageContent(
+                navController = navController,
                 currentSite = testSite,
                 displayState = displayState,
                 onClickChangeDisplayState = {},
