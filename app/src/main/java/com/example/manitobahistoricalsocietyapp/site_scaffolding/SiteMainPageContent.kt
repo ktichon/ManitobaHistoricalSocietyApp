@@ -105,7 +105,7 @@ fun SiteMainPageContent(
 ) {
     val scope = rememberCoroutineScope()
     val snackbarHostState = remember {SnackbarHostState()}
-    val legendState = rememberModalBottomSheetState(skipPartiallyExpanded = true)
+    val legendState = rememberModalBottomSheetState()
     val screenHeightDp = LocalConfiguration.current.screenHeightDp
     val displayedItemSize = FormatSize.getDpFromPercent(displayState.mapBottomPaddingPercent, screenHeightDp).dp
 
@@ -129,7 +129,6 @@ fun SiteMainPageContent(
         composable(route = MapDestination.route){
             Scaffold(
                 topBar = {
-                    Surface(shadowElevation = 10.dp) {
                         SiteMainPageTopBar(
                             onClickChangeDisplayState = onClickChangeDisplayState,
                             displayState = displayState,
@@ -140,9 +139,8 @@ fun SiteMainPageContent(
                             removeFocus = removeFocus,
                             navigateToRoute = {route ->
                                 navController.navigateSingleTopTo(route)
-                            }
-                        )
-                    }
+                            })
+
                 },
                 snackbarHost = {
                     SnackbarHost(hostState = snackbarHostState)
@@ -243,11 +241,19 @@ fun SiteMainPageContent(
 
                             },
                             sheetState = legendState,
-                            modifier = Modifier.height(displayedItemSize)
+                            //For some reason, updating my gradle dependencies caused this to not work anymore.
+                            //Instead of the bottom sheet appearing on the bottom, it went straight to the top of the app instead.
+                            //The height is now determined by the LegendBottomSheet
+                            //modifier = Modifier.height(displayedItemSize)
                         )
                         {
                             LegendBottomSheet(
-                                modifier = Modifier.fillMaxSize()
+                                modifier = Modifier.height(
+                                    //The bottom sheet is slightly bigger that the legend, which was covering up the google logo.
+                                    //To compensate for that, I have multiplied the height by 0.85.
+                                    //Hopefully, this will stop it from covering up the google logo
+                                    (FormatSize.getDpFromPercent(displayState.mapBottomPaddingPercent, screenHeightDp) * 0.85).dp )
+
                             )
                         }
 
@@ -435,7 +441,7 @@ fun NavHostController.navigateSingleTopTo(route: String) =
 
 class DisplayStateWithMapPreviewParameterProvider : PreviewParameterProvider<SiteDisplayState> {
     override val values: Sequence<SiteDisplayState>
-        get() = sequenceOf(SiteDisplayState.HalfSite, SiteDisplayState.FullSite, SiteDisplayState.FullMap)
+        get() = sequenceOf(SiteDisplayState.HalfSite, SiteDisplayState.FullSite, SiteDisplayState.FullMap, SiteDisplayState.MapWithLegend)
 }
 @Preview
 @Composable
