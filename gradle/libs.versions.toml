@@ -35,7 +35,7 @@ secretsGradlePlugin = "2.0.1"
 sqliteKtx = "2.4.0"
 uiText = "1.7.2"
 uiUnit = "1.7.2"
-androidGradlePlugin = "8.5.2"
+androidGradlePlugin = "8.5.0"
 kotlin = "1.9.24"
 devtoolsKsp = "1.9.24-1.0.20"
 daggerHiltAndroid = "2.51.1"
@@ -103,6 +103,9 @@ kotlin-android = { id = "org.jetbrains.kotlin.android", version.ref = "kotlin" }
 devtools-ksp = { id = "com.google.devtools.ksp", version.ref = "devtoolsKsp" }
 dagger-hilt = { id = "com.google.dagger.hilt.android", version.ref = "daggerHiltAndroid" }
 dependency-analysis = { id = "com.autonomousapps.dependency-analysis", version.ref = "dependencyAnalysis" }
+
 androidLibrary = { id = "com.android.library", version.ref = "androidGradlePlugin" }
+jetbrainsCompose = { id = "org.jetbrains.compose", version.ref = "activityCompose" }
 kotlinMultiplatform = { id = "org.jetbrains.kotlin.multiplatform", version.ref = "kotlin" }
+compose-compiler = { id = "org.jetbrains.kotlin.plugin.compose", version.ref = "kotlin" }
 
