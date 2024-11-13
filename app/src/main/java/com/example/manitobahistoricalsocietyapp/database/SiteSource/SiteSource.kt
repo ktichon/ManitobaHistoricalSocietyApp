@@ -7,14 +7,11 @@ import androidx.room.PrimaryKey
 @Entity(tableName = "siteSource")
 data class SiteSource(
     @PrimaryKey
-    @ColumnInfo(name = "source_id")
     val id: Int,
 
-    @ColumnInfo(name = "site_id")
     val siteId: Int,
 
     val info: String,
 
-    @ColumnInfo(name = "import_date")
     val importDate: String
 )

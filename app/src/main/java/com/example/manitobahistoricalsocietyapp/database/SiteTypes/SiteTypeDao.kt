@@ -25,8 +25,8 @@ interface SiteTypeDao {
 
     @Query(
         "SELECT siteType.type FROM siteType " +
-                "INNER JOIN siteWithType ON siteWithType.site_type_id = siteType.site_type_id" +
-                " WHERE site_id = :siteId "
+                "INNER JOIN siteWithType ON siteWithType.siteTypeId = siteType.id" +
+                " WHERE siteId = :siteId "
     )
     fun getAllTypesForSite(siteId: Int): Flow<List<String>>
 
