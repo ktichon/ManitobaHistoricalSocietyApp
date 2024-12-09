@@ -20,6 +20,7 @@ import androidx.compose.foundation.pager.PagerState
 import androidx.compose.foundation.pager.rememberPagerState
 import androidx.compose.foundation.text.selection.SelectionContainer
 import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.Close
 import androidx.compose.material.icons.filled.KeyboardArrowDown
 import androidx.compose.material.icons.filled.KeyboardArrowUp
 import androidx.compose.material3.Icon
@@ -63,17 +64,23 @@ fun DisplaySiteTitle(
     modifier: Modifier = Modifier
 ) {
 
+    //Toggles the displayState between FullSite and HalfSite
+    val newDisplayStateOnClick = if(displayState == SiteDisplayState.HalfSite) SiteDisplayState.FullSite else SiteDisplayState.HalfSite
+
+    //Made it so the pressing the X just closed the site, as that was more natural to users
+   /* val icon =  if(displayState == SiteDisplayState.HalfSite) Icons.Default.KeyboardArrowUp else Icons.Default.KeyboardArrowDown
+    val contentDescription = if(displayState == SiteDisplayState.HalfSite) "Show More Info" else "Show Less Info"*/
+
     SelectionContainer {
         Row (
             verticalAlignment = Alignment.CenterVertically,
             horizontalArrangement = Arrangement.SpaceBetween,
             modifier = modifier
                 .fillMaxWidth()
+                .clickable(onClick = {onClickChangeDisplayState(
+                    newDisplayStateOnClick)})
         ){
-            //Changes the icon, content description, and on click depending on state
-            val newDisplayStateOnClick = if(displayState == SiteDisplayState.HalfSite) SiteDisplayState.FullSite else SiteDisplayState.HalfSite
-            val icon =  if(displayState == SiteDisplayState.HalfSite) Icons.Default.KeyboardArrowUp else Icons.Default.KeyboardArrowDown
-            val contentDescription = if(displayState == SiteDisplayState.HalfSite) "Show More Info" else "Show Less Info"
+
 
 
 
@@ -93,11 +100,11 @@ fun DisplaySiteTitle(
 
 
 
-            IconButton(onClick = { onClickChangeDisplayState(newDisplayStateOnClick) },
-                modifier =  Modifier.align(Alignment.Top).size(70.dp)
+            IconButton(onClick = { onClickChangeDisplayState(SiteDisplayState.FullMap) },
+                modifier =  Modifier.align(Alignment.Top).size(50.dp)
             ) {
-                Icon(imageVector = icon,
-                    contentDescription = contentDescription,
+                Icon(imageVector = Icons.Default.Close,
+                    contentDescription = "Close Current Site",
                     modifier = Modifier.fillMaxSize()
                 )
             }
