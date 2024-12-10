@@ -11,7 +11,7 @@ plugins {
 
 android {
     namespace = "com.example.manitobahistoricalsocietyapp"
-    compileSdk = 34
+    compileSdk = 35
 
     defaultConfig {
         applicationId = "com.example.manitobahistoricalsocietyapp"
@@ -73,87 +73,85 @@ secrets {
 
 dependencies {
 
+    implementation("androidx.activity:activity-compose:1.9.3")
+    implementation(platform("androidx.compose:compose-bom:2024.11.00"))
+    implementation("androidx.compose.ui:ui")
+    implementation("androidx.compose.ui:ui-graphics")
+    implementation("androidx.compose.ui:ui-tooling-preview")
+    implementation("androidx.compose.material3:material3")
+    implementation("com.google.android.gms:play-services-location:21.3.0")
+    implementation("androidx.lifecycle:lifecycle-runtime-compose-android:2.8.7")
+    testImplementation("junit:junit:4.13.2")
 
+    androidTestImplementation(platform("androidx.compose:compose-bom:2024.11.00"))
+    androidTestImplementation("androidx.compose.ui:ui-test-junit4")
+    debugImplementation("androidx.compose.ui:ui-tooling")
+    debugImplementation("androidx.compose.ui:ui-test-manifest")
 
-    implementation(libs.androidx.activity.compose)
-    implementation(platform(libs.androidx.compose.bom))
-    implementation(libs.androidx.ui)
-    implementation(libs.androidx.ui.graphics)
-    implementation(libs.androidx.ui.tooling.preview)
-    implementation(libs.androidx.material3)
-    implementation(libs.play.services.location)
-    implementation(libs.androidx.lifecycle.runtime.compose.android)
-    testImplementation(libs.junit)
-
-    androidTestImplementation(platform(libs.androidx.compose.bom))
-    androidTestImplementation(libs.androidx.ui.test.junit4)
-    debugImplementation(libs.androidx.ui.tooling)
-    debugImplementation(libs.androidx.ui.test.manifest)
-
-    androidTestImplementation(libs.androidx.monitor)
-    androidTestImplementation(libs.junit)
-    implementation(libs.androidx.activity.ktx)
-    implementation(libs.androidx.annotation)
-    implementation(libs.androidx.foundation.layout)
-    implementation(libs.androidx.foundation)
-    implementation(libs.androidx.material.icons.core)
-    implementation(libs.androidx.runtime.saveable)
-    implementation(libs.androidx.runtime)
-    implementation(libs.androidx.ui.text)
-    implementation(libs.androidx.ui.unit)
-    implementation(libs.androidx.core.ktx)
-    implementation(libs.androidx.fragment.ktx)
-    implementation(libs.androidx.lifecycle.common)
-    implementation(libs.androidx.lifecycle.viewmodel.savedstate)
-    implementation(libs.androidx.lifecycle.viewmodel.ktx)
-    implementation(libs.androidx.room.common)
-    implementation(libs.androidx.sqlite.ktx)
-    implementation(libs.dagger)
-    implementation(libs.hilt.core)
-    implementation(libs.android.maps.utils)
-    implementation(libs.coil.compose.base)
-    implementation(libs.javax.inject)
-    implementation(libs.kotlinx.coroutines.core)
-    kapt(libs.dagger.compiler)
+    androidTestImplementation("androidx.test:monitor:1.7.2")
+    androidTestImplementation("junit:junit:4.13.2")
+    implementation("androidx.activity:activity-ktx:1.9.3")
+    implementation("androidx.annotation:annotation:1.9.1")
+    implementation("androidx.compose.foundation:foundation-layout:1.7.5")
+    implementation("androidx.compose.foundation:foundation:1.7.5")
+    implementation("androidx.compose.material:material-icons-core:1.7.5")
+    implementation("androidx.compose.runtime:runtime-saveable:1.7.5")
+    implementation("androidx.compose.runtime:runtime:1.7.5")
+    implementation("androidx.compose.ui:ui-text:1.7.5")
+    implementation("androidx.compose.ui:ui-unit:1.7.5")
+    implementation("androidx.core:core-ktx:1.15.0")
+    implementation("androidx.fragment:fragment-ktx:1.8.5")
+    implementation("androidx.lifecycle:lifecycle-common:2.8.7")
+    implementation("androidx.lifecycle:lifecycle-viewmodel-savedstate:2.8.7")
+    implementation("androidx.lifecycle:lifecycle-viewmodel-ktx:2.8.7")
+    implementation("androidx.room:room-common:2.6.1")
+    implementation("androidx.sqlite:sqlite-ktx:2.4.0")
+    implementation("com.google.dagger:dagger:2.51.1")
+    implementation("com.google.dagger:hilt-core:2.51.1")
+    implementation("com.google.maps.android:android-maps-utils:3.8.2")
+    implementation("io.coil-kt:coil-compose-base:2.6.0")
+    implementation("javax.inject:javax.inject:1")
+    implementation("org.jetbrains.kotlinx:kotlinx-coroutines-core:1.9.0")
+    kapt("com.google.dagger:dagger-compiler:2.51.1")
 
 
 
 
     implementation("androidx.room:room-runtime:")
-    annotationProcessor(libs.androidx.room.compiler)
+    annotationProcessor("androidx.room:room-compiler:2.6.1")
 
-    implementation(libs.androidx.room.ktx)
-    ksp (libs.androidx.room.compiler)
+    implementation("androidx.room:room-ktx:2.6.1")
+    ksp ("androidx.room:room-compiler:2.6.1")
 
 
 
 
     // optional - Kotlin Extensions and Coroutines support for Room
-    implementation(libs.androidx.room.ktx)
+    implementation("androidx.room:room-ktx:2.6.1")
 
 
 
     //Coil Image load
-    implementation(libs.coil.compose)
+    implementation("io.coil-kt:coil-compose:2.6.0")
 
     // Android Maps Compose composables for the Maps SDK for Android
-    implementation (libs.play.services.maps)
+    implementation ("com.google.android.gms:play-services-maps:19.0.0")
 
-    implementation(libs.maps.compose)
+    implementation("com.google.maps.android:maps-compose:6.4.0")
 
     // Optionally, you can include the Compose utils library for Clustering,
     // Street View metadata checks, etc.
-    implementation(libs.maps.compose.utils)
+    implementation("com.google.maps.android:maps-compose-utils:6.4.0")
 
-    implementation(libs.accompanist.permissions)
+    implementation("com.google.accompanist:accompanist-permissions:0.35.0-alpha")
 
-    implementation(libs.androidx.lifecycle.viewmodel.compose)
+    implementation("androidx.lifecycle:lifecycle-viewmodel-compose:2.8.7")
 
-    implementation(libs.hilt.android)
-    kapt (libs.hilt.compiler)
-    implementation(libs.androidx.hilt.navigation.compose)
-    implementation(libs.androidx.navigation.compose)
-    implementation(project(":shared"))
+    implementation("com.google.dagger:hilt-android:2.51.1")
+    kapt ("com.google.dagger:hilt-compiler:2.51.1")
+    implementation("androidx.hilt:hilt-navigation-compose:1.2.0")
+    implementation("androidx.navigation:navigation-compose:2.8.4")
+
 
 
 

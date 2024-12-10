@@ -30,7 +30,8 @@ fun DisplayMap(
     modifier: Modifier = Modifier
 ) {
     //If the system is in dark mode, use dark map. Else use light map
-    val mapStyleOptions = MapStyleOptions(if (isSystemInDarkTheme()) mapStylingNight else mapStylingDay)
+    val mapStyleOptions = MapStyleOptions(
+        if (isSystemInDarkTheme()) mapStylingNight else mapStylingDay)
     val mapProperties by remember {
         mutableStateOf(MapProperties(
             isMyLocationEnabled = locationEnabled,

@@ -1,12 +1,10 @@
 // Top-level build file where you can add configuration options common to all sub-projects/modules.
 plugins {
-    alias(libs.plugins.android.application ) apply false
-    alias(libs.plugins.kotlin.android) apply false
-    alias(libs.plugins.devtools.ksp) apply false
-    alias(libs.plugins.dagger.hilt) apply false
-    alias(libs.plugins.dependency.analysis)
-    alias(libs.plugins.kotlinMultiplatform) apply false
-    alias(libs.plugins.androidLibrary) apply false
+    id("com.android.application") version "8.7.3" apply false
+    id("org.jetbrains.kotlin.android") version "1.9.24" apply false
+    id("com.google.devtools.ksp") version "1.9.24-1.0.20" apply false
+    id ("com.google.dagger.hilt.android") version "2.51.1" apply false
+    id("com.autonomousapps.dependency-analysis") version "1.31.0"
 
 
 }
@@ -14,6 +12,6 @@ plugins {
 
 buildscript {
     dependencies {
-        classpath(libs.secrets.gradle.plugin)
+        classpath("com.google.android.libraries.mapsplatform.secrets-gradle-plugin:secrets-gradle-plugin:2.0.1")
     }
 }
