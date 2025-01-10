@@ -4,9 +4,9 @@ import kotlin.math.roundToInt
 
 class FormatSize {
     companion object{
-        fun getDpFromPercent(percent: Int, total: Int): Int{
+        fun getDpFromPercent(percent: Float, total: Int): Int{
 
-            val result = (total * (percent.toDouble()/100))
+            val result = (total * percent.toDouble())
             return result.roundToInt()
         }
     }

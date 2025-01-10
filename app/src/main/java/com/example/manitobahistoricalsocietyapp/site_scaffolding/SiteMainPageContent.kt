@@ -1,5 +1,6 @@
 package com.example.manitobahistoricalsocietyapp.site_scaffolding
 
+import android.annotation.SuppressLint
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
@@ -443,6 +444,7 @@ class DisplayStateWithMapPreviewParameterProvider : PreviewParameterProvider<Sit
     override val values: Sequence<SiteDisplayState>
         get() = sequenceOf(SiteDisplayState.HalfSite, SiteDisplayState.FullSite, SiteDisplayState.FullMap, SiteDisplayState.MapWithLegend)
 }
+@SuppressLint("UnrememberedMutableState")
 @Preview
 @Composable
 private fun PreviewHistoricalSiteHomeContent(
