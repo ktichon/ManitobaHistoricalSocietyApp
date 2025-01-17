@@ -2,11 +2,6 @@ package com.example.manitobahistoricalsocietyapp.site_ui
 
 import android.content.ActivityNotFoundException
 import android.content.Intent
-import android.text.method.LinkMovementMethod
-import android.view.View.TEXT_ALIGNMENT_CENTER
-import android.view.View.TEXT_ALIGNMENT_TEXT_START
-import android.widget.TextView
-import androidx.compose.foundation.ExperimentalFoundationApi
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
@@ -21,8 +16,6 @@ import androidx.compose.foundation.pager.rememberPagerState
 import androidx.compose.foundation.text.selection.SelectionContainer
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Close
-import androidx.compose.material.icons.filled.KeyboardArrowDown
-import androidx.compose.material.icons.filled.KeyboardArrowUp
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
 import androidx.compose.material3.MaterialTheme
@@ -32,29 +25,31 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
-import androidx.compose.ui.graphics.toArgb
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.platform.LocalUriHandler
 import androidx.compose.ui.platform.UriHandler
 import androidx.compose.ui.res.painterResource
+import androidx.compose.ui.text.AnnotatedString
 import androidx.compose.ui.text.SpanStyle
+import androidx.compose.ui.text.TextLinkStyles
 import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.buildAnnotatedString
+import androidx.compose.ui.text.fromHtml
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.text.style.TextDecoration
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.text.withStyle
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
-import androidx.compose.ui.viewinterop.AndroidView
-import androidx.core.text.HtmlCompat
+import androidx.compose.ui.unit.sp
 import coil.compose.AsyncImage
 import com.example.manitobahistoricalsocietyapp.R
 import com.example.manitobahistoricalsocietyapp.database.SitePhotos.SitePhotos
 import com.example.manitobahistoricalsocietyapp.database.SiteSource.SiteSource
 import com.example.manitobahistoricalsocietyapp.storage_classes.SiteDisplayState
 import com.example.manitobahistoricalsocietyapp.ui.theme.AppTheme
+
 
 @Composable
 fun DisplaySiteTitle(
@@ -77,8 +72,11 @@ fun DisplaySiteTitle(
             horizontalArrangement = Arrangement.SpaceBetween,
             modifier = modifier
                 .fillMaxWidth()
-                .clickable(onClick = {onClickChangeDisplayState(
-                    newDisplayStateOnClick)})
+                .clickable(onClick = {
+                    onClickChangeDisplayState(
+                        newDisplayStateOnClick
+                    )
+                })
         ){
 
 
@@ -101,7 +99,9 @@ fun DisplaySiteTitle(
 
 
             IconButton(onClick = { onClickChangeDisplayState(SiteDisplayState.FullMap) },
-                modifier =  Modifier.align(Alignment.Top).size(50.dp)
+                modifier = Modifier
+                    .align(Alignment.Top)
+                    .size(50.dp)
             ) {
                 Icon(imageVector = Icons.Default.Close,
                     contentDescription = "Close Current Site",
@@ -144,8 +144,6 @@ fun DisplaySitePhoto(
     totalNumberOfPhotos: Int,
     sitePhoto: SitePhotos,
     uriHandler: UriHandler,
-    textColour: Color = MaterialTheme.colorScheme.onSurface,
-    linkColor: Color = MaterialTheme.colorScheme.primary,
     modifier: Modifier = Modifier
 ) {
 
@@ -166,7 +164,7 @@ fun DisplaySitePhoto(
                 .size(height = (sitePhoto.height / 2).dp, width = (sitePhoto.width / 2).dp)
                 .padding(5.dp)
                 .clickable(
-                    onClick = {uriHandler.openUri(sitePhoto.url)},
+                    onClick = { uriHandler.openUri(sitePhoto.url) },
                     onClickLabel = sitePhoto.url
                 )
                 /*.combinedClickable(
@@ -180,17 +178,38 @@ fun DisplaySitePhoto(
         )
 
         sitePhoto.info?.let {
-            GetAndroidViewWithStyle(
-                text = sitePhoto.info,
-                textStyle = MaterialTheme.typography.bodyMedium,
-                textColour = textColour,
-                linkColor = linkColor,
-                textAlignment = TEXT_ALIGNMENT_CENTER,
+//            GetAndroidViewWithStyle(
+//                text = sitePhoto.info,
+//                textStyle = MaterialTheme.typography.bodyMedium,
+//                textColour = textColour,
+//                linkColor = linkColor,
+//                textAlignment = TEXT_ALIGNMENT_CENTER,
+//                modifier = modifier
+//                    .align(Alignment.CenterHorizontally)
+//                    .padding(horizontal = 10.dp)
+//                    .fillMaxWidth()
+//            )
+//
+//            val text = AnnotatedString.fromHtml(it,
+//                linkStyles = TextLinkStyles(
+//                        style = SpanStyle(
+//                            textDecoration = TextDecoration.Underline,
+//                            color = MaterialTheme.colorScheme.primary
+//                        )
+//                    )
+//                )
+            Text(
+                text = getAnnotatedStringFromHTML(it),
+                style = MaterialTheme.typography.bodyMedium,
+                textAlign = TextAlign.Center,
+                lineHeight = 16.sp,
                 modifier = modifier
                     .align(Alignment.CenterHorizontally)
                     .padding(horizontal = 10.dp)
                     .fillMaxWidth()
             )
+
+
         }
 
         Text(
@@ -210,8 +229,6 @@ fun DisplaySitePhotos(
     photos: List<SitePhotos>,
     uriHandler: UriHandler,
     pageState: PagerState,
-    textColour: Color = MaterialTheme.colorScheme.onSurface,
-    linkColor: Color = MaterialTheme.colorScheme.primary,
     modifier: Modifier = Modifier
 ) {
 
@@ -228,7 +245,7 @@ fun DisplaySitePhotos(
             )
             {
                     index ->
-                DisplaySitePhoto(photoIndex = index + 1, totalNumberOfPhotos = photos.size, sitePhoto = photos[index], uriHandler = uriHandler, textColour = textColour, linkColor = linkColor )
+                DisplaySitePhoto(photoIndex = index + 1, totalNumberOfPhotos = photos.size, sitePhoto = photos[index], uriHandler = uriHandler )
             }
         }
     }
@@ -290,19 +307,22 @@ fun DisplayNoPhotos(
 @Composable
 fun DisplaySiteDescription(
     siteInfo:String,
-    textColour: Color = MaterialTheme.colorScheme.onSurface,
-    linkColor: Color = MaterialTheme.colorScheme.primary,
     modifier: Modifier = Modifier
 ) {
     Row(
         modifier = modifier
     ) {
-        GetAndroidViewWithStyle(
-            textStyle = MaterialTheme.typography.bodyLarge,
-            textColour = textColour,
-            linkColor = linkColor,
-            text = siteInfo,
-            textAlignment = TEXT_ALIGNMENT_TEXT_START)
+        Text(
+            text = getAnnotatedStringFromHTML(siteInfo),
+            style = MaterialTheme.typography.bodyLarge,
+            textAlign = TextAlign.Start
+        )
+//        GetAndroidViewWithStyle(
+//            textStyle = MaterialTheme.typography.bodyLarge,
+//            textColour = textColour,
+//            linkColor = linkColor,
+//            text = siteInfo,
+//            textAlignment = TEXT_ALIGNMENT_TEXT_START)
     }
 
 
@@ -316,8 +336,6 @@ fun DisplaySiteDescription(
 @Composable
 fun DisplaySiteSources(
     sourcesList: List<String>,
-    textColour: Color = MaterialTheme.colorScheme.onSurface,
-    linkColor: Color = MaterialTheme.colorScheme.primary,
     modifier: Modifier = Modifier
 ) {
     Row (modifier = modifier){
@@ -334,14 +352,20 @@ fun DisplaySiteSources(
                 )
             } else{
                 sourcesList.forEach {
-                    GetAndroidViewWithStyle(
-                        textStyle = MaterialTheme.typography.bodyLarge,
-                        textColour = textColour,
-                        linkColor = linkColor,
-                        text = it,
-                        textAlignment = TEXT_ALIGNMENT_TEXT_START,
-                        Modifier.padding(horizontal = 20.dp, vertical = 5.dp)
+                    Text(
+                        text = getAnnotatedStringFromHTML(it),
+                        textAlign = TextAlign.Start,
+                        style = MaterialTheme.typography.bodyLarge,
+                        modifier = Modifier.padding(horizontal = 20.dp, vertical = 10.dp)
                     )
+//                    GetAndroidViewWithStyle(
+//                        textStyle = MaterialTheme.typography.bodyLarge,
+//                        textColour = textColour,
+//                        linkColor = linkColor,
+//                        text = it,
+//                        textAlignment = TEXT_ALIGNMENT_TEXT_START,
+//                        Modifier.padding(horizontal = 20.dp, vertical = 5.dp)
+//                    )
                 }
 
             }
@@ -354,7 +378,6 @@ fun DisplaySiteSources(
 fun DisplaySiteLink(
     siteUrl: String,
     uriHandler: UriHandler,
-    linkColor: Color = MaterialTheme.colorScheme.primary,
     modifier: Modifier = Modifier) {
     Row(
         modifier = modifier.fillMaxWidth()
@@ -362,7 +385,7 @@ fun DisplaySiteLink(
         Text(
             text = "Click here to go to the Manitoba Historical Society webpage for this site!",
             style = MaterialTheme.typography.titleLarge.merge(TextStyle(textDecoration = TextDecoration.Underline)),
-            color = linkColor,
+            color = MaterialTheme.colorScheme.primary,
             textAlign = TextAlign.Center,
             modifier = Modifier.clickable { uriHandler.openUri(siteUrl) }
         )
@@ -371,35 +394,49 @@ fun DisplaySiteLink(
     
 }
 
-
-//Helper function that sets the style of text when I need to preserve the HTML contents
-//Such as links or <br>
 @Composable
-fun GetAndroidViewWithStyle(
-    textStyle: TextStyle,
-    textColour: Color,
-    linkColor: Color,
-    text:String,
-    textAlignment: Int,
-    modifier: Modifier = Modifier
-) {
-    AndroidView(
-        modifier = modifier,
-        factory = {context -> TextView(context)},
-        update = {
-            it.text = HtmlCompat.fromHtml(text, HtmlCompat.FROM_HTML_MODE_COMPACT)
-            it.movementMethod = LinkMovementMethod.getInstance()
-            it.textSize = textStyle.fontSize.value
-            it.textAlignment = textAlignment
-            it.setTextColor(textColour.toArgb())
-            //Have the text be selectable is causing interference with opening links preserved in the HTML.
-            //I believe that its more important that the urls consistently work than for the text to be selectable, so it set to false
-            it.setTextIsSelectable(false)
-            it.setLinkTextColor(linkColor.toArgb())
-            // it.letterSpacing = textStyle.letterSpacing.value
-        }
+fun getAnnotatedStringFromHTML(text: String): AnnotatedString{
+    return AnnotatedString.fromHtml(text,
+        linkStyles = TextLinkStyles(
+            style = SpanStyle(
+                textDecoration = TextDecoration.Underline,
+                color = MaterialTheme.colorScheme.primary
+            )
+        )
     )
 }
+
+
+//No longer necessary, as now we can use AnnotatedString.fromHtml
+////Helper function that sets the style of text when I need to preserve the HTML contents
+////Such as links or <br>
+//@Composable
+//fun GetAndroidViewWithStyle(
+//    textStyle: TextStyle,
+//    textColour: Color,
+//    linkColor: Color,
+//    text:String,
+//    textAlignment: Int,
+//    modifier: Modifier = Modifier
+//) {
+//    AndroidView(
+//        modifier = modifier,
+//        factory = {context -> TextView(context)},
+//        update = {
+//            it.text = HtmlCompat.fromHtml(text, HtmlCompat.FROM_HTML_MODE_COMPACT)
+//            it.movementMethod = LinkMovementMethod.getInstance()
+//            it.textSize = textStyle.fontSize.value
+//            it.textAlignment = textAlignment
+//            it.setTextColor(textColour.toArgb())
+//            //Have the text be selectable is causing interference with opening links preserved in the HTML.
+//            //I believe that its more important that the urls consistently work than for the text to be selectable, so it set to false
+//            it.setTextIsSelectable(false)
+//            it.setLinkTextColor(linkColor.toArgb())
+//            // it.letterSpacing = textStyle.letterSpacing.value
+//        }
+//    )
+//}
+
 
 
 
@@ -449,7 +486,9 @@ private fun PreviewSitePhoto()
 {
     AppTheme {
         Surface {
-            val photo1 = SitePhotos(140229,3817,  "3817_oddfellowshome2_1715023463.jpg", 600, 422,"http://www.mhs.mb.ca/docs/sites/images/oddfellowshome2.jpg", "<strong>Architect’s drawing of the Odd Fellows Home</strong> (1922)<br/><a href=\"http://www.mhs.mb.ca/docs/business/freepress.shtml\">Manitoba Free Press</a>, 15 July 1922, page 48.", "2024-05-06 14:24:23"  )
+            val photoInfoHtml = "<strong>Architect’s drawing of the Odd Fellows Home</strong> (1922)<br/><a href=\"http://www.mhs.mb.ca/docs/business/freepress.shtml\">Manitoba Free Press</a>, 15 July 1922, page 48."
+            val photoInfoMarkdown = "**Architect’s drawing of the Odd Fellows Home** (1922)\n[Manitoba Free Press](http://www.mhs.mb.ca/docs/business/freepress.shtml), 15 July 1922, page 48."
+            val photo1 = SitePhotos(140229,3817,  "3817_oddfellowshome2_1715023463.jpg", 600, 422,"http://www.mhs.mb.ca/docs/sites/images/oddfellowshome2.jpg", photoInfoHtml , "2024-05-06 14:24:23"  )
             DisplaySitePhoto(photoIndex = 1, totalNumberOfPhotos = 3, sitePhoto = photo1, LocalUriHandler.current )
         }
     }

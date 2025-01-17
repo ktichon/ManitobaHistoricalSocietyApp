@@ -61,10 +61,6 @@ fun DisplayFullSiteDetails(
 
     modifier: Modifier = Modifier
 ) {
-    //Used to allow me to quickly check different colour values
-    val textColour = MaterialTheme.colorScheme.onSurface
-    val linkColor = MaterialTheme.colorScheme.primary
-
     val paddingBetweenItems = 10.dp
     val uriHandler = LocalUriHandler.current
 
@@ -98,7 +94,7 @@ fun DisplayFullSiteDetails(
                 /*colors = CardDefaults.cardColors(
                     containerColor = MaterialTheme.colorScheme.surface,
                 ),*/
-                border = BorderStroke(2.dp, textColour),
+                border = BorderStroke(2.dp, MaterialTheme.colorScheme.onSurface),
 
                 ){
                 DisplaySiteTitle(
@@ -137,15 +133,12 @@ fun DisplayFullSiteDetails(
                         photos = allSitePhotos,
                         uriHandler = uriHandler,
                         pageState = photosPagerState,
-                        textColour = textColour,
-                        linkColor = linkColor,
 
                         modifier = Modifier.padding(paddingBetweenItems))
                 } else {
                     //Display this if there are no photos
                     DisplayNoPhotos(
                         //uriHandler = uriHandler,
-                        linkColor = linkColor,
                         siteName = site.name,
                         siteUrl = site.siteUrl,
                         displayErrorMessage = displayErrorMessage,
@@ -158,8 +151,6 @@ fun DisplayFullSiteDetails(
                 site.description?.let {
                     DisplaySiteDescription(
                         siteInfo = it,
-                        textColour = textColour,
-                        linkColor = linkColor,
                         modifier = Modifier.padding(paddingBetweenItems)
                     )
                 }
@@ -167,8 +158,6 @@ fun DisplayFullSiteDetails(
                 //Sources
                 DisplaySiteSources(
                     sourcesList = sourcesList,
-                    textColour = textColour,
-                    linkColor = linkColor,
                     modifier = Modifier.padding(paddingBetweenItems)
                 )
 
@@ -176,7 +165,6 @@ fun DisplayFullSiteDetails(
                 DisplaySiteLink(
                     siteUrl = site.siteUrl,
                     uriHandler = uriHandler,
-                    linkColor = linkColor,
                     modifier = Modifier.padding(paddingBetweenItems))
 
 
