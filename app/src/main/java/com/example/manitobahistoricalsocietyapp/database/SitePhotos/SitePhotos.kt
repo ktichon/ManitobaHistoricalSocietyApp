@@ -20,7 +20,8 @@ data class SitePhotos (
     @ColumnInfo(name = "photoUrl")
     val url: String,
 
-    val info: String?,
+    val infoHTML: String?,
+    val infoMarkdown: String?,
 
     val importDate: String
 )

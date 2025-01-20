@@ -177,7 +177,7 @@ fun DisplaySitePhoto(
 
         )
 
-        sitePhoto.info?.let {
+        sitePhoto.infoHTML?.let {
 //            GetAndroidViewWithStyle(
 //                text = sitePhoto.info,
 //                textStyle = MaterialTheme.typography.bodyMedium,
@@ -375,6 +375,23 @@ fun DisplaySiteSources(
 }
 
 @Composable
+fun DisplaySiteImportDate(
+    importDate: String,
+    modifier: Modifier = Modifier) {
+    Row(
+        modifier = modifier
+    ) {
+        Text(
+            text = "This information was last imported from the MHS website on $importDate",
+            style = MaterialTheme.typography.bodyLarge,
+            textAlign = TextAlign.Start
+        )
+    }
+
+    
+}
+
+@Composable
 fun DisplaySiteLink(
     siteUrl: String,
     uriHandler: UriHandler,
@@ -488,7 +505,7 @@ private fun PreviewSitePhoto()
         Surface {
             val photoInfoHtml = "<strong>Architect’s drawing of the Odd Fellows Home</strong> (1922)<br/><a href=\"http://www.mhs.mb.ca/docs/business/freepress.shtml\">Manitoba Free Press</a>, 15 July 1922, page 48."
             val photoInfoMarkdown = "**Architect’s drawing of the Odd Fellows Home** (1922)\n[Manitoba Free Press](http://www.mhs.mb.ca/docs/business/freepress.shtml), 15 July 1922, page 48."
-            val photo1 = SitePhotos(140229,3817,  "3817_oddfellowshome2_1715023463.jpg", 600, 422,"http://www.mhs.mb.ca/docs/sites/images/oddfellowshome2.jpg", photoInfoHtml , "2024-05-06 14:24:23"  )
+            val photo1 = SitePhotos(140229,3817,  "3817_oddfellowshome2_1715023463.jpg", 600, 422,"http://www.mhs.mb.ca/docs/sites/images/oddfellowshome2.jpg", photoInfoHtml , "", "2024-05-06 14:24:23"  )
             DisplaySitePhoto(photoIndex = 1, totalNumberOfPhotos = 3, sitePhoto = photo1, LocalUriHandler.current )
         }
     }
@@ -500,10 +517,10 @@ private fun PreviewSitePhotos()
 {
     AppTheme {
         Surface {
-            val photo1 = SitePhotos(140229,3817,  "3817_oddfellowshome2_1715023463.jpg", 600, 422,"http://www.mhs.mb.ca/docs/sites/images/oddfellowshome2.jpg", "<strong>Architect’s drawing of the Odd Fellows Home</strong> (1922)<br/><a href=\"http://www.mhs.mb.ca/docs/business/freepress.shtml\">Manitoba Free Press</a>, 15 July 1922, page 48.", "2024-05-06 14:24:23"  )
-            val photo2 = SitePhotos(140229,3817,  "3817_oddfellowshome2_1715023463.jpg", 600, 250,"http://www.mhs.mb.ca/docs/sites/images/oddfellowshome4.jpg", "<strong>Odd Fellows Home</strong> (1923)<br/><a href=\"http://www.mhs.mb.ca/docs/business/tribune.shtml\">Winnipeg Tribune</a>, 13 March 1923, page 2.", "2024-05-06 14:24:23"  )
+            val photo1 = SitePhotos(140229,3817,  "3817_oddfellowshome2_1715023463.jpg", 600, 422,"http://www.mhs.mb.ca/docs/sites/images/oddfellowshome2.jpg", "<strong>Architect’s drawing of the Odd Fellows Home</strong> (1922)<br/><a href=\"http://www.mhs.mb.ca/docs/business/freepress.shtml\">Manitoba Free Press</a>, 15 July 1922, page 48.", "", "2024-05-06 14:24:23"  )
+            val photo2 = SitePhotos(140229,3817,  "3817_oddfellowshome2_1715023463.jpg", 600, 250,"http://www.mhs.mb.ca/docs/sites/images/oddfellowshome4.jpg", "<strong>Odd Fellows Home</strong> (1923)<br/><a href=\"http://www.mhs.mb.ca/docs/business/tribune.shtml\">Winnipeg Tribune</a>, 13 March 1923, page 2.", "", "2024-05-06 14:24:23"  )
             val photo3 = SitePhotos(140229,3817,  "3817_oddfellowshome2_1715023463.jpg", 600, 450,"http://www.mhs.mb.ca/docs/sites/images/oddfellowshome3.jpg", "<strong>Odd Fellows Home</strong> (no date)<br/>\n" +
-                    "<em>Source:</em> Jack Hardman", "2024-05-06 14:24:23"  )
+                    "<em>Source:</em> Jack Hardman", "", "2024-05-06 14:24:23"  )
 
             val bunchOfPhotos :List<SitePhotos> = listOf(photo1, photo2, photo3)
             DisplaySitePhotos(photos = bunchOfPhotos, LocalUriHandler.current, rememberPagerState {
@@ -543,11 +560,11 @@ fun PreviewSiteDescription() {
 fun PreviewSiteSources() {
     AppTheme {
         Surface {
-            val source1 = SiteSource(1,2,"<a href=\"http://www.gov.mb.ca/chc/hrb/mun/m053.html\" target=\"_blank\">St. Andrews United Church, NE4-13-6 EPM Garson</a>, Manitoba Historic Resources Branch.", "").info
-            val source2 = SiteSource(2,2,"<em>One Hundred Years in the History of the Rural Schools of Manitoba: Their Formation, Reorganization and Dissolution (1871-1971)</em> by <a href=\"http://www.mhs.mb.ca/docs/people/perfect_mb.shtml\">Mary B. Perfect</a>, MEd thesis, University of Manitoba, April 1978.", "").info
-            val source3 = SiteSource(3,2,"“Goodbye, Miss Chips,” <a href=\"http://www.mhs.mb.ca/docs/business/freepress.shtml\">Winnipeg Free Press</a>, 26 May 1962, page 3.", "").info
-            val source4 = SiteSource(4,2,"This page was prepared by <a href=\"http://www.mhs.mb.ca/docs/people/penner_g.shtml\">George Penner</a>, <a href=\"http://www.mhs.mb.ca/docs/people/kuzina_r.shtml\">Rose Kuzina</a>, and <a href=\"http://www.mhs.mb.ca/docs/people/goldsborough_lg.shtml\">Gordon Goldsborough</a>.", "").info
-            val source5 = SiteSource(5,2,"<a href=\"/info/links/lac_cef.shtml\" target=\"_blank\">Attestation papers, Canadian Expeditionary Force</a> [John Amos Comba], Library and Archives Canada.", "").info
+            val source1 = SiteSource(1,2,"<a href=\"http://www.gov.mb.ca/chc/hrb/mun/m053.html\" target=\"_blank\">St. Andrews United Church, NE4-13-6 EPM Garson</a>, Manitoba Historic Resources Branch.", "", "").infoHTML
+            val source2 = SiteSource(2,2,"<em>One Hundred Years in the History of the Rural Schools of Manitoba: Their Formation, Reorganization and Dissolution (1871-1971)</em> by <a href=\"http://www.mhs.mb.ca/docs/people/perfect_mb.shtml\">Mary B. Perfect</a>, MEd thesis, University of Manitoba, April 1978.", "", "").infoHTML
+            val source3 = SiteSource(3,2,"“Goodbye, Miss Chips,” <a href=\"http://www.mhs.mb.ca/docs/business/freepress.shtml\">Winnipeg Free Press</a>, 26 May 1962, page 3.", "", "").infoHTML
+            val source4 = SiteSource(4,2,"This page was prepared by <a href=\"http://www.mhs.mb.ca/docs/people/penner_g.shtml\">George Penner</a>, <a href=\"http://www.mhs.mb.ca/docs/people/kuzina_r.shtml\">Rose Kuzina</a>, and <a href=\"http://www.mhs.mb.ca/docs/people/goldsborough_lg.shtml\">Gordon Goldsborough</a>.", "", "").infoHTML
+            val source5 = SiteSource(5,2,"<a href=\"/info/links/lac_cef.shtml\" target=\"_blank\">Attestation papers, Canadian Expeditionary Force</a> [John Amos Comba], Library and Archives Canada.", "", "").infoHTML
             DisplaySiteSources(sourcesList = listOf(source1, source2, source3, source4, source5))
         }
     }
@@ -559,6 +576,16 @@ fun PreviewSiteLink() {
     AppTheme {
         Surface {
             DisplaySiteLink(siteUrl = "http://www.mhs.mb.ca/docs/sites/oddfellowshome.shtml", uriHandler = LocalUriHandler.current )
+        }
+    }
+}
+
+@Preview
+@Composable
+fun PreviewImportDate() {
+    AppTheme {
+        Surface {
+            DisplaySiteImportDate("11/04/2024")
         }
     }
 }

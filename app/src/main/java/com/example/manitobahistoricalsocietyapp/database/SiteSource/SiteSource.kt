@@ -11,7 +11,8 @@ data class SiteSource(
 
     val siteId: Int,
 
-    val info: String,
+    val infoHTML: String,
+    val infoMarkdown: String,
 
     val importDate: String
 )

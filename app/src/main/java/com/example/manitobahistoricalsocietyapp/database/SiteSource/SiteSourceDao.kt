@@ -28,6 +28,6 @@ interface SiteSourceDao {
     suspend fun getAllSiteSourcesForSite(siteId: Int): List<SiteSource>*/
 
     //Only really need the SiteSource.info strings
-    @Query("SELECT info FROM siteSource WHERE siteId = :siteId ")
+    @Query("SELECT infoHTML FROM siteSource WHERE siteId = :siteId ")
     fun getOnlySourceInfoForSite(siteId: Int): Flow<List<String>>
 }

@@ -34,7 +34,7 @@ class HistoricalSiteViewModel @Inject internal constructor(
 
 
     //Initialize with a blank site
-    private val _currentSite:MutableStateFlow<HistoricalSite>  = MutableStateFlow(HistoricalSite(0, "","", 1, 49.9000253, -97.1386276, "", "", "", "https://www.mhs.ca/", "", ""))
+    private val _currentSite:MutableStateFlow<HistoricalSite>  = MutableStateFlow(HistoricalSite(0, "","", 1, 49.9000253, -97.1386276, "", "", "", "", "https://www.mhs.ca/", "", ""))
     val currentSite = _currentSite.asStateFlow()
 
     private val _siteTypes = MutableStateFlow<List<String>>(emptyList())

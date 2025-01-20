@@ -20,7 +20,8 @@ data class HistoricalSite (
 
     val municipality: String?,
     val province: String?,
-    val description: String?,
+    val descriptionHTML: String?,
+    val descriptionMarkdown: String?,
 
     val siteUrl: String,
 
