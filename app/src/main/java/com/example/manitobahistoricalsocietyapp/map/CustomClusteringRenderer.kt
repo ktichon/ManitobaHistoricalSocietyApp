@@ -36,7 +36,9 @@ import com.example.manitobahistoricalsocietyapp.ui.theme.ClusterLessThan50
 import com.example.manitobahistoricalsocietyapp.ui.theme.ClusterLessThan500
 import com.example.manitobahistoricalsocietyapp.ui.theme.ClusterMax
 import com.google.android.gms.maps.model.LatLng
+import com.google.maps.android.clustering.ClusterManager
 import com.google.maps.android.clustering.algo.NonHierarchicalViewBasedAlgorithm
+import com.google.maps.android.clustering.view.DefaultClusterRenderer
 import com.google.maps.android.compose.MapsComposeExperimentalApi
 import com.google.maps.android.compose.clustering.Clustering
 import com.google.maps.android.compose.clustering.rememberClusterManager
@@ -79,6 +81,9 @@ fun CustomClusterRenderer(
         clusterManager = clusterManager
     )
 
+
+
+
     //Use SideEffect to set onClick
     SideEffect {
         clusterManager?: return@SideEffect
@@ -96,91 +101,40 @@ fun CustomClusterRenderer(
             false
         }
     }
+
     //SideEffect to set renderer
     SideEffect {
         if (clusterManager?.renderer != renderer) {
-            clusterManager?.renderer = renderer ?: return@SideEffect
+            clusterManager?.renderer = renderer  ?: return@SideEffect
+            //After the render has been set, change minClusterSize
+            onClusterManaging(clusterManager,15)
         }
     }
 
+
+
     if (clusterManager != null) {
+
         Clustering(
             items = sites,
             clusterManager = clusterManager,
         )
+
     }
-
-    /*if (clusterManager != null && !clusterManager.markerCollection.markers.isEmpty()){
-        var test = clusterManager.clusterMarkerCollection.markers.size
-        var test2 = clusterManager.markerCollection.markers.size
-        var test3 = clusterManager.markerCollection.markers.elementAt(0)
-        var test4 = clusterManager.markerCollection.markers.toList()
-        clusterManager.clu
-        var testend = clusterManager.markerCollection.markers.count()
-    }*/
+}
 
 
 
-    /*LaunchedEffect(key1 = currentlySelectedClusterItem) {
-        if (clusterManager != null && !clusterManager.markerCollection.markers.isEmpty()) {
-            var marker = clusterManager.markerCollection.markers.toList()[0]
-            marker.showInfoWindow()
-        }
-
-    }*/
-
+//Updates the minimum cluster size
+fun onClusterManaging(clusterManager: ClusterManager<HistoricalSiteClusterItem>?, minClusterSize: Int){
+    if (clusterManager != null) {
+        (clusterManager.renderer as DefaultClusterRenderer).minClusterSize = minClusterSize
+    }
 
 
 }
 
-/*class MarkerClusterRender<T : ClusterItem>(
-    var context: Context,
-    var googleMap: GoogleMap,
-    clusterManager: ClusterManager<T>,
-    var onInfoWindowClick: (HistoricalSiteClusterItem) -> Unit
-) :
-    DefaultClusterRenderer<T>(context, googleMap, clusterManager) {
 
-    private var clusterMap: HashMap<String, Marker> = hashMapOf()
-
-    override fun shouldRenderAsCluster(cluster: Cluster<T>): Boolean {
-        return cluster.size > 10
-    }
-
-    override fun getBucket(cluster: Cluster<T>): Int {
-        return cluster.size
-    }
-
-    override fun onClusterItemRendered(clusterItem: T, marker: Marker) {
-        super.onClusterItemRendered(clusterItem, marker)
-        clusterMap[(clusterItem as HistoricalSiteClusterItem).id.toString()] = marker
-
-        setMarker((clusterItem as HistoricalSiteClusterItem), marker)
-    }
-
-    private fun setMarker(poi: HistoricalSiteClusterItem, marker: Marker?) {
-        //val markerColor = BitmapDescriptorFactory.HUE_RED
-        marker?.let {
-            it.tag = poi
-            it.showInfoWindow()
-            //changeMarkerColor(it, markerColor)
-        }
-        googleMap.setOnInfoWindowClickListener {
-            onInfoWindowClick(it.tag as HistoricalSiteClusterItem)
-        }
-    }
-
-    private fun getClusterMarker(itemId: String): Marker? {
-        return if (clusterMap.containsKey(itemId)) clusterMap[itemId]
-        else null
-    }
-
-
-    fun showRouteInfoWindow(key: String) {
-        getClusterMarker(key)?.showInfoWindow()
-    }
-
-}*/
 
 @Composable
 fun ClusterCircleContent(
