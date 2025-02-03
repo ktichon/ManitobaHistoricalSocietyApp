@@ -192,7 +192,7 @@ class HistoricalSiteViewModel @Inject internal constructor(
 
     //Gets the X closes sites to the user
     private fun getNearestSites(maxSites: Int, availableSites: List<HistoricalSiteClusterItem>, userLocation: LatLng ) : List<HistoricalSiteClusterItem>{
-        val distanceSearchValues = arrayOf(200, 500, 1000, 5000, 10000, 20000)
+        val distanceSearchValues = arrayOf(200, 500, 1000, 5000, 10000, 20000, 1000000000)
         val foundSites = mutableListOf<HistoricalSiteClusterItem>()
         var previousSearchValue = 0
 

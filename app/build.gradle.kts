@@ -18,8 +18,8 @@ android {
         applicationId = "com.example.manitobahistoricalsocietyapp"
         minSdk = 24
         targetSdk = 35
-        versionCode = 11
-        versionName = "3.10"
+        versionCode = 12
+        versionName = "3.11"
 
         testInstrumentationRunner = "androidx.test.runner.AndroidJUnitRunner"
         vectorDrawables {
