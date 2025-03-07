@@ -1,5 +1,5 @@
 <resources>
-    <string name="app_name">ManitobaHistoricalSocietyApp</string>
+    <string name="app_name">MHS Historic Sites of Manitoba</string>
     <string name="about_title">About</string>
     <string name="about_text">Welcome to my app! History has always been a passion of mine, and I quite excited to combine it with my love of coding.
         \n\nI started working on this app in October 2022, displaying all Historical Sites according to the <a href="https://data.winnipeg.ca/City-Planning/Historical-Resources/ptpx-kgiu">City of Winnipeg Open Data</a>. With the data from the City of Winnipeg, I was able to display around 720 sites. While I was excited by what I was able to accomplish, the Winnipeg data was limited in what it could display. I knew that I could do more.

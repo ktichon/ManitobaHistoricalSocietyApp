@@ -10,16 +10,16 @@ plugins {
 }
 
 android {
-    namespace = "com.example.manitobahistoricalsocietyapp"
+    namespace = "com.TichonTechnologies.manitobahistoricalsocietyapp"
     compileSdk = 35
 
 
     defaultConfig {
-        applicationId = "com.example.manitobahistoricalsocietyapp"
+        applicationId = "com.TichonTechnologies.manitobahistoricalsocietyapp"
         minSdk = 24
         targetSdk = 35
-        versionCode = 12
-        versionName = "3.11"
+        versionCode = 1
+        versionName = "1"
 
         testInstrumentationRunner = "androidx.test.runner.AndroidJUnitRunner"
         vectorDrawables {
