@@ -18,8 +18,8 @@ android {
         applicationId = "com.TichonTechnologies.manitobahistoricalsocietyapp"
         minSdk = 24
         targetSdk = 35
-        versionCode = 1
-        versionName = "1"
+        versionCode = 2
+        versionName = "1.01"
 
         testInstrumentationRunner = "androidx.test.runner.AndroidJUnitRunner"
         vectorDrawables {
